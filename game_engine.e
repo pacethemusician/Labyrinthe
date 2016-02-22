@@ -7,6 +7,8 @@ class
 
 inherit
 	ARGUMENTS
+	GAME_LIBRARY_SHARED
+	IMG_LIBRARY_SHARED
 
 create
 	make
@@ -16,11 +18,62 @@ feature {NONE} -- Initialisation
 	make
 			-- Lance l'application.
 		do
---			game_library.enable_video -- Enable the video functionalities
---			image_file_library.enable_image (true, false, false)  -- Enable PNG image (but not TIF or JPG).
---			run_game  -- Run the core creator of the game.
---			image_file_library.quit_library  -- Correctly unlink image files library
---			game_library.quit_library  -- Clear the library before quitting
+			game_library.enable_video
+			image_file_library.enable_image (true, false, false)
+			run_game
+			image_file_library.quit_library
+			game_library.quit_library
 		end
 
+	run_game
+			-- Crée les ressources et lance le jeu
+		local
+			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
+			l_window:GAME_WINDOW_SURFACED
+		do
+			create l_window_builder
+			l_window_builder.set_dimension (Window_width, Window_height)
+			l_window_builder.set_title ("Shameless labyrinthe clone")
+			l_window := l_window_builder.generate_window
+			game_library.quit_signal_actions.extend (agent on_quit(?))
+			game_library.iteration_actions.extend (agent on_iteration(?))
+			-- https://www.eiffelgame2.org/Documentation/game_core/event/game_window_events_chart.html
+			l_window.mouse_button_pressed_actions.extend (agent on_mouse_pressed(?,?,?))
+			l_window.mouse_button_released_actions.extend (agent on_mouse_released(?,?,?))
+			game_library.launch
+		end
+
+feature {NONE} -- Implementation
+
+	on_iteration(a_timestamp:NATURAL_32)
+			-- Event that is launch at each iteration.
+		do
+
+		end
+
+	on_quit(a_timestamp: NATURAL_32)
+			-- This method is called when the quit signal is send to the application (ex: window X button pressed).
+		do
+			game_library.stop  -- Stop the controller loop (allow game_library.launch to return)
+		end
+
+	on_mouse_pressed(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; nb_clicks:NATURAL_8)
+		do
+
+		end
+
+	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
+		do
+
+		end
+
+feature {NONE} -- Constants
+
+	Window_width:NATURAL_16 = 1000
+		-- La largeur de la fenêtre
+
+	Window_height:NATURAL_16 = 700
+		-- La hauteur de la fenêtre
+
 end
+
