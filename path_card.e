@@ -7,20 +7,41 @@ note
 class
 	PATH_CARD
 
-inherit
-	SPRITE
+	--inherit
+	--SPRITE
+	--	redefine
+	--		parent_make
+	--	end
 
 create
-	make
+	parent_make
 
 feature {NONE}
-	x:NATURAL
-	y:NATURAL
-	img_file:REND
 
-	make
-			-- Constructeur
+	parent_make	-- Constructeur
 		do
 
 		end
+
+feature {NONE}
+
+	is_walkable (a_direction: INTEGER): BOOLEAN
+		do
+		end
+
+	draw_self
+		do
+				-- "DRAW_ROTATED(`rotation' * 90)"
+		end
+
+feature {NONE} -- Attributs
+
+	type: INTEGER
+
+	rotation: INTEGER
+
+	path_table: LIST[NATURAL_8]
+
+	items_on_top: LIST[ITEM]
+
 end
