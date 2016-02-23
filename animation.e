@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialisation
 
-	make(a_img_path:STRING; a_frame_number:NATURAL_8, a_speed:NATURAL_8)
+	make(a_img_path:STRING; a_frame_number:NATURAL_8; a_speed:NATURAL_8)
 		local
 			l_image:IMG_IMAGE_FILE
 		do
@@ -34,7 +34,7 @@ feature {NONE} -- Initialisation
 			end
 		end
 
-feature {NONE}
+feature {SPRITE}
 	frames:GAME_SURFACE
 	speed:INTEGER
 	frame_number:INTEGER

@@ -7,15 +7,16 @@ note
 class
 	SPRITE
 
-inherit
-
 create
 	make
 
 feature {NONE}	-- Initialisation
-	make
+	make (starting_animation:ANIMATION)
 		do
-
+			current_animation := starting_animation
+			current_frame := 0;
+			x := 0;
+			y := 0;
 		end
 
 feature {NONE}	-- Declaration des arguments
@@ -24,10 +25,15 @@ feature {NONE}	-- Declaration des arguments
 	current_animation:ANIMATION
 	current_frame:NATURAL_8
 
-feature {NONE}	-- Implementation
-	draw_self
+feature {GAME_ENGINE}	-- Implementation
+	draw_self(destination_surface:GAME_SURFACE)
+		local
+			l_frame_width:INTEGER_32
+			l_frame_offset:INTEGER_32
 		do
-
+			l_frame_width := current_animation.frames.width // current_animation.frame_number
+			l_frame_offset := l_frame_width * (current_frame // current_animation.speed)
+			destination_surface.draw_sub_surface (current_animation.frames, l_frame_offset, 0, l_frame_width, current_animation.frames.height, x, y)
 		end
 
 

@@ -36,7 +36,7 @@ feature {NONE} -- Initialisation
 			l_window_builder.set_title ("Shameless labyrinthe clone")
 			l_window := l_window_builder.generate_window
 			game_library.quit_signal_actions.extend (agent on_quit(?))
-			game_library.iteration_actions.extend (agent on_iteration(?))
+			game_library.iteration_actions.extend (agent on_iteration(?, l_window))
 			-- https://www.eiffelgame2.org/Documentation/game_core/event/game_window_events_chart.html
 			l_window.mouse_button_pressed_actions.extend (agent on_mouse_pressed(?,?,?))
 			l_window.mouse_button_released_actions.extend (agent on_mouse_released(?,?,?))
@@ -45,10 +45,16 @@ feature {NONE} -- Initialisation
 
 feature {NONE} -- Implementation
 
-	on_iteration(a_timestamp:NATURAL_32)
+	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- Event that is launch at each iteration.
+		local
+--			l_sprites:SPRITE
 		do
-
+--			across
+--				on_screen_sprites as l_sprites
+--			loop
+--				l_sprites.draw_self(game_window.surface)
+--            end
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
@@ -66,6 +72,8 @@ feature {NONE} -- Implementation
 		do
 
 		end
+
+	-- on_screen_sprites: ARRAY[SPRITE]
 
 feature {NONE} -- Constants
 
