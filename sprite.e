@@ -14,9 +14,9 @@ feature {NONE}	-- Initialisation
 	make (starting_animation:ANIMATION)
 		do
 			current_animation := starting_animation
-			current_frame := 0;
-			x := 0;
-			y := 0;
+			current_frame := 0
+			x := 0
+			y := 0
 		end
 
 feature {NONE}	-- Declaration des arguments

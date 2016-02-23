@@ -31,6 +31,8 @@ feature {NONE} -- Initialisation
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
 		do
+			create on_screen_sprites.make
+
 			create l_window_builder
 			l_window_builder.set_dimension (Window_width, Window_height)
 			l_window_builder.set_title ("Shameless labyrinthe clone")
@@ -47,14 +49,12 @@ feature {NONE} -- Implementation
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- Event that is launch at each iteration.
-		local
---			l_sprites:SPRITE
 		do
---			across
---				on_screen_sprites as l_sprites
---			loop
---				l_sprites.draw_self(game_window.surface)
---            end
+			across
+				on_screen_sprites as l_sprites
+			loop
+				l_sprites.item.draw_self (game_window.surface)
+            end
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
@@ -73,7 +73,7 @@ feature {NONE} -- Implementation
 
 		end
 
-	-- on_screen_sprites: ARRAY[SPRITE]
+	on_screen_sprites: LINKED_LIST[SPRITE]
 
 feature {NONE} -- Constants
 
