@@ -32,7 +32,6 @@ feature {NONE} -- Initialisation
 			l_window:GAME_WINDOW_SURFACED
 		do
 			create on_screen_sprites.make
-
 			create l_window_builder
 			l_window_builder.set_dimension (Window_width, Window_height)
 			l_window_builder.set_title ("Shameless labyrinthe clone")
@@ -54,7 +53,9 @@ feature {NONE} -- Implementation
 				on_screen_sprites as l_sprites
 			loop
 				l_sprites.item.draw_self (game_window.surface)
+				l_sprites.item.current_frame := l_sprites.item.current_frame + 1
             end
+            game_window.update
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
