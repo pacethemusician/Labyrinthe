@@ -53,7 +53,7 @@ feature {NONE} -- Implementation
 				on_screen_sprites as l_sprites
 			loop
 				l_sprites.item.draw_self (game_window.surface)
-				l_sprites.item.current_frame := l_sprites.item.current_frame + 1
+				l_sprites.item.animation_timer := l_sprites.item.animation_timer + 1
             end
             game_window.update
 		end
@@ -75,6 +75,7 @@ feature {NONE} -- Implementation
 		end
 
 	on_screen_sprites: LINKED_LIST[SPRITE]
+		-- Liste des sprites à afficher. 
 
 feature {NONE} -- Constants
 

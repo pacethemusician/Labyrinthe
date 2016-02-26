@@ -11,37 +11,48 @@ create
 	make
 
 feature {NONE}	-- Initialisation
-	make (starting_animation:ANIMATION)
+
+	make (default_animation:ANIMATION)
 		do
-			current_animation := starting_animation
-			current_frame := 0
+			current_animation := default_animation
+			animation_timer := 0
 			x := 0
 			y := 0
 		end
 
 feature {GAME_ENGINE}	-- Declaration des arguments
+
 	x:INTEGER_16 assign set_x
+		-- La position horizontale du `current'.
+
 	y:INTEGER_16 assign set_y
+		-- La position verticale de `current'.
+
 	current_animation:ANIMATION assign set_animation
-	current_frame:INTEGER_32 assign set_frame
+		-- L'animation actuelle de `current'. C'est cette animation qui est affichée.
+
+	animation_timer:INTEGER_32 assign set_timer
+		-- Timer qui indique l'avancement de `current_animation'.
 
 feature {GAME_ENGINE}	-- Implementation
+
 	draw_self(destination_surface:GAME_SURFACE)
+		-- Dessiner `current' sur `destination_surface'.
 		local
 			l_frame_width:INTEGER_32
 			l_frame_offset:INTEGER_32
 		do
 			l_frame_width := current_animation.frames.width // current_animation.frame_number
-			l_frame_offset := l_frame_width * (current_frame // current_animation.speed)
+			l_frame_offset := l_frame_width * (animation_timer // current_animation.delay)
 			destination_surface.draw_sub_surface (current_animation.frames,
 				l_frame_offset, 0, l_frame_width, current_animation.frames.height, x, y)
 		end
 
-	set_frame(a_frame:INTEGER_32)
+	set_timer(a_time:INTEGER_32)
 		do
-			current_frame := a_frame \\ (current_animation.frame_number * current_animation.speed)
-			if current_frame < 0 then
-				current_frame := -current_frame
+			animation_timer := a_time \\ (current_animation.frame_number * current_animation.delay)
+			if animation_timer < 0 then
+				animation_timer := -animation_timer
 			end
 		end
 

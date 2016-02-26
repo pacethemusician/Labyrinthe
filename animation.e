@@ -15,11 +15,14 @@ create
 
 feature {NONE} -- Initialisation
 
-	make(a_img_path:STRING; a_frame_number:NATURAL_8; a_speed:NATURAL_8)
+	make(a_img_path:STRING; a_frame_number:NATURAL_8; a_delay:NATURAL_8)
+		require
+			a_frame_number > 0
+			a_delay > 0
 		local
 			l_image:IMG_IMAGE_FILE
 		do
-			speed := a_speed
+			delay := a_delay
 			frame_number := a_frame_number
 			create l_image.make (a_img_path)
 			if l_image.is_openable then
@@ -37,10 +40,12 @@ feature {NONE} -- Initialisation
 feature {SPRITE, GAME_ENGINE}
 
 	frames:GAME_SURFACE
+		-- Surface contenant les 'frames' de l'animation placées à la suite horizontalement.
 
-	speed:INTEGER
-		-- Le temps en 'game loop' pendant lequel chaque frame de l'animation s'affiche
+	delay:INTEGER
+		-- Le temps en 'game loop' pendant lequel chaque frame de l'animation s'affiche.
 
 	frame_number:INTEGER
+		-- Le nombre de 'frames' dans l'animation.
 
 end
