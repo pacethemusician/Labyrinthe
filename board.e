@@ -9,9 +9,9 @@ class
 
 feature {NONE}
 
-	path_card_map:ARRAY[ARRAY[PATH_CARD]]
-	path_table:ARRAY[NATURAL_8]
-	spare_card:PATH_CARD
+	path_card_map:LIST[LIST[PATH_CARD]]
+	-- path_table:LIST[NATURAL_8]
+	-- spare_card:PATH_CARD
 
 	rotate_column(column_id:NATURAL_8; add_on_top:BOOLEAN)
 		do

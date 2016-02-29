@@ -6,12 +6,12 @@ note
 
 class
 	PLAYER
-		rename
-			make as sprite_make
-		end
 
 inherit
 	SPRITE
+		rename
+			make as sprite_make
+		end
 
 create
 	make

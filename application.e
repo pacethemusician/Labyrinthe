@@ -20,6 +20,8 @@ feature {NONE} -- Initialization
 	make
 		local
 			l_engine:detachable GAME_ENGINE
+			a_temp:BOARD
+
 		do
 			game_library.enable_video
 			audio_library.enable_sound
