@@ -34,13 +34,20 @@ feature {GAME_ENGINE} -- Implementation
 			destination_surface.draw_sub_surface (current_animation.frames, l_frame_offset, 0, l_frame_width, current_animation.frames.height, x, y)
 		end
 
+	approach_point (a_x, a_y, a_speed:INTEGER_32)
+			-- Approche `current' du point (`a_x', `a_y').
+			-- La vitesse horizontale et verticale sont idépendantes
+			-- l'une de l'autre et valent, au plus, `a_speed'.
+		do
+			x := x + (a_speed.min ((x - a_x).abs) * a_x.three_way_comparison (x))
+			y := y + (a_speed.min ((y - a_y).abs) * a_y.three_way_comparison (y))
+		end
+
 	set_timer (a_time: INTEGER_32)
 			-- Assigne `a_time' à `animation_timer'.
 		do
 			animation_timer := a_time \\ (current_animation.frame_number * current_animation.delay)
-			if animation_timer < 0 then
-				animation_timer := - animation_timer
-			end
+			animation_timer := animation_timer.abs
 		end
 
 	set_animation (a_animation: ANIMATION)
@@ -49,7 +56,7 @@ feature {GAME_ENGINE} -- Implementation
 			current_animation := a_animation
 		end
 
-	set_x (a_x: INTEGER_16)
+	set_x (a_x: INTEGER_32)
 			-- Assigne `a_x' à `x'.
 		do
 			x := a_x
@@ -57,7 +64,7 @@ feature {GAME_ENGINE} -- Implementation
 			Is_Assign: x = a_x
 		end
 
-	set_y (a_y: INTEGER_16)
+	set_y (a_y: INTEGER_32)
 			-- Assigne `a_y' à `y'.
 		do
 			y := a_y
@@ -67,10 +74,10 @@ feature {GAME_ENGINE} -- Implementation
 
 feature {GAME_ENGINE} -- Attributs
 
-	x: INTEGER_16 assign set_x
+	x: INTEGER_32 assign set_x
 			-- La position horizontale du `current'.
 
-	y: INTEGER_16 assign set_y
+	y: INTEGER_32 assign set_y
 			-- La position verticale de `current'.
 
 	current_animation: ANIMATION assign set_animation
