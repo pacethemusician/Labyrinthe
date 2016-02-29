@@ -9,7 +9,7 @@ class
 
 feature {NONE}
 
-	path_card_map:LIST[LIST[PATH_CARD]]
+--	path_card_map:LIST[LIST[PATH_CARD]]
 	-- path_table:LIST[NATURAL_8]
 	-- spare_card:PATH_CARD
 
@@ -23,9 +23,9 @@ feature {NONE}
 
 		end
 
-	get_path_to_destination(start:TUPLE[x, y:INTEGER]; destination:TUPLE[x, y:INTEGER]):ARRAY[TUPLE[x, y:INTEGER]]
-		do
-			Result := [[0, 0]]
-		end
+--	get_path_to_destination(start:TUPLE[x, y:INTEGER]; destination:TUPLE[x, y:INTEGER]):ARRAY[TUPLE[x, y:INTEGER]]
+--		do
+--			Result := [[0, 0]]
+--		end
 
 end

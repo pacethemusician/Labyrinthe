@@ -77,7 +77,7 @@ feature
 			l_surface:GAME_SURFACE_ROTATE_ZOOM
 		do
 			angle := angle - 90.0
-			create l_surface.make_rotate (current_animation.frames, -90, a_smooth: BOOLEAN)
+			create l_surface.make_rotate (current_animation.frames, -90, true)
 			l_surface
 
 		end
@@ -95,10 +95,10 @@ feature {NONE}
 		do
 		end
 
-	draw_self
-		do
-				-- "DRAW_ROTATED(`rotation' * 90)"
-		end
+--	draw_self
+--		do
+--				-- "DRAW_ROTATED(`rotation' * 90)"
+--		end
 
 feature {NONE} -- Attributs
 
