@@ -1,6 +1,6 @@
 note
-	description: "Information specifique à chaque joueur"
-	author: "Pascal Belisle"
+	description: "Pion d'un joueur"
+	author: "Pascal Belisle et Charles Lemay"
 	date: "18 février 2016"
 	revision: none
 
