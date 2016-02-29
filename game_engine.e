@@ -6,8 +6,8 @@ class
 	GAME_ENGINE
 
 inherit
-	ARGUMENTS
 	GAME_LIBRARY_SHARED
+	AUDIO_LIBRARY_SHARED
 	IMG_LIBRARY_SHARED
 
 create
@@ -16,16 +16,6 @@ create
 feature {NONE} -- Initialisation
 
 	make
-			-- Lance l'application.
-		do
-			game_library.enable_video
-			image_file_library.enable_image (true, false, false)
-			run_game
-			image_file_library.quit_library
-			game_library.quit_library
-		end
-
-	run_game
 			-- Crée les ressources et lance le jeu.
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
@@ -33,6 +23,7 @@ feature {NONE} -- Initialisation
 		do
 			create on_screen_sprites.make
 			create l_window_builder
+			create back.make
 			l_window_builder.set_dimension (Window_width, Window_height)
 			l_window_builder.set_title ("Shameless labyrinthe clone")
 			l_window := l_window_builder.generate_window
@@ -45,6 +36,8 @@ feature {NONE} -- Initialisation
 
 feature {NONE} -- Implementation
 
+	back:BACKGROUND
+
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- Event that is launch at each iteration.
 		do
@@ -55,6 +48,7 @@ feature {NONE} -- Implementation
 				l_sprites.item.animation_timer := l_sprites.item.animation_timer + 1
             end
             game_window.update
+            audio_library.update
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
