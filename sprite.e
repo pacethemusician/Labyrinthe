@@ -49,6 +49,7 @@ feature {GAME_ENGINE}	-- Implementation
 		end
 
 	set_timer(a_time:INTEGER_32)
+			-- Assigne `a_time' à `animation_timer'.
 		do
 			animation_timer := a_time \\ (current_animation.frame_number * current_animation.delay)
 			if animation_timer < 0 then
@@ -57,16 +58,19 @@ feature {GAME_ENGINE}	-- Implementation
 		end
 
 	set_animation(a_animation:ANIMATION)
+			-- Assigne `a_animation' à `current_animation'.
 		do
 			current_animation := a_animation
 		end
 
 	set_x(a_x:INTEGER_16)
+			-- Assigne `a_x' à `x'.
 		do
 			x := a_x
 		end
 
 	set_y(a_y:INTEGER_16)
+			-- Assigne `a_y' à `y'.
 		do
 			y := a_y
 		end

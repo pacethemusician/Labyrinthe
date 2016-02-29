@@ -1,8 +1,7 @@
 note
-	description: "Summary description for {ANIMATION}."
+	description: "Animation composé de plusieurs 'frames' et d'une vitesse"
 	author: "Charles et Pascal"
 	date: "22 février 2016"
-	revision: NONE
 
 class
 	ANIMATION
@@ -16,9 +15,13 @@ create
 feature {NONE} -- Initialisation
 
 	make(a_img_path:STRING; a_frame_number:NATURAL_8; a_delay:NATURAL_8)
+			-- Créer un `current' avec l'image `a_img_path'.
+			-- L'image contient les 'frames' de `current' alignées horizontalement.
+			-- Le `current' créé a `a_frame_number' 'frames' à affiché une
+			-- après l'autre avec un délais de `a_delay'.
 		require
-			a_frame_number > 0
-			a_delay > 0
+			Frame_over_zero: a_frame_number > 0
+			Delay_over_zero: a_delay > 0
 		local
 			l_image:IMG_IMAGE_FILE
 		do
@@ -37,7 +40,7 @@ feature {NONE} -- Initialisation
 			end
 		end
 
-feature {SPRITE, GAME_ENGINE}
+feature {SPRITE, GAME_ENGINE} -- Attributs
 
 	frames:GAME_SURFACE
 		-- Surface contenant les 'frames' de l'animation placées à la suite horizontalement.
@@ -47,5 +50,9 @@ feature {SPRITE, GAME_ENGINE}
 
 	frame_number:INTEGER
 		-- Le nombre de 'frames' dans l'animation.
+
+invariant
+	Frame_over_zero: frame_number > 0
+	Delay_over_zero: delay > 0
 
 end

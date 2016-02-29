@@ -26,7 +26,7 @@ feature {NONE} -- Initialisation
 		end
 
 	run_game
-			-- Crée les ressources et lance le jeu
+			-- Crée les ressources et lance le jeu.
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
@@ -38,7 +38,6 @@ feature {NONE} -- Initialisation
 			l_window := l_window_builder.generate_window
 			game_library.quit_signal_actions.extend (agent on_quit(?))
 			game_library.iteration_actions.extend (agent on_iteration(?, l_window))
-			-- https://www.eiffelgame2.org/Documentation/game_core/event/game_window_events_chart.html
 			l_window.mouse_button_pressed_actions.extend (agent on_mouse_pressed(?,?,?))
 			l_window.mouse_button_released_actions.extend (agent on_mouse_released(?,?,?))
 			game_library.launch
@@ -65,25 +64,27 @@ feature {NONE} -- Implementation
 		end
 
 	on_mouse_pressed(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; nb_clicks:NATURAL_8)
+			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		do
 
 		end
 
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
+			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.
 		do
 
 		end
 
 	on_screen_sprites: LINKED_LIST[SPRITE]
-		-- Liste des sprites à afficher. 
+		-- Liste des sprites à afficher.
 
-feature {NONE} -- Constants
+feature {NONE} -- Constantes
 
 	Window_width:NATURAL_16 = 1000
-		-- La largeur de la fenêtre
+		-- La largeur de la fenêtre en pixels.
 
 	Window_height:NATURAL_16 = 700
-		-- La hauteur de la fenêtre
+		-- La hauteur de la fenêtre en pixels.
 
 end
 
