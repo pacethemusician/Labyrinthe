@@ -23,12 +23,12 @@ feature {NONE} -- Initialisation
 			-- aux emplacements `a_walk_up_path', `a_walk_down_path',
 			-- `a_walk_left_path', `a_walk_right_path' et `a_still_path'.
 		do
-			create walk_up_animation.make (a_walk_up_path, 6, 6)
-			create walk_down_animation.make (a_walk_down_path, 6, 6)
-			create walk_left_animation.make (a_walk_left_path, 6, 6)
-			create walk_right_animation.make (a_walk_right_path, 6, 6)
-			create still_animation.make (a_still_path, 22, 20)
-			make_sprite(still_animation)
+--			create walk_up_animation.make (a_walk_up_path, 6, 6)
+--			create walk_down_animation.make (a_walk_down_path, 6, 6)
+--			create walk_left_animation.make (a_walk_left_path, 6, 6)
+--			create walk_right_animation.make (a_walk_right_path, 6, 6)
+--			create still_animation.make (a_still_path, 22, 20)
+--			make_sprite(still_animation)
 		end
 
 feature {NONE} -- Attributs

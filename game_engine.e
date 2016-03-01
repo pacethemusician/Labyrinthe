@@ -59,7 +59,6 @@ feature {NONE} -- Implementation
 				on_screen_sprites as l_sprites
 			loop
 				l_sprites.item.draw_self (game_window.surface)
-				l_sprites.item.animation_timer := l_sprites.item.animation_timer + 1
             end
             game_window.update
             audio_library.update

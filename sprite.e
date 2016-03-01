@@ -12,11 +12,10 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (default_animation: ANIMATION)
+	make (a_default_surface: GAME_SURFACE)
 			-- Initialisation de `current' avec l'animation `default_animation'.
 		do
-			current_animation := default_animation
-			animation_timer := 0
+			current_surface := a_default_surface
 			x := 0
 			y := 0
 		end
@@ -25,13 +24,8 @@ feature {GAME_ENGINE} -- Implementation
 
 	draw_self (destination_surface: GAME_SURFACE)
 			-- Dessiner `current' sur `destination_surface'.
-		local
-			l_frame_width: INTEGER_32
-			l_frame_offset: INTEGER_32
 		do
-			l_frame_width := current_animation.frames.width // current_animation.frame_number
-			l_frame_offset := l_frame_width * (animation_timer // current_animation.delay)
-			destination_surface.draw_sub_surface (current_animation.frames, l_frame_offset, 0, l_frame_width, current_animation.frames.height, x, y)
+			destination_surface.draw_surface (current_surface, x, y)
 		end
 
 	approach_point (a_x, a_y, a_speed:INTEGER_32)
@@ -41,19 +35,6 @@ feature {GAME_ENGINE} -- Implementation
 		do
 			x := x + (a_speed.min ((x - a_x).abs) * a_x.three_way_comparison (x))
 			y := y + (a_speed.min ((y - a_y).abs) * a_y.three_way_comparison (y))
-		end
-
-	set_timer (a_time: INTEGER_32)
-			-- Assigne `a_time' à `animation_timer'.
-		do
-			animation_timer := a_time \\ (current_animation.frame_number * current_animation.delay)
-			animation_timer := animation_timer.abs
-		end
-
-	set_animation (a_animation: ANIMATION)
-			-- Assigne `a_animation' à `current_animation'.
-		do
-			current_animation := a_animation
 		end
 
 	set_x (a_x: INTEGER_32)
@@ -72,6 +53,11 @@ feature {GAME_ENGINE} -- Implementation
 			Is_Assign: y = a_y
 		end
 
+	set_surface (a_surface: GAME_SURFACE)
+		do
+			current_surface := a_surface
+		end
+
 feature {GAME_ENGINE} -- Attributs
 
 	x: INTEGER_32 assign set_x
@@ -80,10 +66,7 @@ feature {GAME_ENGINE} -- Attributs
 	y: INTEGER_32 assign set_y
 			-- La position verticale de `current'.
 
-	current_animation: ANIMATION assign set_animation
+	current_surface: GAME_SURFACE assign set_surface
 			-- L'animation actuelle de `current'. C'est cette animation qui est affichée.
-
-	animation_timer: INTEGER_32 assign set_timer
-			-- Timer qui indique l'avancement de `current_animation'.
 
 end

@@ -50,13 +50,13 @@ feature {BOARD, GAME_ENGINE}
 
 	rotate(a_angle:REAL_64) -- Rotate Clock Wise
 		local
-			l_surface_temp:GAME_SURFACE_ROTATE_ZOOM
-			l_surface:GAME_SURFACE
+--			l_surface_temp:GAME_SURFACE_ROTATE_ZOOM
+--			l_surface:GAME_SURFACE
 		do
 			--create l_surface.make (84, 84)
 			--l_surface.draw_sub_surface (a_other: GAME_SURFACE, a_x_source, a_y_source, a_width, a_height, a_x_destination, a_y_destination: INTEGER_32)
-			create l_surface_temp.make_rotate(current_animation.frames, a_angle, False)
-			current_animation.frames := l_surface
+--			create l_surface_temp.make_rotate(current_animation.frames, a_angle, False)
+--			current_animation.frames := l_surface
 		end
 
 feature {NONE}
