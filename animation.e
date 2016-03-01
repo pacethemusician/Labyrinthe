@@ -42,8 +42,13 @@ feature {NONE} -- Initialisation
 
 feature {SPRITE, GAME_ENGINE} -- Attributs
 
-	frames:GAME_SURFACE
+	frames:GAME_SURFACE assign set_frames
 		-- Surface contenant les 'frames' de l'animation placées à la suite horizontalement.
+
+	set_frames(l_frames: GAME_SURFACE)
+		do
+			frames:= l_frames
+		end
 
 	delay:INTEGER
 		-- Le temps en 'game loop' pendant lequel chaque frame de l'animation s'affiche.

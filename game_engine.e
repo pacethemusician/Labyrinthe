@@ -26,11 +26,15 @@ feature {NONE} -- Initialisation
 			create back.make
 			create board.make
 			create p1.make
-			p1.set_x(100)
-			p1.set_y(100)
+			create path_test.make(1)
+			path_test.x := 110
+			path_test.y := 110
+			p1.x := 100
+			p1.y := 100
 			on_screen_sprites.extend (back)
 			on_screen_sprites.extend (board)
 			on_screen_sprites.extend (p1)
+			on_screen_sprites.extend (path_test)
 			l_window_builder.set_dimension (Window_width, Window_height)
 			l_window_builder.set_title ("Shameless labyrinthe clone")
 			l_window := l_window_builder.generate_window
@@ -46,6 +50,7 @@ feature {NONE} -- Implementation
 	back:BACKGROUND
 	board:BOARD
 	p1:PLAYER
+	path_test: PATH_CARD
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- Event that is launch at each iteration.
@@ -69,7 +74,7 @@ feature {NONE} -- Implementation
 	on_mouse_pressed(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		do
-
+			path_test.rotate(90.0)
 		end
 
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
@@ -82,6 +87,8 @@ feature {NONE} -- Implementation
 		-- Liste des sprites à afficher.
 
 feature {NONE} -- Constantes
+
+
 
 	Window_width:NATURAL_16 = 1000
 		-- La largeur de la fenêtre en pixels.

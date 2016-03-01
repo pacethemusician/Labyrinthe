@@ -9,10 +9,6 @@ class
 
 inherit
 	GAME_LIBRARY_SHARED
-	GAME_SURFACE_ROTATE_ZOOM
-		rename
-			make as make_rotate_zoom
-		end
 	SPRITE
 		rename
 			make as make_sprite
@@ -52,27 +48,18 @@ feature {NONE}
 
 feature {BOARD, GAME_ENGINE}
 
-	rotate_CW -- Rotate Clock Wise
+	rotate(a_angle:REAL_64) -- Rotate Clock Wise
 		local
-			l_surface:GAME_SURFACE_ROTATE_ZOOM
-		do
-			create l_surface.make_rotate (current_animation.frames, 90, true)
-			set_animation(l_surface)
-		end
-
-	rotate_CCW -- Rotate Counter Clock Wise
-		local
+			l_surface_temp:GAME_SURFACE_ROTATE_ZOOM
 			l_surface:GAME_SURFACE
-			l_surface_rotated:GAME_SURFACE_ROTATE_ZOOM
 		do
-			create l_surface_rotated.make_rotate (current_animation.frames, -90, true)
-			l_surface := l_surface_rotated
-			set_animation(l_surface)
+			--create l_surface.make (84, 84)
+			--l_surface.draw_sub_surface (a_other: GAME_SURFACE, a_x_source, a_y_source, a_width, a_height, a_x_destination, a_y_destination: INTEGER_32)
+			create l_surface_temp.make_rotate(current_animation.frames, a_angle, False)
+			current_animation.frames := l_surface
 		end
-
 
 feature {NONE}
-
 	can_go_up, can_go_right, can_go_left, can_go_down: BOOLEAN
 
 end
