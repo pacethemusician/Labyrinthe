@@ -10,7 +10,7 @@ class
 inherit
 	SPRITE
 		rename
-			make as sprite_make
+			make as make_sprite
 		end
 
 create
@@ -18,7 +18,7 @@ create
 
 feature {NONE} -- Initialisation
 
-	make(a_walk_up_path, a_walk_down_path, a_walk_left_path, a_walk_right_path, a_still_path:STRING)
+	make--(a_walk_up_path, a_walk_down_path, a_walk_left_path, a_walk_right_path, a_still_path:STRING)
 			-- Crée un `current' ayant comme animations les images
 			-- aux emplacements `a_walk_up_path', `a_walk_down_path',
 			-- `a_walk_left_path', `a_walk_right_path' et `a_still_path'.
@@ -27,8 +27,8 @@ feature {NONE} -- Initialisation
 			create walk_down_animation.make (a_walk_down_path, 6, 6)
 			create walk_left_animation.make (a_walk_left_path, 6, 6)
 			create walk_right_animation.make (a_walk_right_path, 6, 6)
-			create still_animation.make (a_still_path, 6, 6)
-			sprite_make(still_animation)
+			create still_animation.make (a_still_path, 22, 20)
+			make_sprite(still_animation)
 		end
 
 feature {NONE} -- Attributs
@@ -48,4 +48,9 @@ feature {NONE} -- Attributs
 	still_animation:ANIMATION
 		-- Animation de `current' lorsqu'il ne se déplace pas.
 
+	a_walk_up_path: STRING = "Images/p1_walk_up.png"
+	a_walk_down_path: STRING = "Images/p1_walk_down.png"
+	a_walk_left_path: STRING = "Images/p1_walk_left.png"
+	a_walk_right_path: STRING = "Images/p1_walk_right.png"
+	a_still_path: STRING = "Images/p1_still.png"
 end

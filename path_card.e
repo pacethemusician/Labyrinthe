@@ -1,113 +1,78 @@
-note
-	description: "Repr�sentation objet de chaque carte chemin sur le plateau {PATH_CARD}."
+﻿note
+	description: "Représentation objet de chaque carte chemin sur le plateau {PATH_CARD}."
 	author: "Pascal Belisle"
-	date: "15 F�vrier 2016"
-	revision: "0.1"
+	date: "15 Février 2016"
+	revision: "0.2"
 
 class
 	PATH_CARD
 
 inherit
+	GAME_LIBRARY_SHARED
+	GAME_SURFACE_ROTATE_ZOOM
+		rename
+			make as make_rotate_zoom
+		end
 	SPRITE
 		rename
 			make as make_sprite
 		end
 
 create
-	make_down_left,
-	make_up_down,
-	make_up_down_left
+	make
 
 feature {NONE}
 
-	make_down_left
+	make (a_type:NATURAL)
+	-- Le `a_type' peut être soit 1='╗' 2='║'  3='╣'
+
 		local
-			l_animation:ANIMATION
+			l_image_path:STRING
+			l_image:ANIMATION
+
 		do
-			create l_animation.make ("path_down_left.png", 1, 1)
-			make_sprite(l_animation)
-			angle := 0.0
+			can_go_right := FALSE
+			can_go_down := TRUE
+			l_image_path := "Images/path_type1.png"
+			if a_type = 1 then
+				can_go_up := FALSE
+				can_go_left := TRUE
+			elseif a_type = 2 then
+				can_go_up := TRUE
+				can_go_left := FALSE
+				l_image_path := "Images/path_type2.png"
+			elseif a_type = 3 then
+				can_go_up := TRUE
+				can_go_left := TRUE
+				l_image_path := "Images/path_type3.png"
+			end
+			create l_image.make (l_image_path, 1, 1)
+			make_sprite(l_image)
 		end
 
-	make_up_down
-		local
-			l_animation:ANIMATION
-		do
-			create l_animation.make ("path_up_down.png", 1, 1)
-			make_sprite(l_animation)
-			angle := 0.0
-		end
+feature {BOARD, GAME_ENGINE}
 
-	make_up_down_left
-		local
-			l_animation:ANIMATION
-		do
-			create l_animation.make ("path_up_down_left.png", 1, 1)
-			make_sprite(l_animation)
-			angle := 0.0
-		end
-
---	make_random
---		do
---			random(1..3)
---			if 1 then
---				make_down_left
---			elseif 2 then
---				make_up_down
---			elseif 3 then
---				make_up_down_left
---			end
-
---			random(1..20)
---			from i
---			until <
---			loop
---				rotate_left
---			end
---		end
-
-feature
-	rotate_random
-		do
-
-		end
-
-	rotate_left
+	rotate_CW -- Rotate Clock Wise
 		local
 			l_surface:GAME_SURFACE_ROTATE_ZOOM
 		do
-			angle := angle - 90.0
-			create l_surface.make_rotate (current_animation.frames, -90, true)
-			l_surface
-
+			create l_surface.make_rotate (current_animation.frames, 90, true)
+			set_animation(l_surface)
 		end
 
-	rotate_right
+	rotate_CCW -- Rotate Counter Clock Wise
+		local
+			l_surface:GAME_SURFACE
+			l_surface_rotated:GAME_SURFACE_ROTATE_ZOOM
 		do
-
+			create l_surface_rotated.make_rotate (current_animation.frames, -90, true)
+			l_surface := l_surface_rotated
+			set_animation(l_surface)
 		end
 
-	angle:REAL_64
 
 feature {NONE}
 
-	is_walkable (a_direction: INTEGER): BOOLEAN
-		do
-		end
-
---	draw_self
---		do
---				-- "DRAW_ROTATED(`rotation' * 90)"
---		end
-
-feature {NONE} -- Attributs
-
-	type: INTEGER
-
-	rotation: INTEGER
-
-	-- path_table: LIST[NATURAL_8]
-
-	-- items_on_top: LIST[ITEM]
+	can_go_up, can_go_right, can_go_left, can_go_down: BOOLEAN
 
 end

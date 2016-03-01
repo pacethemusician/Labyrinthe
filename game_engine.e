@@ -24,6 +24,13 @@ feature {NONE} -- Initialisation
 			create on_screen_sprites.make
 			create l_window_builder
 			create back.make
+			create board.make
+			create p1.make
+			p1.set_x(100)
+			p1.set_y(100)
+			on_screen_sprites.extend (back)
+			on_screen_sprites.extend (board)
+			on_screen_sprites.extend (p1)
 			l_window_builder.set_dimension (Window_width, Window_height)
 			l_window_builder.set_title ("Shameless labyrinthe clone")
 			l_window := l_window_builder.generate_window
@@ -37,6 +44,8 @@ feature {NONE} -- Initialisation
 feature {NONE} -- Implementation
 
 	back:BACKGROUND
+	board:BOARD
+	p1:PLAYER
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- Event that is launch at each iteration.

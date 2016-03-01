@@ -9,6 +9,10 @@ class
 
 inherit
 	AUDIO_LIBRARY_SHARED
+	SPRITE
+		rename
+			make as make_sprite
+		end
 
 create
 	make
@@ -18,9 +22,12 @@ feature {NONE} -- Initialization
 	make
 		local
 			l_music_file:AUDIO_SOUND_FILE
+			l_back:ANIMATION
 		do
 			audio_library.sources_add
 			music_source:=audio_library.last_source_added
+			create l_back.make("Images/main_back.png", 1, 1)
+			make_sprite(l_back)
 			create l_music_file.make("Audio/Solitaire.ogg")
 			if l_music_file.is_openable then
 				l_music_file.open
