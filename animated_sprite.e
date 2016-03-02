@@ -43,6 +43,16 @@ feature {GAME_ENGINE} -- Implementation
 			set_timer(animation_timer + 1)
 		end
 
+	change_animation (a_surface: detachable GAME_SURFACE; a_frame_count, a_delay: INTEGER_32)
+			-- Change l'animation de `current'.
+		do
+			if attached a_surface as surface then
+				make (surface, a_frame_count, a_delay)
+			else
+				print("Cannot change animation. Surface does not exist.")
+			end
+		end
+
 	set_timer (a_time: INTEGER_32)
 			-- Assigne `a_time' à `animation_timer'.
 		do
