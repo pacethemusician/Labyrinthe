@@ -1,8 +1,8 @@
 note
-	description: "Oject ayant une animation et des coordonnées qui peut être affiché."
+	description: "Objet pouvant être affiché selon ses coordonnées."
 	author: "Pascal Belisle et Charles Lemay"
 	date: "15 Février 2016"
-	revision: None
+	revision: "0.2"
 
 class
 	SPRITE
@@ -13,7 +13,7 @@ create
 feature {NONE} -- Initialisation
 
 	make (a_default_surface: GAME_SURFACE)
-			-- Initialisation de `current' avec l'animation `default_animation'.
+			-- Initialisation de `current' avec `a_default_surface'.
 		do
 			current_surface := a_default_surface
 			x := 0
@@ -67,6 +67,6 @@ feature {GAME_ENGINE} -- Attributs
 			-- La position verticale de `current'.
 
 	current_surface: GAME_SURFACE assign set_surface
-			-- L'animation actuelle de `current'. C'est cette animation qui est affichée.
+			-- La surface actuelle de `current'. C'est cette image qui est affichée.
 
 end

@@ -1,5 +1,5 @@
 note
-	description: "Oject ayant une animation et des coordonnées qui peut être affiché."
+	description: "Objet SPRITE ayant une animation et des coordonnées pouvant être affichées."
 	author: "Pascal Belisle et Charles Lemay"
 	date: "15 Février 2016"
 	revision: None
@@ -21,7 +21,7 @@ create
 feature {NONE} -- Initialisation
 
 	make (a_default_surface: GAME_SURFACE; a_frame_count, a_delay: INTEGER_32)
-			-- Initialisation de `current' avec l'animation `default_animation'.
+			-- Initialisation de `current' avec l'animation `a_default_surface'.
 		do
 			make_sprite(a_default_surface)
 			animation_timer := 0
@@ -63,7 +63,7 @@ feature {GAME_ENGINE} -- Implementation
 feature {GAME_ENGINE} -- Attributs
 
 	animation_timer: INTEGER_32 assign set_timer
-			-- Timer qui indique l'avancement de `current_animation'.
+			-- Timer qui indique l'avancement de `current_surface'.
 
 	frame_count: INTEGER_32 assign set_frame_count
 

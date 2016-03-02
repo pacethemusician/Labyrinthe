@@ -1,6 +1,7 @@
 note
-	description : "projetLabyrinthe application root class"
-	date        : "15 Février 2016"
+	description : "projet Labyrinthe application root class"
+	author: "Pascal Belisle et Charles Lemay"
+	date: "1 mars 2016"
 
 class
 	GAME_ENGINE
@@ -16,7 +17,7 @@ create
 feature {NONE} -- Initialisation
 
 	make
-			-- Crée les ressources et lance le jeu.
+		-- Créer les ressources et lance le jeu.
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
@@ -31,11 +32,12 @@ feature {NONE} -- Initialisation
 			end
 			create board.make(surfaces)
 			create p1.make (surfaces)
-			create path_test.make(1, surfaces)
-			path_test.x := 110
-			path_test.y := 110
+			create path_test.make(3, surfaces)
+			path_test.x := 310
+			path_test.y := 310
 			p1.x := 100
 			p1.y := 100
+			p1.set_delay (10)
 			on_screen_sprites.extend (back)
 			on_screen_sprites.extend (board)
 			on_screen_sprites.extend (p1)
@@ -54,18 +56,18 @@ feature {NONE} -- Initialisation
 		-- Stock en mémoire toutes les fichiers images convertis en `GAME_SURFACE
 		do
 			create surfaces.make(20)
-			surfaces.put(img_to_surface("Images/path_type1a.png"), "path_card_1a")
-			surfaces.put(img_to_surface("Images/path_type1b.png"), "path_card_1b")
-			surfaces.put(img_to_surface("Images/path_type1c.png"), "path_card_1c")
-			surfaces.put(img_to_surface("Images/path_type1d.png"), "path_card_1d")
-			surfaces.put(img_to_surface("Images/path_type2a.png"), "path_card_2a")
-			surfaces.put(img_to_surface("Images/path_type2b.png"), "path_card_2b")
-			surfaces.put(img_to_surface("Images/path_type2c.png"), "path_card_2c")
-			surfaces.put(img_to_surface("Images/path_type2d.png"), "path_card_2d")
-			surfaces.put(img_to_surface("Images/path_type3a.png"), "path_card_3a")
-			surfaces.put(img_to_surface("Images/path_type3b.png"), "path_card_3b")
-			surfaces.put(img_to_surface("Images/path_type3c.png"), "path_card_3c")
-			surfaces.put(img_to_surface("Images/path_type3d.png"), "path_card_3d")
+			surfaces.put(img_to_surface("Images/path_type1a.png"), "path_card_1_1")
+			surfaces.put(img_to_surface("Images/path_type1b.png"), "path_card_1_2")
+			surfaces.put(img_to_surface("Images/path_type1c.png"), "path_card_1_3")
+			surfaces.put(img_to_surface("Images/path_type1d.png"), "path_card_1_4")
+			surfaces.put(img_to_surface("Images/path_type2a.png"), "path_card_2_1")
+			surfaces.put(img_to_surface("Images/path_type2b.png"), "path_card_2_2")
+			surfaces.put(img_to_surface("Images/path_type2c.png"), "path_card_2_3")
+			surfaces.put(img_to_surface("Images/path_type2d.png"), "path_card_2_4")
+			surfaces.put(img_to_surface("Images/path_type3a.png"), "path_card_3_1")
+			surfaces.put(img_to_surface("Images/path_type3b.png"), "path_card_3_2")
+			surfaces.put(img_to_surface("Images/path_type3c.png"), "path_card_3_3")
+			surfaces.put(img_to_surface("Images/path_type3d.png"), "path_card_3_4")
 			surfaces.put(img_to_surface("Images/p1_still.png"), "p1_still")
 			surfaces.put(img_to_surface("Images/p1_walk_down.png"), "p1_walk_down")
 			surfaces.put(img_to_surface("Images/p1_walk_up.png"), "p1_walk_up")
@@ -103,7 +105,7 @@ feature {NONE} -- Implementation
 	surfaces : STRING_TABLE[GAME_SURFACE]
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
-			-- Event that is launch at each iteration.
+			-- À faire à chaque iteration.
 		do
 			across
 				on_screen_sprites as l_sprites
@@ -112,6 +114,7 @@ feature {NONE} -- Implementation
             end
             game_window.update
             audio_library.update
+            p1.approach_point (200, 500, 1)
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
@@ -123,7 +126,13 @@ feature {NONE} -- Implementation
 	on_mouse_pressed(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		do
-			path_test.rotate(90.0)
+			path_test.rotate_clockwise
+			p1.set_frame_count (6)
+			if attached surfaces["p1_walk_down"] as la_surface then
+				p1.current_surface := la_surface
+			else
+				p1.current_surface := (create {GAME_SURFACE} .make (1, 1))
+			end
 		end
 
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)

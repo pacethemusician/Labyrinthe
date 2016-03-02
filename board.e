@@ -1,6 +1,6 @@
 note
 	description: "Classe responsable du plateau de jeu."
-	author: "Charles et Pascal"
+	author: "Pascal"
 	date: "22 février 2016"
 	revision: "0.1"
 
@@ -32,10 +32,7 @@ feature {NONE}
 			y := 10
 
 			-- Grille de jeu
-
---			create l_temp_path_card.make(1)
---			l_temp_path_card_list.extend (l_temp_path_card)
---			path_card_grid.extend (l_temp_path_card_list)
+			-- "À faire..."
 
 		end
 
@@ -48,7 +45,5 @@ feature {NONE}
 		do
 
 		end
-feature
---	path_card_grid:LIST[LIST[PATH_CARD]]
 
 end
