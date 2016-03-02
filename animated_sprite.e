@@ -55,9 +55,14 @@ feature {GAME_ENGINE} -- Implementation
 
 	set_timer (a_time: INTEGER_32)
 			-- Assigne `a_time' à `animation_timer'.
+		local
+			l_time: INTEGER_32
 		do
-			animation_timer := a_time \\ (frame_count * delay)
-			animation_timer := animation_timer.abs
+			l_time := a_time \\ (frame_count * delay)
+			if l_time < 0 then
+				l_time := (frame_count * delay) + a_time
+			end
+			animation_timer := l_time
 		end
 
 	set_frame_count (a_frame_count: INTEGER_32)

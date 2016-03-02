@@ -37,7 +37,6 @@ feature {NONE} -- Initialisation
 			path_test.y := 310
 			p1.x := 100
 			p1.y := 100
-			p1.set_delay (10)
 			on_screen_sprites.extend (back)
 			on_screen_sprites.extend (board)
 			on_screen_sprites.extend (p1)
