@@ -21,15 +21,10 @@ feature {NONE}
 		do
 			-- Image de fond:
 			if attached a_surfaces["back_board"] as la_surface then
-				make_sprite (la_surface)
+				make_sprite (la_surface, 10, 10)
 			else
-				make_sprite (create {GAME_SURFACE} .make (1, 1))
+				make_sprite (create {GAME_SURFACE} .make (1, 1), 10, 10)
 			end
-
-
-			-- Position
-			x := 10
-			y := 10
 
 			-- Grille de jeu
 			-- "À faire..."

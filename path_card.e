@@ -46,7 +46,7 @@ feature {NONE}
 				end
 				i := i + 1
 			end
-			make_sprite (rotated_surfaces[1])
+			make_sprite (rotated_surfaces[1], 0, 0)
 			can_go_right := FALSE
 			can_go_down := TRUE
 			if a_type = 1 then

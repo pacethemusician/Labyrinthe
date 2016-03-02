@@ -12,12 +12,12 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_default_surface: GAME_SURFACE)
-			-- Initialisation de `current' avec `a_default_surface'.
+	make (a_default_surface: GAME_SURFACE; a_x, a_y: INTEGER_32)
+			-- Initialisation de `current' avec `a_default_surface' à la position (`a_x', `a_y').
 		do
 			current_surface := a_default_surface
-			x := 0
-			y := 0
+			set_x(a_x)
+			set_y(a_y)
 		end
 
 feature {GAME_ENGINE} -- Implementation
@@ -29,9 +29,10 @@ feature {GAME_ENGINE} -- Implementation
 		end
 
 	approach_point (a_x, a_y, a_speed:INTEGER_32)
-			-- Approche `current' du point (`a_x', `a_y').
-			-- La vitesse horizontale et verticale sont idépendantes
-			-- l'une de l'autre et valent, au plus, `a_speed'.
+			-- Approche `current' du point (`a_x', `a_y') d'un maximum de
+			-- `a_speed' verticalement et horizontalement.
+		require
+			speed_over_zero: a_speed > 0
 		do
 			x := x + (a_speed.min ((x - a_x).abs) * a_x.three_way_comparison (x))
 			y := y + (a_speed.min ((y - a_y).abs) * a_y.three_way_comparison (y))
@@ -42,7 +43,7 @@ feature {GAME_ENGINE} -- Implementation
 		do
 			x := a_x
 		ensure
-			Is_Assign: x = a_x
+			is_assign: x = a_x
 		end
 
 	set_y (a_y: INTEGER_32)
@@ -50,15 +51,19 @@ feature {GAME_ENGINE} -- Implementation
 		do
 			y := a_y
 		ensure
-			Is_Assign: y = a_y
+			is_assign: y = a_y
 		end
 
 	set_surface (a_surface: GAME_SURFACE)
+			-- Assigne `a_surface' à `current_surface'.
 		do
 			current_surface := a_surface
+		ensure
+			is_assign: current_surface = a_surface
 		end
 
 	set_detachable_surface (a_surface: detachable GAME_SURFACE)
+			-- Assigne `a_surface' à `current_surface' si `a_surface' n'est pas 'void'.
 		do
 			if attached a_surface as surface then
 				current_surface := surface

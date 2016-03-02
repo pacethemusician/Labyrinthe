@@ -25,7 +25,7 @@ feature {NONE} -- Initialization
 		do
 			audio_library.sources_add
 			music_source:= audio_library.last_source_added
-			make_sprite(a_surface)
+			make_sprite(a_surface, 0, 0)
 			create l_music_file.make("Audio/Solitaire.ogg")
 			if l_music_file.is_openable then
 				l_music_file.open
