@@ -17,26 +17,19 @@ create
 	make
 
 feature {NONE}
-
-	make
-		local
-			l_temp_img:ANIMATION
-			l_path_img_type1:ANIMATION
-			l_path_img_type2:ANIMATION
-			l_path_img_type3:ANIMATION
---			l_temp_path_card:PATH_CARD
---			l_temp_path_card_list:LIST[PATH_CARD]
-
+	make (a_surfaces:STRING_TABLE[GAME_SURFACE])
 		do
 			-- Image de fond:
+			if attached a_surfaces["back_board"] as la_surface then
+				make_sprite (la_surface)
+			else
+				make_sprite (create {GAME_SURFACE} .make (1, 1))
+			end
 
-			create l_temp_img.make("Images/back_board.png", 1, 1)
-			create l_path_img_type1.make ("", 1, 1)
-			create l_path_img_type2.make ("", 1, 1)
-			create l_path_img_type3.make ("", 1, 1)
-			make_sprite(l_temp_img)
-			set_x(10)
-			set_y(10)
+
+			-- Position
+			x := 10
+			y := 10
 
 			-- Grille de jeu
 

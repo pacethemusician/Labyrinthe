@@ -25,8 +25,8 @@ feature {NONE} -- Initialisation
 		do
 			make_sprite(a_default_surface)
 			animation_timer := 0
-			frame_count := a_frame_count
-			delay := a_delay
+			set_frame_count(a_frame_count)
+			set_delay(a_delay)
 		end
 
 feature {GAME_ENGINE} -- Implementation
@@ -40,7 +40,7 @@ feature {GAME_ENGINE} -- Implementation
 			l_frame_width := current_surface.width // frame_count
 			l_frame_offset := l_frame_width * (animation_timer // delay)
 			destination_surface.draw_sub_surface (current_surface, l_frame_offset, 0, l_frame_width, current_surface.height, x, y)
-			animation_timer := animation_timer + 1
+			set_timer(animation_timer + 1)
 		end
 
 	set_timer (a_time: INTEGER_32)

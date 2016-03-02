@@ -19,31 +19,35 @@ create
 
 feature {NONE}
 
-	make (a_type:NATURAL)
+	make (a_type:NATURAL; a_surfaces: STRING_TABLE[GAME_SURFACE])
 	-- Le `a_type' peut être soit 1='╗' 2='║'  3='╣'
+		require
+			a_type > 0
+			a_type < 4
 
 		local
 			l_image_path:STRING
-			l_image:ANIMATION
 
 		do
+			l_image_path := "path_card_" + a_type.out + "a"
+			print(l_image_path)
+			if attached a_surfaces[l_image_path] as la_surface then
+				make_sprite (la_surface)
+			else
+				make_sprite (create {GAME_SURFACE} .make (1, 1))
+			end
 			can_go_right := FALSE
 			can_go_down := TRUE
-			l_image_path := "Images/path_type1.png"
 			if a_type = 1 then
 				can_go_up := FALSE
 				can_go_left := TRUE
 			elseif a_type = 2 then
 				can_go_up := TRUE
 				can_go_left := FALSE
-				l_image_path := "Images/path_type2.png"
 			elseif a_type = 3 then
 				can_go_up := TRUE
 				can_go_left := TRUE
-				l_image_path := "Images/path_type3.png"
 			end
-			create l_image.make (l_image_path, 1, 1)
-			make_sprite(l_image)
 		end
 
 feature {BOARD, GAME_ENGINE}

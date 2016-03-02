@@ -8,9 +8,9 @@ class
 	PLAYER
 
 inherit
-	SPRITE
+	ANIMATED_SPRITE
 		rename
-			make as make_sprite
+			make as make_animated_sprite
 		end
 
 create
@@ -18,39 +18,13 @@ create
 
 feature {NONE} -- Initialisation
 
-	make--(a_walk_up_path, a_walk_down_path, a_walk_left_path, a_walk_right_path, a_still_path:STRING)
-			-- Crée un `current' ayant comme animations les images
-			-- aux emplacements `a_walk_up_path', `a_walk_down_path',
-			-- `a_walk_left_path', `a_walk_right_path' et `a_still_path'.
+	make (a_surfaces: STRING_TABLE[GAME_SURFACE])
 		do
---			create walk_up_animation.make (a_walk_up_path, 6, 6)
---			create walk_down_animation.make (a_walk_down_path, 6, 6)
---			create walk_left_animation.make (a_walk_left_path, 6, 6)
---			create walk_right_animation.make (a_walk_right_path, 6, 6)
---			create still_animation.make (a_still_path, 22, 20)
---			make_sprite(still_animation)
+			if attached a_surfaces["p1_still"] as la_surface then
+				make_animated_sprite (la_surface, 22, 2)
+			else
+				make_sprite (create {GAME_SURFACE} .make (1, 1))
+			end
 		end
 
-feature {NONE} -- Attributs
-
-	walk_up_animation:ANIMATION
-		-- Animation de `current' lorsqu'il marche vers le haut.
-
-	walk_down_animation:ANIMATION
-		-- Animation de `current' lorsqu'il marche vers le bas.
-
-	walk_left_animation:ANIMATION
-		-- Animation de `current' lorsqu'il marche vers la gauche.
-
-	walk_right_animation:ANIMATION
-		-- Animation de `current' lorsqu'il marche vers la droite.
-
-	still_animation:ANIMATION
-		-- Animation de `current' lorsqu'il ne se déplace pas.
-
-	a_walk_up_path: STRING = "Images/p1_walk_up.png"
-	a_walk_down_path: STRING = "Images/p1_walk_down.png"
-	a_walk_left_path: STRING = "Images/p1_walk_left.png"
-	a_walk_right_path: STRING = "Images/p1_walk_right.png"
-	a_still_path: STRING = "Images/p1_still.png"
 end
