@@ -1,4 +1,4 @@
-note
+ï»¿note
 	description : "projet Labyrinthe application root class"
 	author: "Pascal Belisle et Charles Lemay"
 	date: "1 mars 2016"
@@ -17,23 +17,19 @@ create
 feature {NONE} -- Initialisation
 
 	make
-		-- Créer les ressources et lance le jeu.
+		-- CrÃ©er les ressources et lance le jeu.
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
 		do
 			init_surfaces
+			create board.make(7)
 			init_board
 			create on_screen_sprites.make
 			create l_window_builder
 			create back.make (img_to_surface("Images/back_main.png"), 11, 11)
-			create board.make(surfaces)
 			create p1.make (surfaces, 100, 100)
-			-- 1ere path_card y, x = 56
-			create path_test.make(3, surfaces)
-			on_screen_sprites.extend (back)
 			on_screen_sprites.extend (p1)
-			on_screen_sprites.extend (path_test)
 			l_window_builder.set_dimension (Window_width, Window_height)
 			l_window_builder.set_title ("Shameless labyrinthe clone")
 			l_window := l_window_builder.generate_window
@@ -45,21 +41,9 @@ feature {NONE} -- Initialisation
 		end
 
 		init_surfaces
-			-- Stock en mémoire tous les fichiers images convertis en `GAME_SURFACE'
+			-- Stock en mÃ©moire tous les fichiers images convertis en `GAME_SURFACE'
 			do
 				create surfaces.make(20)
-				surfaces.put(img_to_surface("Images/path_type1a.png"), "path_card_1_1")
-				surfaces.put(img_to_surface("Images/path_type1b.png"), "path_card_1_2")
-				surfaces.put(img_to_surface("Images/path_type1c.png"), "path_card_1_3")
-				surfaces.put(img_to_surface("Images/path_type1d.png"), "path_card_1_4")
-				surfaces.put(img_to_surface("Images/path_type2a.png"), "path_card_2_1")
-				surfaces.put(img_to_surface("Images/path_type2b.png"), "path_card_2_2")
-				surfaces.put(img_to_surface("Images/path_type2c.png"), "path_card_2_3")
-				surfaces.put(img_to_surface("Images/path_type2d.png"), "path_card_2_4")
-				surfaces.put(img_to_surface("Images/path_type3a.png"), "path_card_3_1")
-				surfaces.put(img_to_surface("Images/path_type3b.png"), "path_card_3_2")
-				surfaces.put(img_to_surface("Images/path_type3c.png"), "path_card_3_3")
-				surfaces.put(img_to_surface("Images/path_type3d.png"), "path_card_3_4")
 				surfaces.put(img_to_surface("Images/p1_still.png"), "p1_still")
 				surfaces.put(img_to_surface("Images/p1_walk_down.png"), "p1_walk_down")
 				surfaces.put(img_to_surface("Images/p1_walk_up.png"), "p1_walk_up")
@@ -73,13 +57,61 @@ feature {NONE} -- Initialisation
 				surfaces.put(img_to_surface("Images/btn_rotate_right.png"), "btn_rotate_left")
 				-- surfaces.put(img_to_surface("Images/.png"), "")
 			end
+
 		init_board
+			-- 1ere path_card y et x = 56
 			local
-				temp_row: LIST[PATH_CARD]
+				l_surfaces: ARRAYED_LIST[ARRAYED_LIST[GAME_SURFACE]]
+				l_rotated_surfaces: ARRAYED_LIST[GAME_SURFACE]
+				l_path_row: ARRAYED_LIST[PATH_CARD]
 			do
-				create temp_row.make
-				create board.make
+				create l_path_row.make (7)
+				create l_surfaces.make (3)
+				create l_rotated_surfaces.make (4)
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type1a.png"))
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type1b.png"))
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type1c.png"))
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type1d.png"))
+				l_surfaces.extend (l_rotated_surfaces)
+				l_rotated_surfaces.wipe_out
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type2a.png"))
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type2b.png"))
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type2c.png"))
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type2d.png"))
+				l_surfaces.extend (l_rotated_surfaces)
+				l_rotated_surfaces.wipe_out
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type3a.png"))
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type3b.png"))
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type3c.png"))
+				l_rotated_surfaces.extend(img_to_surface("Images/path_type3d.png"))
+				l_surfaces.extend (l_rotated_surfaces)
+				-- Le type peut Ãªtre soit 1='â•—' 2='â•‘'  3='â•£'
+				-- RangÃ©e 1:
+				l_path_row.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56, 56, 1))
+				l_path_row.extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 1, 56, 4))
+				l_path_row.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 2, 56, 4))
+				l_path_row.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 3, 56, 4))
+				l_path_row.extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 4, 56, 4))
+				l_path_row.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 5, 56, 4))
+				l_path_row.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 6, 56, 4))
+				board.extend (l_path_row)
+				l_path_row.wipe_out
+				-- RangÃ©e 2:
+				l_path_row.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56, 140, 4))
+				l_path_row.extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 1, 140, 4))
+				l_path_row.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 2, 140, 4))
+				l_path_row.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 3, 140, 4))
+				l_path_row.extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 4, 140, 4))
+				l_path_row.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 5, 140, 4))
+				board.extend (l_path_row)
+				l_path_row.wipe_out
+				-- RangÃ©e 3:
+				l_path_row.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 6 * 84, 56, 1))
+				l_path_row.extend (create {PATH_CARD} .make (2, l_surfaces[2], 56, 56 + 6 * 84, 3))
+				l_path_row.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 6 * 84, 56 + 6 * 84, 2))
+				board.extend (l_path_row)
 			end
+
 		img_to_surface (a_img_path:STRING):GAME_SURFACE
 			local
 				l_image:IMG_IMAGE_FILE
@@ -102,23 +134,29 @@ feature {NONE} -- Initialisation
 feature {NONE} -- Implementation
 	surfaces : STRING_TABLE[GAME_SURFACE]
 	back:BACKGROUND
-	board: LIST[LIST[PATH_CARD]]
+	board: ARRAYED_LIST[ARRAYED_LIST[PATH_CARD]]
 	p1:PLAYER
-	path_test: PATH_CARD
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
-			-- À faire à chaque iteration.
+			-- Ã€ faire Ã  chaque iteration.
 		do
+			back.draw_self (game_window.surface)
+			board.at (1).at (1).draw_self (game_window.surface)
+--            across
+--				board as l_board
+--            loop
+--            	across
+--            		l_board.item as l_row
+--            	loop
+--            		l_row.item.draw_self (game_window.surface)
+--            	end
+--            end
 			across
 				on_screen_sprites as l_sprites
 			loop
 				l_sprites.item.draw_self (game_window.surface)
             end
-            across
-				board as l_board
-            loop
-            	l_board.item.draw_self (game_window.surface)
-            end
+
             game_window.update
             audio_library.update
             p1.approach_point (200, 500, 1)
@@ -131,33 +169,27 @@ feature {NONE} -- Implementation
 		end
 
 	on_mouse_pressed(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; nb_clicks:NATURAL_8)
-			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
+			-- MÃ©thode appelÃ©e lorsque le joueur appuie sur un bouton de la souris.
 		do
-			path_test.rotate_clockwise
-			p1.set_frame_count (6)
-			if attached surfaces["p1_walk_down"] as la_surface then
-				p1.current_surface := la_surface
-			else
-				p1.current_surface := (create {GAME_SURFACE} .make (1, 1))
-			end
+
 		end
 
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
-			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.
+			-- MÃ©thode appelÃ©e lorsque le joueur relÃ¢che un bouton de la souris.
 		do
 
 		end
 
 	on_screen_sprites: LINKED_LIST[SPRITE]
-		-- Liste des sprites à afficher.
+		-- Liste des sprites Ã  afficher.
 
 feature {NONE} -- Constantes
 
 	Window_width:NATURAL_16 = 1000
-		-- La largeur de la fenêtre en pixels.
+		-- La largeur de la fenÃªtre en pixels.
 
 	Window_height:NATURAL_16 = 700
-		-- La hauteur de la fenêtre en pixels.
+		-- La hauteur de la fenÃªtre en pixels.
 
 end
 

@@ -20,33 +20,26 @@ create
 
 feature {NONE}
 
-	make (a_type:NATURAL; a_surfaces: STRING_TABLE[GAME_SURFACE])
-	-- Le `a_type' peut être soit 1='╗' 2='║'  3='╣'
+	make (a_type: INTEGER; a_surfaces: ARRAYED_LIST[GAME_SURFACE]; a_x, a_y, a_rotation: INTEGER_32)
+		-- Le `a_type' peut être soit 1='╗' 2='║'  3='╣'
+		-- `a_surface' contient les 4 rotations du chemin
+		-- `a_rotation' est un index de 1 à 4 pour savoir quelle image utiliser
 		require
 			a_type > 0
 			a_type < 4
+			a_rotation > 0
+			a_rotation < 5
 
 		local
-			l_image_key:STRING
 			i:INTEGER
 			l_sfx_file:AUDIO_SOUND_FILE
 		do
+			x := a_x
+			y := a_y
 			index := 1
 			create rotated_surfaces.make(4)
-			from
-				i := 1
-			until
-				i = 5
-			loop
-				l_image_key := "path_card_" + a_type.out + "_" + i.out
-				if attached a_surfaces[l_image_key] as la_surface then
-					rotated_surfaces.extend (la_surface)
-				else
-					rotated_surfaces.extend (create {GAME_SURFACE} .make (1, 1))
-				end
-				i := i + 1
-			end
-			make_sprite (rotated_surfaces[1], 0, 0)
+			rotated_surfaces := a_surfaces
+			make_sprite (rotated_surfaces[a_rotation], x, y)
 			can_go_right := FALSE
 			can_go_down := TRUE
 			if a_type = 1 then
