@@ -23,22 +23,15 @@ feature {NONE} -- Initialisation
 			l_window:GAME_WINDOW_SURFACED
 		do
 			init_surfaces
+			init_board
 			create on_screen_sprites.make
 			create l_window_builder
-			if attached surfaces["main_back"] as la_surface then
-				create back.make (la_surface)
-			else
-				create back.make (create {GAME_SURFACE} .make (1, 1))
-			end
+			create back.make (img_to_surface("Images/back_main.png"), 11, 11)
 			create board.make(surfaces)
-			create p1.make (surfaces)
+			create p1.make (surfaces, 100, 100)
+			-- 1ere path_card y, x = 56
 			create path_test.make(3, surfaces)
-			path_test.x := 310
-			path_test.y := 310
-			p1.x := 100
-			p1.y := 100
 			on_screen_sprites.extend (back)
-			on_screen_sprites.extend (board)
 			on_screen_sprites.extend (p1)
 			on_screen_sprites.extend (path_test)
 			l_window_builder.set_dimension (Window_width, Window_height)
@@ -51,57 +44,67 @@ feature {NONE} -- Initialisation
 			game_library.launch
 		end
 
-	init_surfaces
-		-- Stock en mémoire toutes les fichiers images convertis en `GAME_SURFACE
-		do
-			create surfaces.make(20)
-			surfaces.put(img_to_surface("Images/path_type1a.png"), "path_card_1_1")
-			surfaces.put(img_to_surface("Images/path_type1b.png"), "path_card_1_2")
-			surfaces.put(img_to_surface("Images/path_type1c.png"), "path_card_1_3")
-			surfaces.put(img_to_surface("Images/path_type1d.png"), "path_card_1_4")
-			surfaces.put(img_to_surface("Images/path_type2a.png"), "path_card_2_1")
-			surfaces.put(img_to_surface("Images/path_type2b.png"), "path_card_2_2")
-			surfaces.put(img_to_surface("Images/path_type2c.png"), "path_card_2_3")
-			surfaces.put(img_to_surface("Images/path_type2d.png"), "path_card_2_4")
-			surfaces.put(img_to_surface("Images/path_type3a.png"), "path_card_3_1")
-			surfaces.put(img_to_surface("Images/path_type3b.png"), "path_card_3_2")
-			surfaces.put(img_to_surface("Images/path_type3c.png"), "path_card_3_3")
-			surfaces.put(img_to_surface("Images/path_type3d.png"), "path_card_3_4")
-			surfaces.put(img_to_surface("Images/p1_still.png"), "p1_still")
-			surfaces.put(img_to_surface("Images/p1_walk_down.png"), "p1_walk_down")
-			surfaces.put(img_to_surface("Images/p1_walk_up.png"), "p1_walk_up")
-			surfaces.put(img_to_surface("Images/p1_walk_right.png"), "p1_walk_right")
-			surfaces.put(img_to_surface("Images/p1_walk_left.png"), "p1_walk_left")
-			surfaces.put(img_to_surface("Images/back_board.png"), "back_board")
-			surfaces.put(img_to_surface("Images/main_back.png"), "main_back")
-		end
-
-	img_to_surface (a_img_path:STRING):GAME_SURFACE
-		local
-			l_image:IMG_IMAGE_FILE
-			l_surface:GAME_SURFACE
-		do
-			create l_image.make (a_img_path)
-			if l_image.is_openable then
-				l_image.open
-				if l_image.is_open then
-					create l_surface.make_from_image (l_image)
+		init_surfaces
+			-- Stock en mémoire tous les fichiers images convertis en `GAME_SURFACE'
+			do
+				create surfaces.make(20)
+				surfaces.put(img_to_surface("Images/path_type1a.png"), "path_card_1_1")
+				surfaces.put(img_to_surface("Images/path_type1b.png"), "path_card_1_2")
+				surfaces.put(img_to_surface("Images/path_type1c.png"), "path_card_1_3")
+				surfaces.put(img_to_surface("Images/path_type1d.png"), "path_card_1_4")
+				surfaces.put(img_to_surface("Images/path_type2a.png"), "path_card_2_1")
+				surfaces.put(img_to_surface("Images/path_type2b.png"), "path_card_2_2")
+				surfaces.put(img_to_surface("Images/path_type2c.png"), "path_card_2_3")
+				surfaces.put(img_to_surface("Images/path_type2d.png"), "path_card_2_4")
+				surfaces.put(img_to_surface("Images/path_type3a.png"), "path_card_3_1")
+				surfaces.put(img_to_surface("Images/path_type3b.png"), "path_card_3_2")
+				surfaces.put(img_to_surface("Images/path_type3c.png"), "path_card_3_3")
+				surfaces.put(img_to_surface("Images/path_type3d.png"), "path_card_3_4")
+				surfaces.put(img_to_surface("Images/p1_still.png"), "p1_still")
+				surfaces.put(img_to_surface("Images/p1_walk_down.png"), "p1_walk_down")
+				surfaces.put(img_to_surface("Images/p1_walk_up.png"), "p1_walk_up")
+				surfaces.put(img_to_surface("Images/p1_walk_right.png"), "p1_walk_right")
+				surfaces.put(img_to_surface("Images/p1_walk_left.png"), "p1_walk_left")
+				-- surfaces.put(img_to_surface("Images/back_main.png"), "back_main")
+				surfaces.put(img_to_surface("Images/arrow_off.png"), "arrow_off")
+				surfaces.put(img_to_surface("Images/arrow_on.png"), "arrow_on")
+				surfaces.put(img_to_surface("Images/arrow_on_g.png"), "arrow_on_g")
+				surfaces.put(img_to_surface("Images/btn_rotate_left.png"), "btn_rotate_left")
+				surfaces.put(img_to_surface("Images/btn_rotate_right.png"), "btn_rotate_left")
+				-- surfaces.put(img_to_surface("Images/.png"), "")
+			end
+		init_board
+			local
+				temp_row: LIST[PATH_CARD]
+			do
+				create temp_row.make
+				create board.make
+			end
+		img_to_surface (a_img_path:STRING):GAME_SURFACE
+			local
+				l_image:IMG_IMAGE_FILE
+				l_surface:GAME_SURFACE
+			do
+				create l_image.make (a_img_path)
+				if l_image.is_openable then
+					l_image.open
+					if l_image.is_open then
+						create l_surface.make_from_image (l_image)
+					else
+						create l_surface.make(1,1)
+					end
 				else
 					create l_surface.make(1,1)
 				end
-			else
-				create l_surface.make(1,1)
+				Result := l_surface
 			end
-			Result := l_surface
-		end
 
 feature {NONE} -- Implementation
-
+	surfaces : STRING_TABLE[GAME_SURFACE]
 	back:BACKGROUND
-	board:BOARD
+	board: LIST[LIST[PATH_CARD]]
 	p1:PLAYER
 	path_test: PATH_CARD
-	surfaces : STRING_TABLE[GAME_SURFACE]
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
@@ -110,6 +113,11 @@ feature {NONE} -- Implementation
 				on_screen_sprites as l_sprites
 			loop
 				l_sprites.item.draw_self (game_window.surface)
+            end
+            across
+				board as l_board
+            loop
+            	l_board.item.draw_self (game_window.surface)
             end
             game_window.update
             audio_library.update

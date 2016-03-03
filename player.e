@@ -18,12 +18,12 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_surfaces: STRING_TABLE[GAME_SURFACE])
+	make (a_surfaces: STRING_TABLE[GAME_SURFACE]; a_x, a_y:INTEGER_32)
 		do
 			if attached a_surfaces["p1_walk_down"] as la_surface then
-				make_animated_sprite (la_surface, 6, 5, 0, 0)
+				make_animated_sprite (la_surface, 6, 5, a_x, a_y)
 			else
-				make_sprite (create {GAME_SURFACE} .make (1, 1), 0, 0)
+				make_sprite (create {GAME_SURFACE} .make (1, 1), a_x, a_y)
 			end
 		end
 

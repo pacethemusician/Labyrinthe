@@ -8,10 +8,6 @@ class
 	BOARD
 
 inherit
-	SPRITE
-	rename
-		make as make_sprite
-	end
 
 create
 	make
@@ -19,13 +15,6 @@ create
 feature {NONE}
 	make (a_surfaces:STRING_TABLE[GAME_SURFACE])
 		do
-			-- Image de fond:
-			if attached a_surfaces["back_board"] as la_surface then
-				make_sprite (la_surface, 10, 10)
-			else
-				make_sprite (create {GAME_SURFACE} .make (1, 1), 10, 10)
-			end
-
 			-- Grille de jeu
 			-- "À faire..."
 
