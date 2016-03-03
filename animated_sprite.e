@@ -24,9 +24,9 @@ feature {NONE} -- Initialisation
 			-- Initialisation de `current' avec l'animation `a_default_surface' à la position (`a_x', `a_y').
 		do
 			make_sprite(a_default_surface, a_x, a_y)
-			set_timer(0)
 			set_frame_count(a_frame_count)
 			set_delay(a_delay)
+			set_timer(0)
 		end
 
 feature {GAME_ENGINE} -- Implementation
