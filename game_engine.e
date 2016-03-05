@@ -60,17 +60,20 @@ feature {NONE} -- Initialisation
 
 		path_type_surfaces:LIST[LIST[GAME_SURFACE]]
 			local
-				l_surfaces: ARRAYED_LIST[ARRAYED_LIST[GAME_SURFACE]]
+				l_surfaces: LIST[LIST[GAME_SURFACE]]
 			do
-				create l_surfaces.make (3)
+				create {ARRAYED_LIST[LIST[GAME_SURFACE]]} l_surfaces.make (3)
+				l_surfaces.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
 				l_surfaces.at (1) .extend(img_to_surface("Images/path_type1a.png"))
 				l_surfaces.at (1) .extend(img_to_surface("Images/path_type1b.png"))
 				l_surfaces.at (1) .extend(img_to_surface("Images/path_type1c.png"))
 				l_surfaces.at (1) .extend(img_to_surface("Images/path_type1d.png"))
+				l_surfaces.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
 				l_surfaces.at (2) .extend(img_to_surface("Images/path_type2a.png"))
 				l_surfaces.at (2) .extend(img_to_surface("Images/path_type2b.png"))
 				l_surfaces.at (2) .extend(img_to_surface("Images/path_type2c.png"))
 				l_surfaces.at (2) .extend(img_to_surface("Images/path_type2d.png"))
+				l_surfaces.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
 				l_surfaces.at (3) .extend(img_to_surface("Images/path_type3a.png"))
 				l_surfaces.at (3) .extend(img_to_surface("Images/path_type3b.png"))
 				l_surfaces.at (3) .extend(img_to_surface("Images/path_type3c.png"))
@@ -95,91 +98,123 @@ feature {NONE} -- Initialisation
 				init_row_7(l_surfaces)
 			end
 
-
-
---				-- Le type peut être soit 1='╗' 2='║'  3='╣'
---				-- Rangée 1:
---				create l_list.make (7)
---				board.extend (l_list)
---				l_list.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56, 56, 1))
---				l_list.extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 1, 56, 4))
---				l_list.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 2, 56, 4))
---				l_list.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 3, 56, 4))
---				l_list.extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 4, 56, 4))
---				l_list.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 5, 56, 4))
---				l_list.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 6, 56, 4))
---				-- Rangée 2:
---				--board.at (2) .create (7)
---				create l_list.make (7)
---				board.extend (l_list)
---				l_list.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56, 140, 4))
---				l_list.extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 1, 140, 4))
---				l_list.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 2, 140, 4))
---				l_list.extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 3, 140, 4))
---				l_list.extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 4, 140, 4))
---				l_list.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 5, 140, 4))
---				l_list.extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 6, 140, 4))
---				-- Rangée 3:
---				--board.at (3) .create (7)
---				board.at (3) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56, 224, 4))
---				board.at (3) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 1, 224, 4))
---				board.at (3) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 2, 224, 4))
---				board.at (3) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 3, 224, 4))
---				board.at (3) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 4, 224, 4))
---				board.at (3) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 5, 224, 4))
---				board.at (3) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 6, 224, 4))
---				-- Rangée 4:
---				--board.at (4) .create (7)
---				board.at (4) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56, 308, 4))
---				board.at (4) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 1, 308, 4))
---				board.at (4) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 2, 308, 4))
---				board.at (4) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 3, 308, 4))
---				board.at (4) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 4, 308, 4))
---				board.at (4) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 5, 308, 4))
---				board.at (4) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 6, 308, 4))
---				-- Rangée 5:
---				--board.at (5) .create (7)
---				board.at (5) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56, 392, 4))
---				board.at (5) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 1, 392, 4))
---				board.at (5) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 2, 392, 4))
---				board.at (5) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 3, 392, 4))
---				board.at (5) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 4, 392, 4))
---				board.at (5) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 5, 392, 4))
---				board.at (5) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 6, 392, 4))
---				-- Rangée 6:
-----				board.at (6) .create (7)
---				board.at (6) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56, 476, 4))
---				board.at (6) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 1, 476, 4))
---				board.at (6) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 2, 476, 4))
---				board.at (6) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 3, 476, 4))
---				board.at (6) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 4, 476, 4))
---				board.at (6) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 5, 476, 4))
---				board.at (6) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 6, 476, 4))
---				-- Rangée 7:
-----				board.at (7) .create (7)
---				board.at (7) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56, 140, 4))
---				board.at (7) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 1, 560, 4))
---				board.at (7) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 2, 560, 4))
---				board.at (7) .extend (create {PATH_CARD} .make (1, l_surfaces[1], 56 + 84 * 3, 560, 4))
---				board.at (7) .extend (create {PATH_CARD} .make (2, l_surfaces[2], 56 + 84 * 4, 560, 4))
---				board.at (7) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 5, 560, 4))
---				board.at (7) .extend (create {PATH_CARD} .make (3, l_surfaces[3], 56 + 84 * 6, 560, 4))
---			end
-
 		init_row_1(a_surfaces: LIST[LIST[GAME_SURFACE]])
 				-- Rangée 1:
+				-- Le type peut être soit 1='╗' 2='║'  3='╣'
 			local
 				l_list:ARRAYED_LIST[PATH_CARD]
 			do
 				create l_list.make (7)
-				board.extend (l_list)
-				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56, 56, 1))
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56, 56, 4))
 				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 1, 56, 4))
 				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 2, 56, 4))
 				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56 + 84 * 3, 56, 4))
 				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 4, 56, 4))
 				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 5, 56, 4))
-				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56 + 84 * 6, 56, 4))
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56 + 84 * 6, 56, 1))
+				board.extend (l_list)
+			end
+
+		init_row_2(a_surfaces: LIST[LIST[GAME_SURFACE]])
+				-- Rangée 2:
+				-- Le type peut être soit 1='╗' 2='║'  3='╣'
+			local
+				l_list:ARRAYED_LIST[PATH_CARD]
+			do
+				create l_list.make (7)
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56, 140, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 1, 140, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 2, 140, 4))
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56 + 84 * 3, 140, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 4, 140, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 5, 140, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 6, 140, 4))
+				board.extend (l_list)
+			end
+
+		init_row_3(a_surfaces: LIST[LIST[GAME_SURFACE]])
+				-- Rangée 3:
+				-- Le type peut être soit 1='╗' 2='║'  3='╣'
+			local
+				l_list:ARRAYED_LIST[PATH_CARD]
+			do
+				create l_list.make (7)
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56, 224, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 1, 224, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 2, 224, 4))
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56 + 84 * 3, 224, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 4, 224, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 5, 224, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 6, 224, 4))
+				board.extend (l_list)
+			end
+
+		init_row_4(a_surfaces: LIST[LIST[GAME_SURFACE]])
+				-- Rangée 4:
+				-- Le type peut être soit 1='╗' 2='║'  3='╣'
+			local
+				l_list:ARRAYED_LIST[PATH_CARD]
+			do
+				create l_list.make (7)
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56, 308, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 1, 308, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 2, 308, 4))
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56 + 84 * 3, 308, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 4, 308, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 5, 308, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 6, 308, 4))
+				board.extend (l_list)
+			end
+
+		init_row_5(a_surfaces: LIST[LIST[GAME_SURFACE]])
+				-- Rangée 5:
+				-- Le type peut être soit 1='╗' 2='║'  3='╣'
+			local
+				l_list:ARRAYED_LIST[PATH_CARD]
+			do
+				create l_list.make (7)
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56, 392, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 1, 392, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 2, 392, 4))
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56 + 84 * 3, 392, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 4, 392, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 5, 392, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 6, 392, 4))
+				board.extend (l_list)
+			end
+
+		init_row_6(a_surfaces: LIST[LIST[GAME_SURFACE]])
+				-- Rangée 6:
+				-- Le type peut être soit 1='╗' 2='║'  3='╣'
+			local
+				l_list:ARRAYED_LIST[PATH_CARD]
+			do
+				create l_list.make (7)
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56, 476, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 1, 476, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 2, 476, 4))
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56 + 84 * 3, 476, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 4, 476, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 5, 476, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 6, 476, 4))
+				board.extend (l_list)
+			end
+
+		init_row_7(a_surfaces: LIST[LIST[GAME_SURFACE]])
+				-- Rangée 7:
+				-- Le type peut être soit 1='╗' 2='║'  3='╣'
+			local
+				l_list:ARRAYED_LIST[PATH_CARD]
+			do
+				create l_list.make (7)
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56, 560, 3))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 1, 560, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 2, 560, 4))
+				l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 56 + 84 * 3, 560, 4))
+				l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56 + 84 * 4, 560, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 5, 560, 4))
+				l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56 + 84 * 6, 560, 2))
+				board.extend (l_list)
 			end
 
 		img_to_surface (a_img_path:STRING):GAME_SURFACE
@@ -211,16 +246,15 @@ feature {NONE} -- Implementation
 			-- À faire à chaque iteration.
 		do
 			back.draw_self (game_window.surface)
-			board.at (1).at (1).draw_self (game_window.surface)
---            across
---				board as l_board
---            loop
---            	across
---            		l_board.item as l_row
---            	loop
---            		l_row.item.draw_self (game_window.surface)
---            	end
---            end
+            across
+				board as l_board
+            loop
+            	across
+            		l_board.item as l_row
+            	loop
+            		l_row.item.draw_self (game_window.surface)
+            	end
+            end
 			across
 				on_screen_sprites as l_sprites
 			loop

@@ -431,3 +431,74 @@ APPLICATION         make @4
 APPLICATION         root's creation                                     
 <0000000003BF05A8>                         Routine failure.              Exit
 -------------------------------------------------------------------------------
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+ARRAYED_LIST        at @1                  valid_key:                   
+<0000000003FE4D58>                         Precondition violated.        Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         path_type_surfaces @2                               
+<0000000003FE29E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         init_board @1                                       
+<0000000003FE29E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @3                                             
+<0000000003FE29E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         make @4                                             
+<0000000003FE0588>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<0000000003FE0588>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+ARRAYED_LIST        at @1                  valid_key:                   
+<0000000004104D78>                         Precondition violated.        Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         path_type_surfaces @2                               
+<0000000004102A08>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         init_board @1                                       
+<0000000004102A08>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @3                                             
+<0000000004102A08>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         make @4                                             
+<00000000041005A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000041005A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+ARRAYED_LIST        at @2                  index_small_enough:          
+<0000000004104D78>                         Runtime check violated.       Exit
+-------------------------------------------------------------------------------
+ARRAYED_LIST        at @2                                               
+<0000000004104D78>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+GAME_ENGINE         path_type_surfaces @2                               
+<0000000004102A08>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+GAME_ENGINE         init_board @1                                       
+<0000000004102A08>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @3                                             
+<0000000004102A08>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+APPLICATION         make @4                                             
+<00000000041005A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000041005A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
