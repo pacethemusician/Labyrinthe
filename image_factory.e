@@ -42,10 +42,10 @@ feature {NONE} -- Implementation
 			Result := l_surface
 		end
 
-	path_card_surfaces:LIST[LIST[GAME_SURFACE]]
+	path_card_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
 
 		do
-			create {ARRAYED_LIST[LIST[GAME_SURFACE]]} l_surfaces.make (3)
+			create Result.make (3)
 			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
 			Result.at (1) .extend(img_to_surface("Images/path_type1a.png"))
 			Result.at (1) .extend(img_to_surface("Images/path_type1b.png"))
@@ -63,13 +63,21 @@ feature {NONE} -- Implementation
 			Result.at (3) .extend(img_to_surface("Images/path_type3d.png"))
 		end
 
-	player_type_1
+	player_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
 
 		do
-			surfaces.put(img_to_surface("Images/p1_still.png"), "p1_still")
-			surfaces.put(img_to_surface("Images/p1_walk_down.png"), "p1_walk_down")
-			surfaces.put(img_to_surface("Images/p1_walk_up.png"), "p1_walk_up")
-			surfaces.put(img_to_surface("Images/p1_walk_right.png"), "p1_walk_right")
-			surfaces.put(img_to_surface("Images/p1_walk_left.png"), "p1_walk_left")
+			create Result.make (4)
+			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(5))
+			Result.at (1) .extend(img_to_surface("Images/p1_still.png"))
+			Result.at (1) .extend(img_to_surface("Images/p1_walk_down.png"))
+			Result.at (1) .extend(img_to_surface("Images/p1_walk_up.png"))
+			Result.at (1) .extend(img_to_surface("Images/p1_walk_right.png"))
+			Result.at (1) .extend(img_to_surface("Images/p1_walk_left.png"))
+			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(5))
+			Result.at (2) .extend(img_to_surface("Images/p2_still.png"))
+			Result.at (2) .extend(img_to_surface("Images/p2_walk_down.png"))
+			Result.at (2) .extend(img_to_surface("Images/p2_walk_up.png"))
+			Result.at (2) .extend(img_to_surface("Images/p2_walk_right.png"))
+			Result.at (2) .extend(img_to_surface("Images/p2_walk_left.png"))
 		end
 end

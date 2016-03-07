@@ -39,9 +39,6 @@ feature {GAME_ENGINE} -- Implementation
 
 		end
 
-
-
-
 	init_row_1(a_surfaces: LIST[LIST[GAME_SURFACE]])
 			-- Rangée 1:
 			-- Le type peut être soit 1='╗' 2='║'  3='╣'
@@ -162,17 +159,5 @@ feature {GAME_ENGINE} -- Implementation
 			board.extend (l_list)
 		end
 
-	draw (a_destination_surface: GAME_SURFACE)
-			-- Dessiner `current' sur `a_destination_surface'.
-		do
-            across
-				board as l_board
-            loop
-            	across
-            		l_board.item as l_row
-            	loop
-            		a_destination_surface.draw_surface (l_row.item.current_surface, l_row.item.x, l_row.item.y)
-            	end
-            end
-		end
+
 end

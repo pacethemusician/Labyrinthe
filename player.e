@@ -18,9 +18,14 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_surfaces: STRING_TABLE[GAME_SURFACE]; a_type, a_x, a_y:INTEGER_32)
+	make (a_surfaces: LIST[GAME_SURFACE]; a_x, a_y:INTEGER_32)
+		-- Les `a_type' sont 1= explorateur 2= magicien
 		do
-			make_animated_sprite (la_surface, 6, 5, a_x, a_y)
+			animations := a_surfaces
+			make_animated_sprite (a_surfaces[1], 22, 5, a_x, a_y)
 		end
+
+feature {NONE} -- Implementation
+	animations : LIST[GAME_SURFACE]
 
 end
