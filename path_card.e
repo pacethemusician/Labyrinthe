@@ -21,7 +21,7 @@ create
 feature {NONE}
 
 	make (a_type: INTEGER; a_surfaces: LIST[GAME_SURFACE]; a_x, a_y, a_rotation: INTEGER_32)
-		-- Le `a_type' peut être soit 1='╗' 2='║'  3='╣'
+		-- Le `type' peut être soit 1='╗' 2='║'  3='╣'
 		-- `a_surface' contient les 4 rotations du chemin
 		-- `a_rotation' est un index de 1 à 4 pour savoir quelle image utiliser
 		require
@@ -36,19 +36,20 @@ feature {NONE}
 		do
 			x := a_x
 			y := a_y
+			type := a_type
 			index := 1
 			create {ARRAYED_LIST[GAME_SURFACE]} rotated_surfaces.make(4)
 			rotated_surfaces := a_surfaces
 			make_sprite (rotated_surfaces[a_rotation], x, y)
 			can_go_right := FALSE
 			can_go_down := TRUE
-			if a_type = 1 then
+			if type = 1 then
 				can_go_up := FALSE
 				can_go_left := TRUE
-			elseif a_type = 2 then
+			elseif type = 2 then
 				can_go_up := TRUE
 				can_go_left := FALSE
-			elseif a_type = 3 then
+			elseif type = 3 then
 				can_go_up := TRUE
 				can_go_left := TRUE
 			end
@@ -67,17 +68,23 @@ feature {NONE}
 		end
 
 feature {BOARD, GAME_ENGINE}
-	index : INTEGER
+	type, index : INTEGER
 	rotated_surfaces: LIST[GAME_SURFACE]
 	sound_fx_source: AUDIO_SOURCE
 	sound_fx_rotate: AUDIO_SOUND
 
 
 	rotate_clockwise -- Rotate Clockwise
+		local
+			l_can_go_temp: BOOLEAN
 		do
 			index := (index \\ 4) + 1
+			l_can_go_temp := can_go_up
+			can_go_up := can_go_left
+			can_go_left := can_go_down
+			can_go_down := can_go_right
+			can_go_right := l_can_go_temp
 			current_surface := rotated_surfaces[index]
-			-- "Modifier les can_go_up can_go_down can_go_left et can_go_right"
 			if sound_fx_rotate.is_open then
 				sound_fx_source.stop
 				sound_fx_source.queue_sound(sound_fx_rotate)

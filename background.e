@@ -17,7 +17,7 @@ inherit
 create
 	make
 
-feature {NONE} -- Initialization
+feature {NONE} -- Initialisation
 	-- Musique et image de fond de la fenêtre principale
 	make (a_surface:GAME_SURFACE; a_x, a_y:INTEGER_32)
 		local
@@ -40,7 +40,7 @@ feature {NONE} -- Initialization
 			end
 		end
 
-feature {NONE}
+feature {NONE} -- Implementation
 	music_source: AUDIO_SOURCE
 
 end

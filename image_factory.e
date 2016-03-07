@@ -14,36 +14,14 @@ inherit
 create
 	make
 
-feature {GAME_ENGINE}
+feature {GAME_ENGINE} -- Initialisation
+
 	make
-		-- Stock en mémoire tous les fichiers images convertis en `GAME_SURFACE'
 		do
-			create surfaces.make(20)
-			surfaces.put(img_to_surface("Images/path_type1a.png"), "path_card_1_1")
-			surfaces.put(img_to_surface("Images/path_type1b.png"), "path_card_1_2")
-			surfaces.put(img_to_surface("Images/path_type1c.png"), "path_card_1_3")
-			surfaces.put(img_to_surface("Images/path_type1d.png"), "path_card_1_4")
-			surfaces.put(img_to_surface("Images/path_type2a.png"), "path_card_2_1")
-			surfaces.put(img_to_surface("Images/path_type2b.png"), "path_card_2_2")
-			surfaces.put(img_to_surface("Images/path_type2c.png"), "path_card_2_3")
-			surfaces.put(img_to_surface("Images/path_type2d.png"), "path_card_2_4")
-			surfaces.put(img_to_surface("Images/path_type3a.png"), "path_card_3_1")
-			surfaces.put(img_to_surface("Images/path_type3b.png"), "path_card_3_2")
-			surfaces.put(img_to_surface("Images/path_type3c.png"), "path_card_3_3")
-			surfaces.put(img_to_surface("Images/path_type3d.png"), "path_card_3_4")
-			surfaces.put(img_to_surface("Images/p1_still.png"), "p1_still")
-			surfaces.put(img_to_surface("Images/p1_walk_down.png"), "p1_walk_down")
-			surfaces.put(img_to_surface("Images/p1_walk_up.png"), "p1_walk_up")
-			surfaces.put(img_to_surface("Images/p1_walk_right.png"), "p1_walk_right")
-			surfaces.put(img_to_surface("Images/p1_walk_left.png"), "p1_walk_left")
-			surfaces.put(img_to_surface("Images/back_main.png"), "back_main")
-			surfaces.put(img_to_surface("Images/arrow_off.png"), "arrow_off")
-			surfaces.put(img_to_surface("Images/arrow_on.png"), "arrow_on")
-			surfaces.put(img_to_surface("Images/arrow_on_g.png"), "arrow_on_g")
-			surfaces.put(img_to_surface("Images/btn_rotate_left.png"), "btn_rotate_left")
-			surfaces.put(img_to_surface("Images/btn_rotate_right.png"), "btn_rotate_left")
-			-- surfaces.put(img_to_surface("Images/.png"), "")
+
 		end
+
+feature {NONE} -- Implementation
 
 	img_to_surface (a_img_path:STRING):GAME_SURFACE
 		local
@@ -64,6 +42,36 @@ feature {GAME_ENGINE}
 			Result := l_surface
 		end
 
-	surfaces : STRING_TABLE[GAME_SURFACE]
+	path_card_surfaces:LIST[LIST[GAME_SURFACE]]
+		local
+			l_surfaces: LIST[LIST[GAME_SURFACE]]
+		do
+			create {ARRAYED_LIST[LIST[GAME_SURFACE]]} l_surfaces.make (3)
+			l_surfaces.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
+			l_surfaces.at (1) .extend(img_to_surface("Images/path_type1a.png"))
+			l_surfaces.at (1) .extend(img_to_surface("Images/path_type1b.png"))
+			l_surfaces.at (1) .extend(img_to_surface("Images/path_type1c.png"))
+			l_surfaces.at (1) .extend(img_to_surface("Images/path_type1d.png"))
+			l_surfaces.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
+			l_surfaces.at (2) .extend(img_to_surface("Images/path_type2a.png"))
+			l_surfaces.at (2) .extend(img_to_surface("Images/path_type2b.png"))
+			l_surfaces.at (2) .extend(img_to_surface("Images/path_type2c.png"))
+			l_surfaces.at (2) .extend(img_to_surface("Images/path_type2d.png"))
+			l_surfaces.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
+			l_surfaces.at (3) .extend(img_to_surface("Images/path_type3a.png"))
+			l_surfaces.at (3) .extend(img_to_surface("Images/path_type3b.png"))
+			l_surfaces.at (3) .extend(img_to_surface("Images/path_type3c.png"))
+			l_surfaces.at (3) .extend(img_to_surface("Images/path_type3d.png"))
+			Result := l_surfaces
+		end
 
+	player_type_1
+	
+		do
+			surfaces.put(img_to_surface("Images/p1_still.png"), "p1_still")
+			surfaces.put(img_to_surface("Images/p1_walk_down.png"), "p1_walk_down")
+			surfaces.put(img_to_surface("Images/p1_walk_up.png"), "p1_walk_up")
+			surfaces.put(img_to_surface("Images/p1_walk_right.png"), "p1_walk_right")
+			surfaces.put(img_to_surface("Images/p1_walk_left.png"), "p1_walk_left")
+		end
 end

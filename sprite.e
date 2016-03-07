@@ -72,7 +72,7 @@ feature {GAME_ENGINE} -- Implementation
 			end
 		end
 
-feature {GAME_ENGINE} -- Attributs
+feature {GAME_ENGINE, BOARD} -- Attributs
 
 	x: INTEGER_32 assign set_x
 			-- La position horizontale du `current'.
