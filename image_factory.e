@@ -43,30 +43,28 @@ feature {NONE} -- Implementation
 		end
 
 	path_card_surfaces:LIST[LIST[GAME_SURFACE]]
-		local
-			l_surfaces: LIST[LIST[GAME_SURFACE]]
+
 		do
 			create {ARRAYED_LIST[LIST[GAME_SURFACE]]} l_surfaces.make (3)
-			l_surfaces.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
-			l_surfaces.at (1) .extend(img_to_surface("Images/path_type1a.png"))
-			l_surfaces.at (1) .extend(img_to_surface("Images/path_type1b.png"))
-			l_surfaces.at (1) .extend(img_to_surface("Images/path_type1c.png"))
-			l_surfaces.at (1) .extend(img_to_surface("Images/path_type1d.png"))
-			l_surfaces.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
-			l_surfaces.at (2) .extend(img_to_surface("Images/path_type2a.png"))
-			l_surfaces.at (2) .extend(img_to_surface("Images/path_type2b.png"))
-			l_surfaces.at (2) .extend(img_to_surface("Images/path_type2c.png"))
-			l_surfaces.at (2) .extend(img_to_surface("Images/path_type2d.png"))
-			l_surfaces.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
-			l_surfaces.at (3) .extend(img_to_surface("Images/path_type3a.png"))
-			l_surfaces.at (3) .extend(img_to_surface("Images/path_type3b.png"))
-			l_surfaces.at (3) .extend(img_to_surface("Images/path_type3c.png"))
-			l_surfaces.at (3) .extend(img_to_surface("Images/path_type3d.png"))
-			Result := l_surfaces
+			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
+			Result.at (1) .extend(img_to_surface("Images/path_type1a.png"))
+			Result.at (1) .extend(img_to_surface("Images/path_type1b.png"))
+			Result.at (1) .extend(img_to_surface("Images/path_type1c.png"))
+			Result.at (1) .extend(img_to_surface("Images/path_type1d.png"))
+			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
+			Result.at (2) .extend(img_to_surface("Images/path_type2a.png"))
+			Result.at (2) .extend(img_to_surface("Images/path_type2b.png"))
+			Result.at (2) .extend(img_to_surface("Images/path_type2c.png"))
+			Result.at (2) .extend(img_to_surface("Images/path_type2d.png"))
+			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
+			Result.at (3) .extend(img_to_surface("Images/path_type3a.png"))
+			Result.at (3) .extend(img_to_surface("Images/path_type3b.png"))
+			Result.at (3) .extend(img_to_surface("Images/path_type3c.png"))
+			Result.at (3) .extend(img_to_surface("Images/path_type3d.png"))
 		end
 
 	player_type_1
-	
+
 		do
 			surfaces.put(img_to_surface("Images/p1_still.png"), "p1_still")
 			surfaces.put(img_to_surface("Images/p1_walk_down.png"), "p1_walk_down")
