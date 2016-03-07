@@ -86,7 +86,6 @@ feature {NONE} -- Initialisation
 			-- 1ere path_card y et x = 56
 			local
 				l_surfaces: LIST[LIST[GAME_SURFACE]]
-				l_list:ARRAYED_LIST[PATH_CARD]
 			do
 				l_surfaces := path_type_surfaces
 				init_row_1(l_surfaces)
