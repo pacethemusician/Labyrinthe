@@ -4,11 +4,8 @@ note
 	date: "15 Février 2016"
 	revision: "0.2"
 
-class
+deferred class
 	SPRITE
-
-create
-	make
 
 feature {NONE} -- Initialisation
 

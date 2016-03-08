@@ -4,7 +4,7 @@ note
 	date: "15 Février 2016"
 	revision: None
 
-class
+deferred class
 	ANIMATED_SPRITE
 
 inherit
@@ -14,9 +14,6 @@ inherit
 		redefine
 			draw_self
 		end
-
-create
-	make
 
 feature {NONE} -- Initialisation
 

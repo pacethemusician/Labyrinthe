@@ -23,11 +23,6 @@ feature {NONE} -- Initialisation
 			init_row_5(a_surfaces)
 			init_row_6(a_surfaces)
 			init_row_7(a_surfaces)
-			across
-				pathfind_to(1,1,5,5) as paths
-            loop
-            	print("(" + paths.item.x.out + "," + paths.item.y.out + ")")
-            end
 		end
 
 feature {GAME_ENGINE} -- Implementation
@@ -165,6 +160,8 @@ feature {GAME_ENGINE} -- Implementation
 		end
 
 	path_can_go_direction (a_x, a_y, a_direction: INTEGER): BOOLEAN
+			-- Retrourne `true' si la PATH_CARD à l'index `a_x', `a_y' a
+			-- un chemin complet vers la direction `a_direction'.
 		require
 			a_x > 0
 			a_y > 0
@@ -205,6 +202,9 @@ feature {GAME_ENGINE} -- Implementation
 		end
 
 	pathfind_to (a_x1, a_y1, a_x2, a_y2: INTEGER): LINKED_LIST[PATH_CARD]
+			-- Retourne une liste contenant les PATH_CARD à traverser pour
+			-- atteindre la destination (`a_x2', `a_y2') à partir de (`a_x1', `a_y1').
+			-- `a_x1', `a_y1', `a_x2' et `a_y2' sont des index de `board'.
 		require
 			a_x1 > 0
 			a_y1 > 0
@@ -221,12 +221,15 @@ feature {GAME_ENGINE} -- Implementation
 		do
 			create l_visited_paths.make
 			create l_result.make
-			l_destination_found := pathfind_to_recursive (a_x1, a_y1, a_x2, a_y2, l_result, l_visited_paths)
+			l_destination_found := pathfind_to_recursive (a_x2, a_y2, a_x1, a_y1, l_result, l_visited_paths)
 			result := l_result
 		end
 
+feature {NONE} -- Implementation
 
 	pathfind_to_recursive (a_x1, a_y1, a_x2, a_y2: INTEGER; a_result, a_visited_paths: LINKED_LIST[PATH_CARD]): BOOLEAN
+			-- Partie récursive de pathfind_to.
+			-- Ne devrait être utilisée que par pathfind_to.
 		local
 			l_destination_found: BOOLEAN
 		do
