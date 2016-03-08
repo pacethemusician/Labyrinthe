@@ -23,6 +23,11 @@ feature {NONE} -- Initialisation
 			init_row_5(a_surfaces)
 			init_row_6(a_surfaces)
 			init_row_7(a_surfaces)
+			across
+				pathfind_to(1,1,5,5) as paths
+            loop
+            	print("(" + paths.item.x.out + "," + paths.item.y.out + ")")
+            end
 		end
 
 feature {GAME_ENGINE} -- Implementation
@@ -159,5 +164,102 @@ feature {GAME_ENGINE} -- Implementation
 			board.extend (l_list)
 		end
 
+	path_can_go_direction (a_x, a_y, a_direction: INTEGER): BOOLEAN
+		require
+			a_x > 0
+			a_y > 0
+			a_x <= 7
+			a_y <= 7
+			a_direction >= 0
+			a_direction < 4
+		local
+			l_result: BOOLEAN
+		do
+			l_result := false
+			if (board[a_y])[a_x].is_connected(a_direction) then
+				if a_direction = 0 then
+					if (a_y - 1 > 0) then
+						if (board[a_y - 1])[a_x].is_connected(2) then
+							l_result := true
+						end
+					end
+				elseif a_direction = 1 then
+					if (a_x + 1 <= 7) then
+						if (board[a_y])[a_x + 1].is_connected(3) then
+							l_result := true
+						end
+					end
+				elseif a_direction = 2 then
+					if (a_y + 1 <= 7) then
+						if (board[a_y + 1])[a_x].is_connected(0) then
+							l_result := true
+						end
+					end
+				elseif (a_x - 1 > 0) then
+					if (board[a_y])[a_x - 1].is_connected(1) then
+						l_result := true
+					end
+				end
+			end
+			result := l_result
+		end
+
+	pathfind_to (a_x1, a_y1, a_x2, a_y2: INTEGER): LINKED_LIST[PATH_CARD]
+		require
+			a_x1 > 0
+			a_y1 > 0
+			a_x1 <= 7
+			a_y1 <= 7
+			a_x2 > 0
+			a_y2 > 0
+			a_x2 <= 7
+			a_y2 <= 7
+		local
+			l_visited_paths: LINKED_LIST[PATH_CARD]
+			l_result: LINKED_LIST[PATH_CARD]
+			l_destination_found: BOOLEAN
+		do
+			create l_visited_paths.make
+			create l_result.make
+			l_destination_found := pathfind_to_recursive (a_x1, a_y1, a_x2, a_y2, l_result, l_visited_paths)
+			result := l_result
+		end
+
+
+	pathfind_to_recursive (a_x1, a_y1, a_x2, a_y2: INTEGER; a_result, a_visited_paths: LINKED_LIST[PATH_CARD]): BOOLEAN
+		local
+			l_destination_found: BOOLEAN
+		do
+			a_visited_paths.extend ((board[a_y1])[a_x1])
+			if (a_x1 = a_x2) and (a_y1 = a_y2) then
+				l_destination_found := true
+			else
+				l_destination_found := false
+			end
+			if (not l_destination_found) and path_can_go_direction(a_x1, a_y1, 0) then
+				if not a_visited_paths.has ((board[a_y1 - 1])[a_x1]) then
+					l_destination_found := pathfind_to_recursive(a_x1, a_y1 - 1, a_x2, a_y2, a_result, a_visited_paths)
+				end
+			end
+			if (not l_destination_found) and path_can_go_direction(a_x1, a_y1, 1) then
+				if not a_visited_paths.has ((board[a_y1])[a_x1 + 1]) then
+					l_destination_found := pathfind_to_recursive(a_x1 + 1, a_y1, a_x2, a_y2, a_result, a_visited_paths)
+				end
+			end
+			if (not l_destination_found) and path_can_go_direction(a_x1, a_y1, 2) then
+				if not a_visited_paths.has ((board[a_y1 + 1])[a_x1]) then
+					l_destination_found := pathfind_to_recursive(a_x1, a_y1 + 1, a_x2, a_y2, a_result, a_visited_paths)
+				end
+			end
+			if (not l_destination_found) and path_can_go_direction(a_x1, a_y1, 3) then
+				if not a_visited_paths.has ((board[a_y1])[a_x1 - 1]) then
+					l_destination_found := pathfind_to_recursive(a_x1 - 1, a_y1, a_x2, a_y2, a_result, a_visited_paths)
+				end
+			end
+			if l_destination_found then
+				a_result.extend ((board[a_y1])[a_x1])
+			end
+			result := l_destination_found
+		end
 
 end

@@ -44,7 +44,6 @@ feature {NONE}
 				connections := 0b1010
 			elseif a_type = 3 then
 				connections := 0b1011
-
 			end
 			audio_library.sources_add
 			sound_fx_source := audio_library.last_source_added
@@ -58,6 +57,7 @@ feature {NONE}
 				print("Sound file not valid.")
 			end
 			sound_fx_rotate := l_sfx_file
+			rotate(a_rotation - 1)
 		end
 
 feature {BOARD, GAME_ENGINE}
@@ -87,11 +87,11 @@ feature {BOARD, GAME_ENGINE}
 			connections := connections.bit_or (connections.bit_shift_left (4))
 			connections := connections.bit_shift_right (a_steps).bit_and (0b1111)
 			-- Play sound
-			if sound_fx_rotate.is_open then
-				sound_fx_source.stop
-				sound_fx_source.queue_sound(sound_fx_rotate)
-				sound_fx_source.play
-			end
+--			if sound_fx_rotate.is_open then
+--				sound_fx_source.stop
+--				sound_fx_source.queue_sound(sound_fx_rotate)
+--				sound_fx_source.play
+--			end
 		end
 
 	is_connected (a_direction: INTEGER): BOOLEAN
@@ -99,7 +99,7 @@ feature {BOARD, GAME_ENGINE}
 			-- `a_direction'. la direction 0 équivaut au côté du haut et circule
 			-- dans le sens des aiguilles d'une montre.
 	require
-		a_direction > 0
+		a_direction >= 0
 		a_direction < 4
 	local
 		l_result: BOOLEAN
