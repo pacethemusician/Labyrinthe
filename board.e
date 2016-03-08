@@ -205,6 +205,7 @@ feature {GAME_ENGINE} -- Implementation
 			-- Retourne une liste contenant les PATH_CARD à traverser pour
 			-- atteindre la destination (`a_x2', `a_y2') à partir de (`a_x1', `a_y1').
 			-- `a_x1', `a_y1', `a_x2' et `a_y2' sont des index de `board'.
+			-- si aucun chemin n'est trouvé, une liste vide est retournée.
 		require
 			a_x1 > 0
 			a_y1 > 0
