@@ -34,6 +34,8 @@ feature {NONE}
 		do
 			x := a_x
 			y := a_y
+			x_offset := 0
+			y_offset := 0
 			index := 1
 			create {ARRAYED_LIST[GAME_SURFACE]} rotated_surfaces.make(4)
 			rotated_surfaces := a_surfaces
@@ -114,6 +116,19 @@ feature {BOARD, GAME_ENGINE}
 		result := l_result
 	end
 
+	set_x_offset(a_value:INTEGER)
+		do
+			x_offset := a_value
+		end
+
+	set_y_offset(a_value:INTEGER)
+		do
+			y_offset := a_value
+		end
+
+	x_offset, y_offset: INTEGER
+		-- Pour ajuster l'affichage en rapport avec la souris lors du drag
+		
 feature {NONE}	-- Attributs
 --	can_go_up, can_go_right, can_go_left, can_go_down: BOOLEAN
 

@@ -26,13 +26,17 @@ feature {NONE} -- Initialisation
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
 		do
-			init_surfaces
 			make_image_factory
+			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1)
 			create board.make (path_card_surfaces)
-			create on_screen_sprites.make
+			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
+			create {ARRAYED_LIST[BUTTON]} on_screen_buttons.make(10)
 			create l_window_builder
 			create back.make (img_to_surface("Images/back_main.png"), 11, 11)
 			create p1.make (player_surfaces[1], 100, 100)
+			create btn_rotate_left.make (button_surfaces[1], 745, 159)
+			create btn_rotate_right.make (button_surfaces[2], 904, 159)
+			game_state := "ok"
 			on_screen_sprites.extend (back)
             across
 				board.board as l_board
@@ -44,6 +48,9 @@ feature {NONE} -- Initialisation
             	end
             end
 			on_screen_sprites.extend (p1)
+			on_screen_sprites.extend (btn_rotate_left)
+			on_screen_sprites.extend (btn_rotate_right)
+			on_screen_sprites.extend (spare_card)
 			l_window_builder.set_dimension (Window_width, Window_height)
 			l_window_builder.set_title ("Shameless labyrinthe clone")
 			l_window := l_window_builder.generate_window
@@ -51,33 +58,28 @@ feature {NONE} -- Initialisation
 			game_library.iteration_actions.extend (agent on_iteration(?, l_window))
 			l_window.mouse_button_pressed_actions.extend (agent on_mouse_pressed(?,?,?))
 			l_window.mouse_button_released_actions.extend (agent on_mouse_released(?,?,?))
+			l_window.mouse_motion_actions.extend (agent on_mouse_move(?, ?, ?, ?))
 			game_library.launch
-		end
 
-		init_surfaces
-			-- Stock en mémoire tous les fichiers images convertis en `GAME_SURFACE'
-			do
-				create surfaces.make(20)
-				surfaces.put(img_to_surface("Images/p1_still.png"), "p1_still")
-				surfaces.put(img_to_surface("Images/p1_walk_down.png"), "p1_walk_down")
-				surfaces.put(img_to_surface("Images/p1_walk_up.png"), "p1_walk_up")
-				surfaces.put(img_to_surface("Images/p1_walk_right.png"), "p1_walk_right")
-				surfaces.put(img_to_surface("Images/p1_walk_left.png"), "p1_walk_left")
-				-- surfaces.put(img_to_surface("Images/back_main.png"), "back_main")
-				surfaces.put(img_to_surface("Images/arrow_off.png"), "arrow_off")
-				surfaces.put(img_to_surface("Images/arrow_on.png"), "arrow_on")
-				surfaces.put(img_to_surface("Images/arrow_on_g.png"), "arrow_on_g")
-				surfaces.put(img_to_surface("Images/btn_rotate_left.png"), "btn_rotate_left")
-				surfaces.put(img_to_surface("Images/btn_rotate_right.png"), "btn_rotate_left")
-				-- surfaces.put(img_to_surface("Images/.png"), "")
-			end
+		end
 
 
 feature {NONE} -- Implementation
-	surfaces : STRING_TABLE[GAME_SURFACE]
+	game_state: STRING
+		-- Le `game_state' contient l'état du jeu:
+		-- "ok" le GAME_ENGINE attend une action du `current_player'
+		-- "drag" le GAME_ENGINE performe une action, il faut attendre
 	back:BACKGROUND
 	board: BOARD
 	p1:PLAYER
+	btn_rotate_left, btn_rotate_right: BUTTON
+	on_screen_sprites: LIST[SPRITE]
+		-- Liste des sprites à afficher.
+	on_screen_buttons: LIST[BUTTON]
+		-- Liste des buttons
+	spare_card: PATH_CARD
+		-- La carte que le joueur doit placer
+	-- current_player: PLAYER  à faire !!!???
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
@@ -90,7 +92,6 @@ feature {NONE} -- Implementation
 
             game_window.update
             audio_library.update
-            p1.approach_point (200, 500, 1)
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
@@ -99,20 +100,48 @@ feature {NONE} -- Implementation
 			game_library.stop  -- Stop the controller loop (allow game_library.launch to return)
 		end
 
-	on_mouse_pressed(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; nb_clicks:NATURAL_8)
+	on_mouse_pressed(a_timestamp: NATURAL_32; a_mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; a_nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		do
+			if game_state.is_equal ("ok") then
+				if click_on(a_mouse_state.x, a_mouse_state.y, 56, 56, 644, 644) then
+						-- board.click_action(a_mouse_state.x, a_mouse_state.y)
+
+				elseif click_on(a_mouse_state.x, a_mouse_state.y, spare_card.x, spare_card.y, spare_card.x + 84, spare_card.y + 84) then
+						game_state := "drag"
+						spare_card.set_x_offset(a_mouse_state.x - spare_card.x)
+						spare_card.set_y_offset(a_mouse_state.y - spare_card.y)
+				end
+			end
 
 		end
 
+	click_on(mouse_x, mouse_y, x1, y1, x2, y2: INTEGER):BOOLEAN
+		do
+			Result := (mouse_x >= x1) and (mouse_x < x2) and (mouse_y >= y1) and (mouse_y < y2)
+		end
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.
 		do
+			if game_state.is_equal ("drag") then
+				-- "Vérifier si la spare_card est au-dessus d'une zone dropable"
 
+				-- Sinon on reset:
+				spare_card.x := 801
+				spare_card.y := 144
+				game_state := "ok"
+			end
 		end
 
-	on_screen_sprites: LINKED_LIST[SPRITE]
-		-- Liste des sprites à afficher.
+	on_mouse_move(a_timestamp: NATURAL_32; a_mouse_state: GAME_MOUSE_MOTION_STATE; a_delta_x, a_delta_y: INTEGER_32)
+		-- Routine de mise à jour du drag and drop
+		do
+			if a_mouse_state.is_left_button_pressed and game_state.is_equal ("drag") then
+				spare_card.x := a_mouse_state.x - spare_card.x_offset
+				spare_card.y := a_mouse_state.y - spare_card.y_offset
+			end
+
+		end
 
 feature {NONE} -- Constantes
 

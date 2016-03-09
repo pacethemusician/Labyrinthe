@@ -80,4 +80,26 @@ feature {NONE} -- Implementation
 			Result.at (2) .extend(img_to_surface("Images/p2_walk_right.png"))
 			Result.at (2) .extend(img_to_surface("Images/p2_walk_left.png"))
 		end
+
+	button_surfaces:ARRAYED_LIST[GAME_SURFACE]
+		do
+			create Result.make(10)
+			Result.extend (img_to_surface ("Images/btn_rotate_left.png"))
+			Result.extend (img_to_surface ("Images/btn_rotate_right.png"))
+		end
+
+	item_surfaces:ARRAYED_LIST[GAME_SURFACE]
+		local
+			i:INTEGER
+		do
+			create Result.make(24)
+			from
+				i := 1
+			until
+				i = 25
+			loop
+				Result.extend (img_to_surface ("Images/item" + i.out + ".png"))
+				i := i + 1
+			end
+		end
 end
