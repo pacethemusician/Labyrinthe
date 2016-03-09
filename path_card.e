@@ -28,7 +28,7 @@ feature {NONE}
 			a_type > 0
 			a_type < 4
 			a_rotation > 0
-			a_rotation < 5
+			a_rotation <= 4
 		local
 			l_sfx_file:AUDIO_SOUND_FILE
 		do
