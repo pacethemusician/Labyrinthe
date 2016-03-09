@@ -62,15 +62,23 @@ feature {GAME_ENGINE} -- Implementation
 			-- Le type peut être soit 1='╗' 2='║'  3='╣'
 		local
 			l_list:ARRAYED_LIST[PATH_CARD]
+			l_rng: GAME_RANDOM
 		do
+			create l_rng
 			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56, 140, 1))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 140, 140, 2))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 224, 140, 3))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 308, 140, 1))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 392, 140, 2))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 476, 140, 4))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 560, 140, 4))
+			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 56, 140, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 140, 140, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 224, 140, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 308, 140, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 392, 140, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 476, 140, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 560, 140, l_rng.last_random_integer_between (1, 4)))
 			board.extend (l_list)
 		end
 
@@ -96,15 +104,23 @@ feature {GAME_ENGINE} -- Implementation
 			-- Le type peut être soit 1='╗' 2='║'  3='╣'
 		local
 			l_list:ARRAYED_LIST[PATH_CARD]
+			l_rng: GAME_RANDOM
 		do
+			create l_rng
 			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56, 308, 4))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 140, 308, 3))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 224, 308, 2))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 308, 308, 1))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 392, 308, 2))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 476, 308, 3))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 560, 308, 4))
+			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56, 308, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 140, 308, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 224, 308, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 308, 308, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 392, 308, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 476, 308, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 560, 308, l_rng.last_random_integer_between (1, 4)))
 			board.extend (l_list)
 		end
 
@@ -130,15 +146,23 @@ feature {GAME_ENGINE} -- Implementation
 			-- Le type peut être soit 1='╗' 2='║'  3='╣'
 		local
 			l_list:ARRAYED_LIST[PATH_CARD]
+			l_rng: GAME_RANDOM
 		do
+			create l_rng
 			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56, 476, 1))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 140, 476, 2))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 224, 476, 3))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 308, 476, 4))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 392, 476, 3))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 476, 476, 2))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 560, 476, 4))
+			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 56, 476, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 140, 476, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 224, 476, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 308, 476, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 392, 476, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 476, 476, l_rng.last_random_integer_between (1, 4)))
+			l_rng.generate_new_random
+			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 560, 476, l_rng.last_random_integer_between (1, 4)))
 			board.extend (l_list)
 		end
 

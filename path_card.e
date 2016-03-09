@@ -28,7 +28,7 @@ feature {NONE}
 			a_type > 0
 			a_type < 4
 			a_rotation > 0
-			a_rotation < 5
+			a_rotation <= 4
 		local
 			l_sfx_file:AUDIO_SOUND_FILE
 		do
@@ -128,7 +128,7 @@ feature {BOARD, GAME_ENGINE}
 
 	x_offset, y_offset: INTEGER
 		-- Pour ajuster l'affichage en rapport avec la souris lors du drag
-		
+
 feature {NONE}	-- Attributs
 --	can_go_up, can_go_right, can_go_left, can_go_down: BOOLEAN
 
