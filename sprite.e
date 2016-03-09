@@ -59,16 +59,6 @@ feature {GAME_ENGINE} -- Implementation
 			is_assign: current_surface = a_surface
 		end
 
-	set_detachable_surface (a_surface: detachable GAME_SURFACE)
-			-- Assigne `a_surface' à `current_surface' si `a_surface' n'est pas 'void'.
-		do
-			if attached a_surface as surface then
-				current_surface := surface
-			else
-				print ("Cannot change surface.")
-			end
-		end
-
 feature {GAME_ENGINE, BOARD} -- Attributs
 
 	x: INTEGER_32 assign set_x

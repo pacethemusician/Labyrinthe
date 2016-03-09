@@ -27,13 +27,14 @@ feature {NONE} -- Initialisation
 			l_window:GAME_WINDOW_SURFACED
 		do
 			make_image_factory
+			create {LINKED_LIST[PATH_CARD]} walking_path.make
 			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1)
 			create board.make (path_card_surfaces)
 			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
-			create {ARRAYED_LIST[BUTTON]} on_screen_buttons.make(10)
 			create l_window_builder
 			create back.make (img_to_surface("Images/back_main.png"), 11, 11)
-			create p1.make (player_surfaces[1], 100, 100)
+			create current_player.make (player_surfaces[1], 89, 56)
+				-- le offset du player par rapport à la path_card est de 33 pixels
 			create btn_rotate_left.make (button_surfaces[1], 745, 159)
 			create btn_rotate_right.make (button_surfaces[2], 904, 159)
 			game_state := "ok"
@@ -47,7 +48,7 @@ feature {NONE} -- Initialisation
             		on_screen_sprites.extend (l_row.item)
             	end
             end
-			on_screen_sprites.extend (p1)
+			on_screen_sprites.extend (current_player)
 			on_screen_sprites.extend (btn_rotate_left)
 			on_screen_sprites.extend (btn_rotate_right)
 			on_screen_sprites.extend (spare_card)
@@ -71,15 +72,13 @@ feature {NONE} -- Implementation
 		-- "drag" le GAME_ENGINE performe une action, il faut attendre
 	back:BACKGROUND
 	board: BOARD
-	p1:PLAYER
 	btn_rotate_left, btn_rotate_right: BUTTON
 	on_screen_sprites: LIST[SPRITE]
 		-- Liste des sprites à afficher.
-	on_screen_buttons: LIST[BUTTON]
-		-- Liste des buttons
 	spare_card: PATH_CARD
 		-- La carte que le joueur doit placer
-	-- current_player: PLAYER  à faire !!!???
+	walking_path: LIST[PATH_CARD]
+	current_player: PLAYER
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
@@ -89,7 +88,9 @@ feature {NONE} -- Implementation
 			loop
 				l_sprites.item.draw_self (game_window.surface)
             end
-
+--            if not walking_path.is_empty then
+--            	current_player.approach_point (a_x, a_y, a_speed: INTEGER_32)
+--            end
             game_window.update
             audio_library.update
 		end
@@ -104,21 +105,38 @@ feature {NONE} -- Implementation
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		do
 			if game_state.is_equal ("ok") then
-				if click_on(a_mouse_state.x, a_mouse_state.y, 56, 56, 644, 644) then
-						-- board.click_action(a_mouse_state.x, a_mouse_state.y)
+				if click_on(a_mouse_state, 56, 56, 644, 644) then
 
-				elseif click_on(a_mouse_state.x, a_mouse_state.y, spare_card.x, spare_card.y, spare_card.x + 84, spare_card.y + 84) then
+						walking_path := board.pathfind_to((((current_player.x - 56) // 84) + 1), ((current_player.y - 56) // 84) + 1,
+													(((a_mouse_state.x - 56) // 84) + 1), ((a_mouse_state.y - 56) // 84) + 1)
+--						across
+--							l_path as loop_path
+--						loop
+--							loop_path.item
+--						end
+				elseif click_on(a_mouse_state, spare_card.x, spare_card.y, spare_card.x + 84, spare_card.y + 84) then
 						game_state := "drag"
 						spare_card.set_x_offset(a_mouse_state.x - spare_card.x)
 						spare_card.set_y_offset(a_mouse_state.y - spare_card.y)
+
+				elseif click_on(a_mouse_state, btn_rotate_left.x, btn_rotate_left.y,
+							    btn_rotate_left.x + btn_rotate_left.current_surface.width,
+							    btn_rotate_left.y + btn_rotate_left.current_surface.height) then
+						spare_card.rotate (-1)
+						spare_card.play_rotate_sfx
+				elseif click_on(a_mouse_state, btn_rotate_right.x, btn_rotate_right.y,
+							    btn_rotate_right.x + btn_rotate_right.current_surface.width,
+							    btn_rotate_right.y + btn_rotate_right.current_surface.height) then
+						spare_card.rotate (1)
+						spare_card.play_rotate_sfx
 				end
 			end
 
 		end
 
-	click_on(mouse_x, mouse_y, x1, y1, x2, y2: INTEGER):BOOLEAN
+	click_on(mouse:GAME_MOUSE_BUTTON_PRESSED_STATE; x1, y1, x2, y2: INTEGER):BOOLEAN
 		do
-			Result := (mouse_x >= x1) and (mouse_x < x2) and (mouse_y >= y1) and (mouse_y < y2)
+			Result := (mouse.x >= x1) and (mouse.x < x2) and (mouse.y >= y1) and (mouse.y < y2)
 		end
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.

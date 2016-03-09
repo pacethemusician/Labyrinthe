@@ -64,6 +64,15 @@ feature {NONE}
 
 feature {BOARD, GAME_ENGINE}
 
+	play_rotate_sfx
+		do
+			if sound_fx_rotate.is_open then
+				sound_fx_source.stop
+				sound_fx_source.queue_sound(sound_fx_rotate)
+				sound_fx_source.play
+			end
+		end
+		
 	rotate (a_steps: INTEGER)
 			-- Tourne `current' `a_steps' fois. Si `a_steps' est positif, la rotation
 			-- se fait dans le sens des aiguilles d'une montre.
@@ -88,12 +97,6 @@ feature {BOARD, GAME_ENGINE}
 			end
 			connections := connections.bit_or (connections.bit_shift_left (4))
 			connections := connections.bit_shift_right (a_steps).bit_and (0b1111)
-			-- Play sound
---			if sound_fx_rotate.is_open then
---				sound_fx_source.stop
---				sound_fx_source.queue_sound(sound_fx_rotate)
---				sound_fx_source.play
---			end
 		end
 
 	is_connected (a_direction: INTEGER): BOOLEAN
@@ -128,9 +131,8 @@ feature {BOARD, GAME_ENGINE}
 
 	x_offset, y_offset: INTEGER
 		-- Pour ajuster l'affichage en rapport avec la souris lors du drag
-		
+
 feature {NONE}	-- Attributs
---	can_go_up, can_go_right, can_go_left, can_go_down: BOOLEAN
 
 	index : INTEGER
 		-- Index de la surface de `current' dans `rotated_surfaces'

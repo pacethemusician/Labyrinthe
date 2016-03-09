@@ -18,7 +18,10 @@ feature {GAME_ENGINE} -- Initialisation
 
 	make
 		do
-
+			path_card_surfaces := init_path_card_surfaces
+			player_surfaces := init_player_surfaces
+			button_surfaces := init_button_surfaces
+			item_surfaces := init_item_surfaces
 		end
 
 feature {NONE} -- Implementation
@@ -42,7 +45,7 @@ feature {NONE} -- Implementation
 			Result := l_surface
 		end
 
-	path_card_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
+	init_path_card_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
 
 		do
 			create Result.make (3)
@@ -63,7 +66,7 @@ feature {NONE} -- Implementation
 			Result.at (3) .extend(img_to_surface("Images/path_type3d.png"))
 		end
 
-	player_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
+	init_player_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
 
 		do
 			create Result.make (4)
@@ -81,14 +84,14 @@ feature {NONE} -- Implementation
 			Result.at (2) .extend(img_to_surface("Images/p2_walk_left.png"))
 		end
 
-	button_surfaces:ARRAYED_LIST[GAME_SURFACE]
+	init_button_surfaces:ARRAYED_LIST[GAME_SURFACE]
 		do
 			create Result.make(10)
 			Result.extend (img_to_surface ("Images/btn_rotate_left.png"))
 			Result.extend (img_to_surface ("Images/btn_rotate_right.png"))
 		end
 
-	item_surfaces:ARRAYED_LIST[GAME_SURFACE]
+	init_item_surfaces:ARRAYED_LIST[GAME_SURFACE]
 		local
 			i:INTEGER
 		do
@@ -102,4 +105,12 @@ feature {NONE} -- Implementation
 				i := i + 1
 			end
 		end
+
+feature {GAME_ENGINE} -- Attributs
+
+	path_card_surfaces: ARRAYED_LIST[LIST[GAME_SURFACE]]
+	player_surfaces: ARRAYED_LIST[LIST[GAME_SURFACE]]
+	button_surfaces: ARRAYED_LIST[GAME_SURFACE]
+	item_surfaces: ARRAYED_LIST[GAME_SURFACE]
+
 end
