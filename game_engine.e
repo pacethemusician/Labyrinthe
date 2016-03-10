@@ -27,14 +27,14 @@ feature {NONE} -- Initialisation
 			l_window:GAME_WINDOW_SURFACED
 		do
 			make_image_factory
-			create {LINKED_LIST[PATH_CARD]} walking_path.make
+			create {LINKED_LIST[PATH_CARD]} walking_paths.make
 			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1)
 			create board.make (path_card_surfaces)
 			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
 			create l_window_builder
 			create back.make (img_to_surface("Images/back_main.png"), 11, 11)
-			create current_player.make (player_surfaces[1], 89, 56)
-				-- le offset du player par rapport à la path_card est de 33 pixels
+			create current_player.make (player_surfaces[2], 79, 56)
+				-- le offset du player par rapport à la path_card est de 23 pixels
 			create btn_rotate_left.make (button_surfaces[1], 745, 159)
 			create btn_rotate_right.make (button_surfaces[2], 904, 159)
 			game_state := "ok"
@@ -77,7 +77,8 @@ feature {NONE} -- Implementation
 		-- Liste des sprites à afficher.
 	spare_card: PATH_CARD
 		-- La carte que le joueur doit placer
-	walking_path: LIST[PATH_CARD]
+	walking_paths: LIST[PATH_CARD]
+	walking_paths_index: INTEGER
 	current_player: PLAYER
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
@@ -88,9 +89,26 @@ feature {NONE} -- Implementation
 			loop
 				l_sprites.item.draw_self (game_window.surface)
             end
---            if not walking_path.is_empty then
---            	current_player.approach_point (a_x, a_y, a_speed: INTEGER_32)
---            end
+            if current_player.is_walking then
+            	current_player.approach_point (walking_paths[walking_paths_index].x + 23, walking_paths[walking_paths_index].y, 1)
+            else
+            	if walking_paths_index >= walking_paths.count then
+
+            		walking_paths.wipe_out
+            	else
+	            	current_player.is_walking := true
+	            	walking_paths_index := walking_paths_index + 1
+		            if (walking_paths[walking_paths_index].x > current_player.x) then
+						current_player.change_animation (current_player.animations[4], 6, 5)
+					elseif (walking_paths[walking_paths_index].x < current_player.x - 23) then
+						current_player.change_animation (current_player.animations[5], 6, 5)
+					elseif (walking_paths[walking_paths_index].y > current_player.y) then
+						current_player.change_animation (current_player.animations[2], 6, 5)
+					elseif (walking_paths[walking_paths_index].y < current_player.y) then
+						current_player.change_animation (current_player.animations[3], 6, 5)
+					end
+				end
+            end
             game_window.update
             audio_library.update
 		end
@@ -106,24 +124,28 @@ feature {NONE} -- Implementation
 		do
 			if game_state.is_equal ("ok") then
 				if click_on(a_mouse_state, 56, 56, 644, 644) then
-
-						walking_path := board.pathfind_to((((current_player.x - 56) // 84) + 1), ((current_player.y - 56) // 84) + 1,
-													(((a_mouse_state.x - 56) // 84) + 1), ((a_mouse_state.y - 56) // 84) + 1)
---						across
---							l_path as loop_path
---						loop
---							loop_path.item
---						end
+					-- Si le joueur clique sur le board:
+					if not current_player.is_walking then
+						walking_paths.wipe_out
+						if not ((((current_player.x - 56) // 84) + 1) = (((a_mouse_state.x - 56) // 84) + 1) and
+							(((current_player.y - 56) // 84) + 1) = (((a_mouse_state.y - 56) // 84) + 1))	then
+							walking_paths := board.pathfind_to((((current_player.x - 56) // 84) + 1), ((current_player.y - 56) // 84) + 1,
+										    					(((a_mouse_state.x - 56) // 84) + 1), ((a_mouse_state.y - 56) // 84) + 1)
+							walking_paths_index := 0
+						end
+					end
+					-- Si le joueur clique sur la carte jouable:
 				elseif click_on(a_mouse_state, spare_card.x, spare_card.y, spare_card.x + 84, spare_card.y + 84) then
 						game_state := "drag"
 						spare_card.set_x_offset(a_mouse_state.x - spare_card.x)
 						spare_card.set_y_offset(a_mouse_state.y - spare_card.y)
-
+					-- Si le joueur clique sur le bouton de rotation gauche:
 				elseif click_on(a_mouse_state, btn_rotate_left.x, btn_rotate_left.y,
 							    btn_rotate_left.x + btn_rotate_left.current_surface.width,
 							    btn_rotate_left.y + btn_rotate_left.current_surface.height) then
 						spare_card.rotate (-1)
 						spare_card.play_rotate_sfx
+					-- Si le joueur clique sur le bouton de rotation droite:
 				elseif click_on(a_mouse_state, btn_rotate_right.x, btn_rotate_right.y,
 							    btn_rotate_right.x + btn_rotate_right.current_surface.width,
 							    btn_rotate_right.y + btn_rotate_right.current_surface.height) then
