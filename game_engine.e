@@ -39,15 +39,7 @@ feature {NONE} -- Initialisation
 			create btn_rotate_right.make (button_surfaces[2], 904, 159)
 			game_state := "ok"
 			on_screen_sprites.extend (back)
-            across
-				board.board as l_board
-            loop
-            	across
-            		l_board.item as l_row
-            	loop
-            		on_screen_sprites.extend (l_row.item)
-            	end
-            end
+            on_screen_sprites.extend (board)
 			on_screen_sprites.extend (current_player)
 			on_screen_sprites.extend (btn_rotate_left)
 			on_screen_sprites.extend (btn_rotate_right)
@@ -90,22 +82,21 @@ feature {NONE} -- Implementation
 				l_sprites.item.draw_self (game_window.surface)
             end
             if current_player.is_walking then
-            	current_player.approach_point (walking_paths[walking_paths_index].x + 23, walking_paths[walking_paths_index].y, 1)
+            	current_player.approach_point (walking_paths[walking_paths_index].x + board.x + 23, walking_paths[walking_paths_index].y + board.y, 3)
             else
             	if walking_paths_index >= walking_paths.count then
-
             		walking_paths.wipe_out
             	else
 	            	current_player.is_walking := true
 	            	walking_paths_index := walking_paths_index + 1
-		            if (walking_paths[walking_paths_index].x > current_player.x) then
-						current_player.change_animation (current_player.animations[4], 6, 5)
-					elseif (walking_paths[walking_paths_index].x < current_player.x - 23) then
-						current_player.change_animation (current_player.animations[5], 6, 5)
-					elseif (walking_paths[walking_paths_index].y > current_player.y) then
-						current_player.change_animation (current_player.animations[2], 6, 5)
-					elseif (walking_paths[walking_paths_index].y < current_player.y) then
-						current_player.change_animation (current_player.animations[3], 6, 5)
+		            if (walking_paths[walking_paths_index].x + board.x > current_player.x) then
+						current_player.change_animation (current_player.animations[4], 6, 3)
+					elseif (walking_paths[walking_paths_index].x + board.x < current_player.x - 23) then
+						current_player.change_animation (current_player.animations[5], 6, 3)
+					elseif (walking_paths[walking_paths_index].y + board.y > current_player.y) then
+						current_player.change_animation (current_player.animations[2], 6, 3)
+					elseif (walking_paths[walking_paths_index].y + board.y < current_player.y) then
+						current_player.change_animation (current_player.animations[3], 6, 3)
 					end
 				end
             end
