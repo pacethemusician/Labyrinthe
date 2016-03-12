@@ -27,7 +27,6 @@ feature {NONE} -- Initialisation
 			l_window:GAME_WINDOW_SURFACED
 		do
 			make_image_factory
-			create {LINKED_LIST[PATH_CARD]} walking_paths.make
 			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1)
 			create board.make (path_card_surfaces)
 			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
@@ -69,36 +68,18 @@ feature {NONE} -- Implementation
 		-- Liste des sprites à afficher.
 	spare_card: PATH_CARD
 		-- La carte que le joueur doit placer
-	walking_paths: LIST[PATH_CARD]
-	walking_paths_index: INTEGER
 	current_player: PLAYER
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
 		do
+			if not current_player.current_path.is_empty then
+            	current_player.follow_path
+            end
 			across
 				on_screen_sprites as l_sprites
 			loop
 				l_sprites.item.draw_self (game_window.surface)
-            end
-            if current_player.is_walking then
-            	current_player.approach_point (walking_paths[walking_paths_index].x + board.x + 23, walking_paths[walking_paths_index].y + board.y, 3)
-            else
-            	if walking_paths_index >= walking_paths.count then
-            		walking_paths.wipe_out
-            	else
-	            	current_player.is_walking := true
-	            	walking_paths_index := walking_paths_index + 1
-		            if (walking_paths[walking_paths_index].x + board.x > current_player.x) then
-						current_player.change_animation (current_player.animations[4], 6, 3)
-					elseif (walking_paths[walking_paths_index].x + board.x < current_player.x - 23) then
-						current_player.change_animation (current_player.animations[5], 6, 3)
-					elseif (walking_paths[walking_paths_index].y + board.y > current_player.y) then
-						current_player.change_animation (current_player.animations[2], 6, 3)
-					elseif (walking_paths[walking_paths_index].y + board.y < current_player.y) then
-						current_player.change_animation (current_player.animations[3], 6, 3)
-					end
-				end
             end
             game_window.update
             audio_library.update
@@ -116,13 +97,11 @@ feature {NONE} -- Implementation
 			if game_state.is_equal ("ok") then
 				if click_on(a_mouse_state, 56, 56, 644, 644) then
 					-- Si le joueur clique sur le board:
-					if not current_player.is_walking then
-						walking_paths.wipe_out
+					if current_player.current_path.is_empty then
 						if not ((((current_player.x - 56) // 84) + 1) = (((a_mouse_state.x - 56) // 84) + 1) and
 							(((current_player.y - 56) // 84) + 1) = (((a_mouse_state.y - 56) // 84) + 1))	then
-							walking_paths := board.pathfind_to((((current_player.x - 56) // 84) + 1), ((current_player.y - 56) // 84) + 1,
-										    					(((a_mouse_state.x - 56) // 84) + 1), ((a_mouse_state.y - 56) // 84) + 1)
-							walking_paths_index := 0
+							current_player.current_path := board.pathfind_to((((current_player.x - 56) // 84) + 1), ((current_player.y - 56) // 84) + 1,
+																				(((a_mouse_state.x - 56) // 84) + 1), ((a_mouse_state.y - 56) // 84) + 1)
 						end
 					end
 					-- Si le joueur clique sur la carte jouable:

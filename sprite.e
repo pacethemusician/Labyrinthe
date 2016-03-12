@@ -17,7 +17,7 @@ feature {NONE} -- Initialisation
 			set_y(a_y)
 		end
 
-feature {GAME_ENGINE, BOARD} -- Implementation
+feature {GAME_ENGINE, BOARD, PLAYER} -- Implementation
 
 	draw_self (destination_surface: GAME_SURFACE)
 			-- Dessiner `current' sur `destination_surface'.
@@ -25,7 +25,15 @@ feature {GAME_ENGINE, BOARD} -- Implementation
 			destination_surface.draw_surface (current_surface, x, y)
 		end
 
-
+	approach_point (a_x, a_y, a_speed:INTEGER_32)
+			-- Approche `current' du point (`a_x', `a_y') d'un maximum de
+			-- `a_speed' verticalement et horizontalement.
+		require
+			speed_over_zero: a_speed > 0
+		do
+			x := x + (a_speed.min ((x - a_x).abs) * a_x.three_way_comparison (x))
+			y := y + (a_speed.min ((y - a_y).abs) * a_y.three_way_comparison (y))
+		end
 
 	set_x (a_x: INTEGER_32)
 			-- Assigne `a_x' à `x'.
@@ -51,7 +59,7 @@ feature {GAME_ENGINE, BOARD} -- Implementation
 			is_assign: current_surface = a_surface
 		end
 
-feature {GAME_ENGINE, BOARD} -- Attributs
+feature {GAME_ENGINE, BOARD, PLAYER} -- Attributs
 
 	x: INTEGER_32 assign set_x
 			-- La position horizontale du `current'.
