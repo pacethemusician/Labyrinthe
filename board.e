@@ -21,14 +21,7 @@ feature {NONE} -- Initialisation
 	make (a_surfaces: LIST[LIST[GAME_SURFACE]])
 
 		do
-			create {ARRAYED_LIST[LIST[PATH_CARD]]} board_paths.make (7)
-			init_row_1(a_surfaces)
-			init_row_2(a_surfaces)
-			init_row_3(a_surfaces)
-			init_row_4(a_surfaces)
-			init_row_5(a_surfaces)
-			init_row_6(a_surfaces)
-			init_row_7(a_surfaces)
+			init_board_paths(a_surfaces)
 			create board_surface.make(84 * 7, 84 * 7)
 			refresh_board_surface
 			make_sprite(board_surface, 56, 56)
@@ -36,7 +29,7 @@ feature {NONE} -- Initialisation
 
 feature {GAME_ENGINE} -- Implementation
 
-	board_paths : LIST[LIST[PATH_CARD]]
+	board_paths : ARRAYED_LIST[ARRAYED_LIST[PATH_CARD]]
 		-- Liste des PATH_CARDS contenuent dans `current'.
 
 	board_surface: GAME_SURFACE
@@ -51,9 +44,90 @@ feature {GAME_ENGINE} -- Implementation
             	across
             		l_board.item as l_row
             	loop
-            		l_row.item.draw_self(board_surface)
+            		if l_row.item /= void then
+            			l_row.item.draw_self(board_surface)
+            		end
             	end
             end
+		end
+
+	init_board_paths (a_surfaces: LIST[LIST[GAME_SURFACE]])
+			-- Initialise `board_paths' en le remplissant de PATH_CARD.
+		local
+			type_amount: ARRAYED_LIST[INTEGER]
+			l_rng: GAME_RANDOM
+			random_type: INTEGER
+			random_rotation: INTEGER
+			sticky_cards: ARRAYED_LIST[PATH_CARD]
+			sticky_cards_index: INTEGER
+			i, j: INTEGER
+		do
+			sticky_cards := init_sticky_cards(a_surfaces)
+			sticky_cards_index := 1
+			create type_amount.make (3)
+			type_amount.extend (16)
+			type_amount.extend (11)
+			type_amount.extend (6)
+			create l_rng
+			create board_paths.make(7)
+			from
+				i := 1
+			until
+				i > 7
+			loop
+				board_paths.extend (create {ARRAYED_LIST[PATH_CARD]}.make(7))
+				from
+					j := 1
+				until
+					j > 7
+				loop
+					if (i \\ 2) = 0 or (j \\ 2) = 0 then
+						l_rng.generate_new_random
+						random_rotation := l_rng.last_random_integer_between (1, 4)
+						l_rng.generate_new_random
+						from
+							random_type := l_rng.last_random_integer_between (1, 3)
+						until
+							type_amount[random_type] > 0
+						loop
+							random_type := (random_type // 3) + 1
+						end
+						type_amount[random_type] := type_amount[random_type] - 1
+						board_paths[i].extend (create {PATH_CARD}.make (random_type,
+							a_surfaces[random_type], (j - 1) * 84, (i - 1) * 84, random_rotation))
+					else
+						board_paths[i].extend (sticky_cards[sticky_cards_index])
+						sticky_cards_index := sticky_cards_index + 1
+					end
+					j := j + 1
+				end
+				i := i + 1
+			end
+		end
+
+	init_sticky_cards (a_surfaces: LIST[LIST[GAME_SURFACE]]): ARRAYED_LIST[PATH_CARD]
+			-- Retourne la liste des PATH_CARD qui ne changent pas entre les parties.
+		local
+			l_cards: ARRAYED_LIST[PATH_CARD]
+		do
+			create l_cards.make (16)
+			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 0, 0, 4))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 0, 2))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 0, 3))
+			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 504, 0, 1))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 0, 168, 1))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 168, 3))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 168, 2))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 504, 168, 4))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 0, 336, 4))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 336, 2))
+			l_cards.extend (create {PATH_CARD} .make (2, a_surfaces[2], 336, 336, 4))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 504, 336, 2))
+			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 0, 504, 3))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 504, 3))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 504, 1))
+			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 504, 504, 2))
+			result := l_cards
 		end
 
 	rotate_column(column_id:NATURAL_8; add_on_top:BOOLEAN)
@@ -64,150 +138,6 @@ feature {GAME_ENGINE} -- Implementation
 	rotate_row(row_id:NATURAL_8; add_on_right:BOOLEAN)
 		do
 
-		end
-
-	init_row_1(a_surfaces: LIST[LIST[GAME_SURFACE]])
-			-- Rangée 1:
-			-- Le type peut être soit 1='╗' 2='║'  3='╣'
-		local
-			l_list:ARRAYED_LIST[PATH_CARD]
-
-		do
-			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 0, 0, 4))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 84, 0, 1))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 0, 2))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 252, 0, 3))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 0, 3))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 420, 0, 2))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 504, 0, 1))
-			board_paths.extend (l_list)
-		end
-
-	init_row_2(a_surfaces: LIST[LIST[GAME_SURFACE]])
-			-- Rangée 2:
-			-- Le type peut être soit 1='╗' 2='║'  3='╣'
-		local
-			l_list:ARRAYED_LIST[PATH_CARD]
-			l_rng: GAME_RANDOM
-		do
-			create l_rng
-			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 0, 84, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 84, 84, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 168, 84, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 252, 84, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 336, 84, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 420, 84, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 504, 84, l_rng.last_random_integer_between (1, 4)))
-			board_paths.extend (l_list)
-		end
-
-	init_row_3(a_surfaces: LIST[LIST[GAME_SURFACE]])
-			-- Rangée 3:
-			-- Le type peut être soit 1='╗' 2='║'  3='╣'
-		local
-			l_list:ARRAYED_LIST[PATH_CARD]
-		do
-			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 0, 168, 1))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 84, 168, 2))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 168, 3))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 252, 168, 4))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 168, 2))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 420, 168, 3))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 504, 168, 4))
-			board_paths.extend (l_list)
-		end
-
-	init_row_4(a_surfaces: LIST[LIST[GAME_SURFACE]])
-			-- Rangée 4:
-			-- Le type peut être soit 1='╗' 2='║'  3='╣'
-		local
-			l_list:ARRAYED_LIST[PATH_CARD]
-			l_rng: GAME_RANDOM
-		do
-			create l_rng
-			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 0, 252, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 84, 252, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 168, 252, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 252, 252, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 336, 252, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 420, 252, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 504, 252, l_rng.last_random_integer_between (1, 4)))
-			board_paths.extend (l_list)
-		end
-
-	init_row_5(a_surfaces: LIST[LIST[GAME_SURFACE]])
-			-- Rangée 5:
-			-- Le type peut être soit 1='╗' 2='║'  3='╣'
-		local
-			l_list:ARRAYED_LIST[PATH_CARD]
-		do
-			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 0, 336, 4))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 84, 336, 1))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 336, 2))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 252, 336, 3))
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 336, 336, 4))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 420, 336, 3))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 504, 336, 2))
-			board_paths.extend (l_list)
-		end
-
-	init_row_6(a_surfaces: LIST[LIST[GAME_SURFACE]])
-			-- Rangée 6:
-			-- Le type peut être soit 1='╗' 2='║'  3='╣'
-		local
-			l_list:ARRAYED_LIST[PATH_CARD]
-			l_rng: GAME_RANDOM
-		do
-			create l_rng
-			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 0, 420, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 84, 420, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 168, 420, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 252, 420, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 336, 420, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 420, 420, l_rng.last_random_integer_between (1, 4)))
-			l_rng.generate_new_random
-			l_list.extend (create {PATH_CARD} .make (2, a_surfaces[2], 504, 420, l_rng.last_random_integer_between (1, 4)))
-			board_paths.extend (l_list)
-		end
-
-	init_row_7(a_surfaces: LIST[LIST[GAME_SURFACE]])
-			-- Rangée 7:
-			-- Le type peut être soit 1='╗' 2='║'  3='╣'
-		local
-			l_list:ARRAYED_LIST[PATH_CARD]
-		do
-			create l_list.make (7)
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 0, 504, 3))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 84, 504, 4))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 504, 3))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 252, 504, 2))
-			l_list.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 504, 1))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 420, 504, 4))
-			l_list.extend (create {PATH_CARD} .make (1, a_surfaces[1], 504, 504, 2))
-			board_paths.extend (l_list)
 		end
 
 	path_can_go_direction (a_x, a_y, a_direction: INTEGER): BOOLEAN

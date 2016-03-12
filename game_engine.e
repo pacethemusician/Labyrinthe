@@ -73,7 +73,7 @@ feature {NONE} -- Implementation
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
 		do
-			if not current_player.current_path.is_empty then
+			if not current_player.path.is_empty then
             	current_player.follow_path
             end
 			across
@@ -97,10 +97,10 @@ feature {NONE} -- Implementation
 			if game_state.is_equal ("ok") then
 				if click_on(a_mouse_state, 56, 56, 644, 644) then
 					-- Si le joueur clique sur le board:
-					if current_player.current_path.is_empty then
+					if current_player.path.is_empty then
 						if not ((((current_player.x - 56) // 84) + 1) = (((a_mouse_state.x - 56) // 84) + 1) and
 							(((current_player.y - 56) // 84) + 1) = (((a_mouse_state.y - 56) // 84) + 1))	then
-							current_player.current_path := board.pathfind_to((((current_player.x - 56) // 84) + 1), ((current_player.y - 56) // 84) + 1,
+							current_player.path := board.pathfind_to((((current_player.x - 56) // 84) + 1), ((current_player.y - 56) // 84) + 1,
 																				(((a_mouse_state.x - 56) // 84) + 1), ((a_mouse_state.y - 56) // 84) + 1)
 						end
 					end

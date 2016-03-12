@@ -23,7 +23,7 @@ feature {NONE} -- Initialisation
 		do
 			animations := a_surfaces
 			make_animated_sprite (a_surfaces[1], 22, 5, a_x, a_y)
-			create current_path.make
+			create path.make
 			path_index := 1
 		end
 
@@ -32,38 +32,38 @@ feature {GAME_ENGINE} -- Implementation
 	animations : LIST[GAME_SURFACE]
 		-- Liste des animations du joueur.
 
-	current_path: LINKED_LIST[PATH_CARD] assign set_current_path
+	path: LINKED_LIST[PATH_CARD] assign set_path
 		-- Le chemin que `current' peut suivre avec `follow_path'.
 
 	path_index: INTEGER
 		-- L'index du PATH dans `current_path' vers lequel `current' se déplace.
 
-	set_current_path(a_path_list: LINKED_LIST[PATH_CARD])
+	set_path(a_path_list: LINKED_LIST[PATH_CARD])
 		do
-			current_path := a_path_list
+			path := a_path_list
 		end
 
 	follow_path
-			-- Fait suivre `current_path' à `current'. Si `current' arrive à destination, `current_path'
+			-- Fait suivre `path' à `current'. Si `current' arrive à destination, `path'
 			-- est vidé. L'animation de `current' est changée selon sa position relative à la destination.
-			-- La destination est `current_path[path_index]'.
+			-- La destination est `path[path_index]'.
 		require
-			has_path: not current_path.is_empty
+			has_path: not path.is_empty
 		do
-			approach_point (current_path[path_index].x + 79, current_path[path_index].y + 56, 3)
-			if (x = current_path[path_index].x + 79 and y = current_path[path_index].y + 56) then
+			approach_point (path[path_index].x + 79, path[path_index].y + 56, 3)
+			if (x = path[path_index].x + 79 and y = path[path_index].y + 56) then
 				path_index := path_index + 1
-				if path_index > current_path.count then
+				if path_index > path.count then
 					change_animation (animations[1], 22, 5)
-					current_path.wipe_out
+					path.wipe_out
 					path_index := 1
-				elseif (current_path[path_index].x + 56 > x) then
+				elseif (path[path_index].x + 56 > x) then
 					change_animation (animations[4], 6, 3)
-				elseif (current_path[path_index].x + 56 < x - 23) then
+				elseif (path[path_index].x + 56 < x - 23) then
 					change_animation (animations[5], 6, 3)
-				elseif (current_path[path_index].y + 56 > y) then
+				elseif (path[path_index].y + 56 > y) then
 					change_animation (animations[2], 6, 3)
-				elseif (current_path[path_index].y + 56 < y) then
+				elseif (path[path_index].y + 56 < y) then
 					change_animation (animations[3], 6, 3)
 				end
 			end
