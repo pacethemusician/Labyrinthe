@@ -25,6 +25,7 @@ feature {NONE} -- Initialisation
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
+			l_i: INTEGER
 		do
 			make_image_factory
 			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1)
@@ -35,7 +36,11 @@ feature {NONE} -- Initialisation
 			create current_player.make (player_surfaces[2], 79, 56)
 				-- le offset du player par rapport à la path_card est de 23 pixels
 			create btn_rotate_left.make (button_surfaces[1], 745, 159)
+			btn_rotate_left.on_click_actions.extend(agent spare_card.rotate (-1))
+			btn_rotate_left.on_click_actions.extend(agent spare_card.play_rotate_sfx)
 			create btn_rotate_right.make (button_surfaces[2], 904, 159)
+			btn_rotate_right.on_click_actions.extend(agent spare_card.rotate (1))
+			btn_rotate_right.on_click_actions.extend(agent spare_card.play_rotate_sfx)
 			game_state := "ok"
 			on_screen_sprites.extend (back)
             on_screen_sprites.extend (board)
@@ -95,6 +100,10 @@ feature {NONE} -- Implementation
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		do
 			if game_state.is_equal ("ok") then
+				-- Si le joueur clique sur le bouton de rotation gauche:
+				btn_rotate_left.execute_actions(a_mouse_state)
+				-- Si le joueur clique sur le bouton de rotation droite:
+				btn_rotate_right.execute_actions(a_mouse_state)
 				if click_on(a_mouse_state, 56, 56, 644, 644) then
 					-- Si le joueur clique sur le board:
 					if current_player.path.is_empty then
@@ -109,18 +118,6 @@ feature {NONE} -- Implementation
 						game_state := "drag"
 						spare_card.set_x_offset(a_mouse_state.x - spare_card.x)
 						spare_card.set_y_offset(a_mouse_state.y - spare_card.y)
-					-- Si le joueur clique sur le bouton de rotation gauche:
-				elseif click_on(a_mouse_state, btn_rotate_left.x, btn_rotate_left.y,
-							    btn_rotate_left.x + btn_rotate_left.current_surface.width,
-							    btn_rotate_left.y + btn_rotate_left.current_surface.height) then
-						spare_card.rotate (-1)
-						spare_card.play_rotate_sfx
-					-- Si le joueur clique sur le bouton de rotation droite:
-				elseif click_on(a_mouse_state, btn_rotate_right.x, btn_rotate_right.y,
-							    btn_rotate_right.x + btn_rotate_right.current_surface.width,
-							    btn_rotate_right.y + btn_rotate_right.current_surface.height) then
-						spare_card.rotate (1)
-						spare_card.play_rotate_sfx
 				end
 			end
 

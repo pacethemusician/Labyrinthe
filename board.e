@@ -90,7 +90,7 @@ feature {GAME_ENGINE} -- Implementation
 						until
 							type_amount[random_type] > 0
 						loop
-							random_type := (random_type // 3) + 1
+							random_type := (random_type \\ 3) + 1
 						end
 						type_amount[random_type] := type_amount[random_type] - 1
 						board_paths[i].extend (create {PATH_CARD}.make (random_type,
