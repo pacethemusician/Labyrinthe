@@ -25,7 +25,6 @@ feature {NONE} -- Initialisation
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
-			l_i: INTEGER
 		do
 			make_image_factory
 			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1)
@@ -99,6 +98,8 @@ feature {NONE} -- Implementation
 	on_mouse_pressed(a_timestamp: NATURAL_32; a_mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; a_nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		do
+			board.rotate_row (2, false)
+			board.refresh_board_surface
 			if game_state.is_equal ("ok") then
 				-- Si le joueur clique sur le bouton de rotation gauche:
 				btn_rotate_left.execute_actions(a_mouse_state)

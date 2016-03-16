@@ -130,14 +130,37 @@ feature {GAME_ENGINE} -- Implementation
 			result := l_cards
 		end
 
-	rotate_column(column_id:NATURAL_8; add_on_top:BOOLEAN)
+	rotate_column(a_column_id:NATURAL_8; a_add_on_top:BOOLEAN)
 		do
 
 		end
 
-	rotate_row(row_id:NATURAL_8; add_on_right:BOOLEAN)
+	rotate_row(a_row_id:NATURAL_8; a_add_on_right:BOOLEAN)
+		local
+			l_i: INTEGER
+			l_temp_card: PATH_CARD
 		do
-
+			if a_add_on_right then
+				-- Rotate from right to left
+				l_temp_card := (board_paths[a_row_id])[1]
+				from l_i := 1 until l_i > 6 loop
+					(board_paths[a_row_id])[l_i] := (board_paths[a_row_id])[l_i + 1]
+					(board_paths[a_row_id])[l_i].x := (board_paths[a_row_id])[l_i].x - 84
+					l_i := l_i + 1
+				end
+				l_temp_card.x := l_temp_card.x + (84 * 6)
+				(board_paths[a_row_id])[7] := l_temp_card
+			else
+				-- Rotate from left to right
+				l_temp_card := (board_paths[a_row_id])[7]
+				from l_i := 7 until l_i < 2 loop
+					(board_paths[a_row_id])[l_i] := (board_paths[a_row_id])[l_i - 1]
+					(board_paths[a_row_id])[l_i].x := (board_paths[a_row_id])[l_i].x + 84
+					l_i := l_i - 1
+				end
+				l_temp_card.x := l_temp_card.x - (84 * 6)
+				(board_paths[a_row_id])[1] := l_temp_card
+			end
 		end
 
 	path_can_go_direction (a_x, a_y, a_direction: INTEGER): BOOLEAN
