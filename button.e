@@ -31,7 +31,7 @@ feature -- implementation
 	execute_actions(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
 		do
 			if (a_mouse_state.x >= x) and (a_mouse_state.x < (x + current_surface.width))
-			and (a_mouse_state.y >= y) and (a_mouse_state.y < (x + current_surface.height)) then
+			and (a_mouse_state.y >= y) and (a_mouse_state.y < (y + current_surface.height)) then
 				across on_click_actions as l_actions loop
 					l_actions.item.call
 				end

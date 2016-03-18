@@ -8,10 +8,10 @@ class
 	BOARD
 
 inherit
-	SPRITE
-		rename
-			make as make_sprite
-		end
+--	SPRITE
+--		rename
+--			make as make_sprite
+--		end
 
 create
 	make
@@ -22,9 +22,9 @@ feature {NONE} -- Initialisation
 
 		do
 			init_board_paths(a_surfaces)
-			create board_surface.make(84 * 7, 84 * 7)
-			refresh_board_surface
-			make_sprite(board_surface, 56, 56)
+--			create board_surface.make(84 * 7, 84 * 7)
+--			refresh_board_surface
+--			make_sprite(board_surface, 56, 56)
 		end
 
 feature {GAME_ENGINE} -- Implementation
@@ -32,24 +32,24 @@ feature {GAME_ENGINE} -- Implementation
 	board_paths : ARRAYED_LIST[ARRAYED_LIST[PATH_CARD]]
 		-- Liste des PATH_CARDS contenuent dans `current'.
 
-	board_surface: GAME_SURFACE
-		-- Surface sur laquelle est dessinée la liste "board_paths".
+--	board_surface: GAME_SURFACE
+--		-- Surface sur laquelle est dessinée la liste "board_paths".
 
-	refresh_board_surface
-		-- Mets à jour board_surface.
-		do
-			across
-				board_paths as l_board
-            loop
-            	across
-            		l_board.item as l_row
-            	loop
-            		if l_row.item /= void then
-            			l_row.item.draw_self(board_surface)
-            		end
-            	end
-            end
-		end
+--	refresh_board_surface
+--		-- Mets à jour board_surface.
+--		do
+--			across
+--				board_paths as l_board
+--            loop
+--            	across
+--            		l_board.item as l_row
+--            	loop
+--            		if l_row.item /= void then
+--            			l_row.item.draw_self(board_surface)
+--            		end
+--            	end
+--            end
+--		end
 
 	init_board_paths (a_surfaces: LIST[LIST[GAME_SURFACE]])
 			-- Initialise `board_paths' en le remplissant de PATH_CARD.
@@ -94,9 +94,11 @@ feature {GAME_ENGINE} -- Implementation
 						end
 						type_amount[random_type] := type_amount[random_type] - 1
 						board_paths[i].extend (create {PATH_CARD}.make (random_type,
-							a_surfaces[random_type], (j - 1) * 84, (i - 1) * 84, random_rotation))
+							a_surfaces[random_type], ((j - 1) * 84) + 56, ((i - 1) * 84) + 56, random_rotation))
 					else
 						board_paths[i].extend (sticky_cards[sticky_cards_index])
+						sticky_cards[sticky_cards_index].x := sticky_cards[sticky_cards_index].x + 56
+						sticky_cards[sticky_cards_index].y := sticky_cards[sticky_cards_index].y + 56
 						sticky_cards_index := sticky_cards_index + 1
 					end
 					j := j + 1
@@ -130,36 +132,46 @@ feature {GAME_ENGINE} -- Implementation
 			result := l_cards
 		end
 
-	rotate_column(a_column_id:NATURAL_8; a_add_on_top:BOOLEAN)
+	rotate_column(a_column_id:NATURAL_8; a_path_card: PATH_CARD; a_add_on_top:BOOLEAN)
 		do
 
 		end
 
-	rotate_row(a_row_id:NATURAL_8; a_add_on_right:BOOLEAN)
+	rotate_row(a_row_id:NATURAL_8; a_path_card: PATH_CARD; a_add_on_right:BOOLEAN): PATH_CARD
 		local
 			l_i: INTEGER
-			l_temp_card: PATH_CARD
+			l_result: PATH_CARD
 		do
 			if a_add_on_right then
 				-- Rotate from right to left
-				l_temp_card := (board_paths[a_row_id])[1]
+				l_result := (board_paths[a_row_id])[1]
 				from l_i := 1 until l_i > 6 loop
 					(board_paths[a_row_id])[l_i] := (board_paths[a_row_id])[l_i + 1]
-					(board_paths[a_row_id])[l_i].x := (board_paths[a_row_id])[l_i].x - 84
 					l_i := l_i + 1
 				end
-				l_temp_card.x := l_temp_card.x + (84 * 6)
-				(board_paths[a_row_id])[7] := l_temp_card
+				(board_paths[a_row_id])[7] := a_path_card
 			else
 				-- Rotate from left to right
-				l_temp_card := (board_paths[a_row_id])[7]
+				l_result := (board_paths[a_row_id])[7]
 				from l_i := 7 until l_i < 2 loop
 					(board_paths[a_row_id])[l_i] := (board_paths[a_row_id])[l_i - 1]
-					(board_paths[a_row_id])[l_i].x := (board_paths[a_row_id])[l_i].x + 84
 					l_i := l_i - 1
 				end
-				l_temp_card.x := l_temp_card.x - (84 * 6)
-				(board_paths[a_row_id])[1] := l_temp_card
+				(board_paths[a_row_id])[1] := a_path_card
+			end
+			result := l_result
+		end
+
+	update_paths
+		local
+			l_i, l_j: INTEGER
+		do
+			from  l_i := 1 until l_i > board_paths.count loop
+				from  l_j := 1 until l_j > board_paths.count loop
+					(board_paths[l_j])[l_i].approach_point (((l_i - 1) * 84) + 56, ((l_j - 1) * 84) + 56, 12)
+					l_j := l_j + 1
+				end
+				l_i := l_i + 1
 			end
 		end
 

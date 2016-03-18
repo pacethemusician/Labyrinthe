@@ -50,20 +50,20 @@ feature {GAME_ENGINE} -- Implementation
 		require
 			has_path: not path.is_empty
 		do
-			approach_point (path[path_index].x + 79, path[path_index].y + 56, 3)
-			if (x = path[path_index].x + 79 and y = path[path_index].y + 56) then
+			approach_point (path[path_index].x + 23, path[path_index].y, 3)
+			if (x = path[path_index].x + 23 and y = path[path_index].y) then
 				path_index := path_index + 1
 				if path_index > path.count then
 					change_animation (animations[1], 22, 5)
 					path.wipe_out
 					path_index := 1
-				elseif (path[path_index].x + 56 > x) then
+				elseif (path[path_index].x > x) then
 					change_animation (animations[4], 6, 3)
-				elseif (path[path_index].x + 56 < x - 23) then
+				elseif (path[path_index].x < x - 23) then
 					change_animation (animations[5], 6, 3)
-				elseif (path[path_index].y + 56 > y) then
+				elseif (path[path_index].y > y) then
 					change_animation (animations[2], 6, 3)
-				elseif (path[path_index].y + 56 < y) then
+				elseif (path[path_index].y < y) then
 					change_animation (animations[3], 6, 3)
 				end
 			end
