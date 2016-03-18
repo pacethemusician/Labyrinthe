@@ -7,7 +7,7 @@
 class
 	BOARD
 
-inherit
+--inherit
 --	SPRITE
 --		rename
 --			make as make_sprite
@@ -132,19 +132,32 @@ feature {GAME_ENGINE} -- Implementation
 			result := l_cards
 		end
 
+--	get_next_spare_card_column(a_column_id:NATURAL_8; a_add_on_top:BOOLEAN): PATH_CARD
+
+	get_next_spare_card_row(a_row_id:NATURAL_8; a_add_on_right:BOOLEAN): PATH_CARD
+			-- Retourne la PATH_CARD qui sera éjecté du board si la
+			-- méthode rotate_row est lancée.
+		do
+			if a_add_on_right then
+				result := (board_paths[a_row_id])[1]
+			else
+				result := board_paths[a_row_id].last
+			end
+		end
+
 	rotate_column(a_column_id:NATURAL_8; a_path_card: PATH_CARD; a_add_on_top:BOOLEAN)
 		do
 
 		end
 
-	rotate_row(a_row_id:NATURAL_8; a_path_card: PATH_CARD; a_add_on_right:BOOLEAN): PATH_CARD
+	rotate_row(a_row_id:NATURAL_8; a_path_card: PATH_CARD; a_add_on_right:BOOLEAN)
+			-- Insert `a_path_card' dans la rangée `a_row_id'. `a_path_card' est
+			-- inséré par la droite si `a_add_on_right' est vrai, sinon par la gauche.
 		local
 			l_i: INTEGER
-			l_result: PATH_CARD
 		do
 			if a_add_on_right then
 				-- Rotate from right to left
-				l_result := (board_paths[a_row_id])[1]
 				from l_i := 1 until l_i > 6 loop
 					(board_paths[a_row_id])[l_i] := (board_paths[a_row_id])[l_i + 1]
 					l_i := l_i + 1
@@ -152,23 +165,25 @@ feature {GAME_ENGINE} -- Implementation
 				(board_paths[a_row_id])[7] := a_path_card
 			else
 				-- Rotate from left to right
-				l_result := (board_paths[a_row_id])[7]
 				from l_i := 7 until l_i < 2 loop
 					(board_paths[a_row_id])[l_i] := (board_paths[a_row_id])[l_i - 1]
 					l_i := l_i - 1
 				end
 				(board_paths[a_row_id])[1] := a_path_card
 			end
-			result := l_result
 		end
 
-	update_paths
+	adjust_paths (a_speed: INTEGER)
+			-- Approche les PATHS_CARDS de `current' vers leur
+			-- position respective de `a_speed' pixels.
+		require
+			speed_over_zero: a_speed > 0
 		local
 			l_i, l_j: INTEGER
 		do
 			from  l_i := 1 until l_i > board_paths.count loop
 				from  l_j := 1 until l_j > board_paths.count loop
-					(board_paths[l_j])[l_i].approach_point (((l_i - 1) * 84) + 56, ((l_j - 1) * 84) + 56, 12)
+					(board_paths[l_j])[l_i].approach_point (((l_i - 1) * 84) + 56, ((l_j - 1) * 84) + 56, a_speed)
 					l_j := l_j + 1
 				end
 				l_i := l_i + 1

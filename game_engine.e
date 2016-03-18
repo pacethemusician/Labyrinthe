@@ -38,9 +38,7 @@ feature {NONE} -- Initialisation
 			create btn_rotate_right.make (button_surfaces[2], 904, 159)
 			game_state := "ok"
 			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
-			btn_rotate_left.on_click_actions.extend(agent spare_card.play_rotate_sfx)
 			btn_rotate_right.on_click_actions.extend(agent rotate_spare_card (1))
-			btn_rotate_right.on_click_actions.extend(agent spare_card.play_rotate_sfx)
 			on_screen_sprites.extend (back)
 --            on_screen_sprites.extend (board)
 			on_screen_sprites.extend (btn_rotate_left)
@@ -82,9 +80,9 @@ feature {NONE} -- Implementation
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
 		do
-			board.update_paths
+			board.adjust_paths(32)
 			if game_state.is_equal ("ok") then
-				spare_card.approach_point (801, 144, 12)
+				spare_card.approach_point (801, 144, 64)
 			end
 			if not current_player.path.is_empty then
             	current_player.follow_path
@@ -106,11 +104,15 @@ feature {NONE} -- Implementation
 
 	on_mouse_pressed(a_timestamp: NATURAL_32; a_mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; a_nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
+		local
+			l_next_spare_card: PATH_CARD
 		do
 --			board.refresh_board_surface
 			if game_state.is_equal ("ok") then
 				if a_mouse_state.is_right_button_pressed then
-					spare_card := board.rotate_row (4, spare_card, true)
+					l_next_spare_card := board.get_next_spare_card_row (4, true)
+					board.rotate_row (4, spare_card, true)
+					spare_card := l_next_spare_card
 				end
 				-- Si le joueur clique sur le bouton de rotation gauche:
 				btn_rotate_left.execute_actions(a_mouse_state)
@@ -140,9 +142,14 @@ feature {NONE} -- Implementation
 			Result := (mouse.x >= x1) and (mouse.x < x2) and (mouse.y >= y1) and (mouse.y < y2)
 		end
 
-	rotate_spare_card(a_direction: INTEGER)
+	rotate_spare_card(a_steps: INTEGER)
+			-- Méthode qui se déclenche lorsq'on clique sur
+			-- btn_rotate_left ou btn_rotate_right.
+		require
+			a_steps.abs <= 4
 		do
-			spare_card.rotate (a_direction)
+			spare_card.rotate (a_steps)
+			spare_card.play_rotate_sfx
 		end
 
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
