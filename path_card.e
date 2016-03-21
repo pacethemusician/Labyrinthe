@@ -13,6 +13,8 @@ inherit
 	SPRITE
 		rename
 			make as make_sprite
+		redefine
+			draw_self
 		end
 
 create
@@ -20,7 +22,7 @@ create
 
 feature {NONE}
 
-	make (a_type: INTEGER; a_surfaces: LIST[GAME_SURFACE]; a_x, a_y, a_rotation: INTEGER_32)
+	make (a_type: INTEGER; a_surfaces: LIST[GAME_SURFACE]; a_x, a_y, a_rotation: INTEGER_32; a_items: LIST[GAME_SURFACE])
 		-- Le `type' peut être soit 1='╗' 2='║'  3='╣'
 		-- `a_surfaces' contient les 4 rotations du chemin
 		-- `a_rotation' est un index de 1 à 4 pour savoir quelle image utiliser
@@ -36,6 +38,8 @@ feature {NONE}
 			y := a_y
 			x_offset := 0
 			y_offset := 0
+			item_index := 0
+			items := a_items
 			index := 1
 			create {ARRAYED_LIST[GAME_SURFACE]} rotated_surfaces.make(4)
 			rotated_surfaces := a_surfaces
@@ -132,7 +136,25 @@ feature {BOARD, GAME_ENGINE}
 	x_offset, y_offset: INTEGER
 		-- Pour ajuster l'affichage en rapport avec la souris lors du drag
 
+	set_item_index(a_value:INTEGER)
+		do
+			item_index := a_value
+		end
+	draw_self (destination_surface: GAME_SURFACE)
+		do
+			destination_surface.draw_surface (current_surface, x, y)
+			if not item_index.is_equal (0) then
+				if item_index.is_less (25) then
+					destination_surface.draw_surface (items.at(item_index), x, y)
+				end
+			end
+
+		end
+
 feature {NONE}	-- Attributs
+
+	items : LIST[GAME_SURFACE]
+		-- Les images des items que le joueur peut ramasser
 
 	index : INTEGER
 		-- Index de la surface de `current' dans `rotated_surfaces'
@@ -146,5 +168,8 @@ feature {NONE}	-- Attributs
 	connections: INTEGER
 		-- Nombre de 4 bits. Chaque bit représente un côté de `current'.
 		-- Les bits valent 1 si un chemin est connecté sur leur côté, sinon 0.
+
+	item_index: INTEGER assign set_item_index
+		-- `item_index' le numéro de l'item, aucun item si index = 0
 
 end

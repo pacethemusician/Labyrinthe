@@ -1,10 +1,10 @@
 note
-	description: "Summary description for {ITEM}."
+	description: "Summary description for {MENU_BUTTON}."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	ITEM
+	MENU_BUTTON
 
 end

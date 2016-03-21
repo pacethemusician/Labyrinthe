@@ -27,18 +27,23 @@ feature {NONE} -- Initialisation
 			l_window:GAME_WINDOW_SURFACED
 		do
 			make_image_factory
-			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1)
-			create board.make (path_card_surfaces)
+			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1, item_surfaces)
+			create board.make (path_card_surfaces, item_surfaces)
 			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
 			create l_window_builder
 			create back.make (img_to_surface("Images/back_main.png"), 11, 11)
+			create back_title.make (img_to_surface("Images/back_titlescreen.png"), 0, 0)
 			create current_player.make (player_surfaces[4], 79, 56)
 				-- le offset du player par rapport à la path_card est de 23 pixels
 			create btn_rotate_left.make (button_surfaces[1], 745, 159)
 			create btn_rotate_right.make (button_surfaces[2], 904, 159)
-			game_state := "ok"
+			create btn_create_game.make (button_surfaces[3], 60, 230)
+			create btn_join_game.make (button_surfaces[3], 60, 340)
+			game_state := "start"
 			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
 			btn_rotate_right.on_click_actions.extend(agent rotate_spare_card (1))
+			btn_create_game.on_click_actions.extend (agent change_state("menu_players"))
+			btn_join_game.on_click_actions.extend (agent change_state("menu_join"))
 			on_screen_sprites.extend (back)
 --            on_screen_sprites.extend (board)
 			on_screen_sprites.extend (btn_rotate_left)
@@ -66,40 +71,61 @@ feature {NONE} -- Initialisation
 feature {NONE} -- Implementation
 	game_state: STRING
 		-- Le `game_state' contient l'état du jeu:
+		-- "start" on ouvre l'écran titre pour lancer une nouvelle partie
 		-- "ok" le GAME_ENGINE attend une action du `current_player'
-		-- "drag" le GAME_ENGINE performe une action, il faut attendre
-	back:BACKGROUND
+		-- "busy" le GAME_ENGINE performe une action, il faut attendre
+		-- "drag" l'utilisateur déplace la spare card.
+	back, back_title:BACKGROUND
 	board: BOARD
 	btn_rotate_left, btn_rotate_right: BUTTON
+	btn_create_game, btn_join_game: BUTTON
 	on_screen_sprites: LIST[SPRITE]
 		-- Liste des sprites à afficher.
 	spare_card: PATH_CARD
 		-- La carte que le joueur doit placer
 	current_player: PLAYER
+	-- players: LIST[PLAYER]
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
 		do
-			board.adjust_paths(32)
-			if game_state.is_equal ("ok") then
-				spare_card.approach_point (801, 144, 64)
-			end
-			if not current_player.path.is_empty then
-            	current_player.follow_path
-            end
-			across
-				on_screen_sprites as l_sprites
-			loop
-				l_sprites.item.draw_self (game_window.surface)
+			if game_state.is_equal ("start") then
+				back_title.draw_self (game_window.surface)
+				btn_create_game.draw_self (game_window.surface)
+				btn_join_game.draw_self (game_window.surface)
+			elseif game_state.is_equal ("menu_players") then
+
+			elseif game_state.is_equal ("menu_join") then
+
+			else
+				board.adjust_paths(32)
+				if game_state.is_equal ("ok") then
+					spare_card.approach_point (801, 144, 64)
+				end
+				if not current_player.path.is_empty then
+	            	current_player.follow_path
+	            end
+				across
+					on_screen_sprites as l_sprites
+				loop
+					l_sprites.item.draw_self (game_window.surface)
+	            end
+
             end
             game_window.update
             audio_library.update
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
-			-- This method is called when the quit signal is send to the application (ex: window X button pressed).
+			-- Méthode appelée si l'utilisateur quitte la partie (par ex. en fermant la fenêtre).
 		do
 			game_library.stop  -- Stop the controller loop (allow game_library.launch to return)
+		end
+
+	change_state(a_new_state:STRING)
+			-- change le `game_state'
+		do
+			game_state := a_new_state
 		end
 
 	on_mouse_pressed(a_timestamp: NATURAL_32; a_mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; a_nb_clicks:NATURAL_8)
@@ -133,6 +159,13 @@ feature {NONE} -- Implementation
 						spare_card.set_x_offset(a_mouse_state.x - spare_card.x)
 						spare_card.set_y_offset(a_mouse_state.y - spare_card.y)
 				end
+			elseif game_state.is_equal ("start") then
+				btn_create_game.execute_actions (a_mouse_state)
+				btn_join_game.execute_actions (a_mouse_state)
+			elseif game_state.is_equal ("menu_player") then
+
+			elseif game_state.is_equal ("menu_join") then
+
 			end
 
 		end

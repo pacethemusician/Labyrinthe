@@ -18,10 +18,10 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_surfaces: LIST[LIST[GAME_SURFACE]])
+	make (a_surfaces: LIST[LIST[GAME_SURFACE]]; a_items: LIST[GAME_SURFACE])
 
 		do
-			init_board_paths(a_surfaces)
+			init_board_paths(a_surfaces, a_items)
 --			create board_surface.make(84 * 7, 84 * 7)
 --			refresh_board_surface
 --			make_sprite(board_surface, 56, 56)
@@ -51,7 +51,7 @@ feature {GAME_ENGINE} -- Implementation
 --            end
 --		end
 
-	init_board_paths (a_surfaces: LIST[LIST[GAME_SURFACE]])
+	init_board_paths (a_surfaces: LIST[LIST[GAME_SURFACE]]; a_items: LIST[GAME_SURFACE])
 			-- Initialise `board_paths' en le remplissant de PATH_CARD.
 		local
 			type_amount: ARRAYED_LIST[INTEGER]
@@ -62,7 +62,7 @@ feature {GAME_ENGINE} -- Implementation
 			sticky_cards_index: INTEGER
 			i, j: INTEGER
 		do
-			sticky_cards := init_sticky_cards(a_surfaces)
+			sticky_cards := init_sticky_cards(a_surfaces, a_items)
 			sticky_cards_index := 1
 			create type_amount.make (3)
 			type_amount.extend (16)
@@ -94,7 +94,7 @@ feature {GAME_ENGINE} -- Implementation
 						end
 						type_amount[random_type] := type_amount[random_type] - 1
 						board_paths[i].extend (create {PATH_CARD}.make (random_type,
-							a_surfaces[random_type], ((j - 1) * 84) + 56, ((i - 1) * 84) + 56, random_rotation))
+							a_surfaces[random_type], ((j - 1) * 84) + 56, ((i - 1) * 84) + 56, random_rotation, a_items))
 					else
 						board_paths[i].extend (sticky_cards[sticky_cards_index])
 						sticky_cards[sticky_cards_index].x := sticky_cards[sticky_cards_index].x + 56
@@ -107,28 +107,28 @@ feature {GAME_ENGINE} -- Implementation
 			end
 		end
 
-	init_sticky_cards (a_surfaces: LIST[LIST[GAME_SURFACE]]): ARRAYED_LIST[PATH_CARD]
+	init_sticky_cards (a_surfaces: LIST[LIST[GAME_SURFACE]]; a_items: LIST[GAME_SURFACE]): ARRAYED_LIST[PATH_CARD]
 			-- Retourne la liste des PATH_CARD qui ne changent pas entre les parties.
 		local
 			l_cards: ARRAYED_LIST[PATH_CARD]
 		do
 			create l_cards.make (16)
-			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 0, 0, 4))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 0, 2))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 0, 3))
-			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 504, 0, 1))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 0, 168, 1))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 168, 3))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 168, 2))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 504, 168, 4))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 0, 336, 4))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 336, 2))
-			l_cards.extend (create {PATH_CARD} .make (2, a_surfaces[2], 336, 336, 4))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 504, 336, 2))
-			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 0, 504, 3))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 504, 3))
-			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 504, 1))
-			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 504, 504, 2))
+			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 0, 0, 4, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 0, 2, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 0, 3, a_items))
+			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 504, 0, 1, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 0, 168, 1, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 168, 3, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 168, 2, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 504, 168, 4, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 0, 336, 4, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 336, 2, a_items))
+			l_cards.extend (create {PATH_CARD} .make (2, a_surfaces[2], 336, 336, 4, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 504, 336, 2, a_items))
+			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 0, 504, 3, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 168, 504, 3, a_items))
+			l_cards.extend (create {PATH_CARD} .make (3, a_surfaces[3], 336, 504, 1, a_items))
+			l_cards.extend (create {PATH_CARD} .make (1, a_surfaces[1], 504, 504, 2, a_items))
 			result := l_cards
 		end
 

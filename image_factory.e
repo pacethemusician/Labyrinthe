@@ -22,11 +22,13 @@ feature {GAME_ENGINE} -- Initialisation
 			player_surfaces := init_player_surfaces
 			button_surfaces := init_button_surfaces
 			item_surfaces := init_item_surfaces
+			corner_surfaces := init_corner_surfaces
 		end
 
 feature {NONE} -- Implementation
 
 	img_to_surface (a_img_path:STRING):GAME_SURFACE
+			-- Charge un fichier image et le converti en GAME_SURFACE
 		local
 			l_image:IMG_IMAGE_FILE
 			l_surface:GAME_SURFACE
@@ -96,14 +98,27 @@ feature {NONE} -- Implementation
 			Result.at (4) .extend(img_to_surface("Images/p4_walk_left.png"))
 		end
 
+	init_corner_surfaces:ARRAYED_LIST[GAME_SURFACE]
+
+		do
+			create Result.make(4)
+			Result.extend (img_to_surface ("Images/corner_up_left.png"))
+			Result.extend (img_to_surface ("Images/corner_up_right.png"))
+			Result.extend (img_to_surface ("Images/corner_down_left.png"))
+			Result.extend (img_to_surface ("Images/corner_down_right.png"))
+		end
+
 	init_button_surfaces:ARRAYED_LIST[GAME_SURFACE]
+
 		do
 			create Result.make(10)
 			Result.extend (img_to_surface ("Images/btn_rotate_left.png"))
 			Result.extend (img_to_surface ("Images/btn_rotate_right.png"))
+			Result.extend (img_to_surface ("Images/btn_back.png"))
 		end
 
 	init_item_surfaces:ARRAYED_LIST[GAME_SURFACE]
+
 		local
 			i:INTEGER
 		do
@@ -124,5 +139,6 @@ feature {GAME_ENGINE} -- Attributs
 	player_surfaces: ARRAYED_LIST[LIST[GAME_SURFACE]]
 	button_surfaces: ARRAYED_LIST[GAME_SURFACE]
 	item_surfaces: ARRAYED_LIST[GAME_SURFACE]
+	corner_surfaces: ARRAYED_LIST[GAME_SURFACE]
 
 end
