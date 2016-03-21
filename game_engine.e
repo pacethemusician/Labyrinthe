@@ -37,12 +37,19 @@ feature {NONE} -- Initialisation
 			create btn_rotate_left.make (button_surfaces[1], 745, 159)
 			create btn_rotate_right.make (button_surfaces[2], 904, 159)
 			game_state := "ok"
+			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
+			btn_rotate_right.on_click_actions.extend(agent rotate_spare_card (1))
 			on_screen_sprites.extend (back)
-            on_screen_sprites.extend (board)
-			on_screen_sprites.extend (current_player)
+--            on_screen_sprites.extend (board)
 			on_screen_sprites.extend (btn_rotate_left)
 			on_screen_sprites.extend (btn_rotate_right)
 			on_screen_sprites.extend (spare_card)
+			across board.board_paths as l_rows loop
+				across l_rows.item as l_cards loop
+					on_screen_sprites.extend (l_cards.item)
+				end
+			end
+			on_screen_sprites.extend (current_player)
 			l_window_builder.set_dimension (Window_width, Window_height)
 			l_window_builder.set_title ("Shameless labyrinthe clone")
 			l_window := l_window_builder.generate_window
@@ -73,6 +80,10 @@ feature {NONE} -- Implementation
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
 		do
+			board.adjust_paths(32)
+			if game_state.is_equal ("ok") then
+				spare_card.approach_point (801, 144, 64)
+			end
 			if not current_player.path.is_empty then
             	current_player.follow_path
             end
@@ -93,8 +104,20 @@ feature {NONE} -- Implementation
 
 	on_mouse_pressed(a_timestamp: NATURAL_32; a_mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; a_nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
+		local
+			l_next_spare_card: PATH_CARD
 		do
+--			board.refresh_board_surface
 			if game_state.is_equal ("ok") then
+				if a_mouse_state.is_right_button_pressed then
+					l_next_spare_card := board.get_next_spare_card_row (4, true)
+					board.rotate_row (4, spare_card, true)
+					spare_card := l_next_spare_card
+				end
+				-- Si le joueur clique sur le bouton de rotation gauche:
+				btn_rotate_left.execute_actions(a_mouse_state)
+				-- Si le joueur clique sur le bouton de rotation droite:
+				btn_rotate_right.execute_actions(a_mouse_state)
 				if click_on(a_mouse_state, 56, 56, 644, 644) then
 					-- Si le joueur clique sur le board:
 					if current_player.path.is_empty then
@@ -109,18 +132,6 @@ feature {NONE} -- Implementation
 						game_state := "drag"
 						spare_card.set_x_offset(a_mouse_state.x - spare_card.x)
 						spare_card.set_y_offset(a_mouse_state.y - spare_card.y)
-					-- Si le joueur clique sur le bouton de rotation gauche:
-				elseif click_on(a_mouse_state, btn_rotate_left.x, btn_rotate_left.y,
-							    btn_rotate_left.x + btn_rotate_left.current_surface.width,
-							    btn_rotate_left.y + btn_rotate_left.current_surface.height) then
-						spare_card.rotate (-1)
-						spare_card.play_rotate_sfx
-					-- Si le joueur clique sur le bouton de rotation droite:
-				elseif click_on(a_mouse_state, btn_rotate_right.x, btn_rotate_right.y,
-							    btn_rotate_right.x + btn_rotate_right.current_surface.width,
-							    btn_rotate_right.y + btn_rotate_right.current_surface.height) then
-						spare_card.rotate (1)
-						spare_card.play_rotate_sfx
 				end
 			end
 
@@ -130,6 +141,17 @@ feature {NONE} -- Implementation
 		do
 			Result := (mouse.x >= x1) and (mouse.x < x2) and (mouse.y >= y1) and (mouse.y < y2)
 		end
+
+	rotate_spare_card(a_steps: INTEGER)
+			-- Méthode qui se déclenche lorsq'on clique sur
+			-- btn_rotate_left ou btn_rotate_right.
+		require
+			a_steps.abs <= 4
+		do
+			spare_card.rotate (a_steps)
+			spare_card.play_rotate_sfx
+		end
+
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.
 		do

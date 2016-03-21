@@ -502,3 +502,21 @@ APPLICATION         make @4
 APPLICATION         root's creation                                     
 <00000000041005A8>                         Routine failure.              Exit
 -------------------------------------------------------------------------------
+
+ec: PANIC: Unexpected harmful signal (Segmentation violation) ...
+
+ec: system execution failed.
+Following is the set of recorded exceptions.
+NB: The raised panic may have induced completely inconsistent information:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+EB_KERNEL           root's creation @9     Unexpected harmful signal (Segmentation violation):
+<0000000008AC2C08>                         Eiffel run-time panic.        Panic
+-------------------------------------------------------------------------------
+
+ec: dumping core to generate debugging information...

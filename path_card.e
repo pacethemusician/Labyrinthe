@@ -72,7 +72,7 @@ feature {BOARD, GAME_ENGINE}
 				sound_fx_source.play
 			end
 		end
-		
+
 	rotate (a_steps: INTEGER)
 			-- Tourne `current' `a_steps' fois. Si `a_steps' est positif, la rotation
 			-- se fait dans le sens des aiguilles d'une montre.
@@ -96,7 +96,7 @@ feature {BOARD, GAME_ENGINE}
 				l_steps := a_steps
 			end
 			connections := connections.bit_or (connections.bit_shift_left (4))
-			connections := connections.bit_shift_right (a_steps).bit_and (0b1111)
+			connections := connections.bit_shift_right (l_steps).bit_and (0b1111)
 		end
 
 	is_connected (a_direction: INTEGER): BOOLEAN
