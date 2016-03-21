@@ -88,6 +88,12 @@ feature {NONE} -- Implementation
 			Result.at (3) .extend(img_to_surface("Images/p3_walk_up.png"))
 			Result.at (3) .extend(img_to_surface("Images/p3_walk_right.png"))
 			Result.at (3) .extend(img_to_surface("Images/p3_walk_left.png"))
+			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(5))
+			Result.at (4) .extend(img_to_surface("Images/p4_still.png"))
+			Result.at (4) .extend(img_to_surface("Images/p4_walk_down.png"))
+			Result.at (4) .extend(img_to_surface("Images/p4_walk_up.png"))
+			Result.at (4) .extend(img_to_surface("Images/p4_walk_right.png"))
+			Result.at (4) .extend(img_to_surface("Images/p4_walk_left.png"))
 		end
 
 	init_button_surfaces:ARRAYED_LIST[GAME_SURFACE]
