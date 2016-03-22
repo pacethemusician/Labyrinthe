@@ -19,7 +19,7 @@ create
 
 feature {NONE} -- Initialisation
 	-- Musique et image de fond de la fenêtre principale
-	make (a_surface:GAME_SURFACE; a_x, a_y:INTEGER_32)
+	make (a_surface:GAME_SURFACE)
 		local
 			l_music_file:AUDIO_SOUND_FILE
 		do

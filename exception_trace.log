@@ -520,3 +520,55 @@ EB_KERNEL           root's creation @9     Unexpected harmful signal (Segmentati
 -------------------------------------------------------------------------------
 
 ec: dumping core to generate debugging information...
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+GAME_IMAGE          make_from_pointer @2   image_source_make_from_pointer_not_null:
+<0000000003E31A78>                         Precondition violated.        Fail
+-------------------------------------------------------------------------------
+TEXT_SURFACE_BLENDED
+                    make @28               
+<0000000003E31168>  (From TEXT_SURFACE)    Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @10                                            
+<0000000003E22A98>  (From IMAGE_FACTORY)   Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @1                                             
+<0000000003E22A98>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         make @5                                             
+<0000000003E205A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<0000000003E205A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+GAME_IMAGE          make_from_pointer @2   image_source_make_from_pointer_not_null:
+<0000000003F11A78>                         Precondition violated.        Fail
+-------------------------------------------------------------------------------
+TEXT_SURFACE_BLENDED
+                    make @28               
+<0000000003F11168>  (From TEXT_SURFACE)    Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @10                                            
+<0000000003F02A98>  (From IMAGE_FACTORY)   Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @1                                             
+<0000000003F02A98>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         make @5                                             
+<0000000003F005A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<0000000003F005A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
