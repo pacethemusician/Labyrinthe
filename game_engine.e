@@ -8,9 +8,7 @@ class
 
 inherit
 	GAME_LIBRARY_SHARED
-
 	AUDIO_LIBRARY_SHARED
-	IMG_LIBRARY_SHARED
 	IMAGE_FACTORY
 		rename
 			make as make_image_factory
@@ -23,23 +21,21 @@ feature {NONE} -- Initialisation
 
 	make
 		-- Créer les ressources et lance le jeu.
+		-- "Gérer les erreurs!!!!!"
+
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
-			l_font: TEXT_FONT
 		do
 			make_image_factory
-			create l_font.make ("ARCADECLASSIC.ttf", 36)
-			if l_font.is_openable then
-				l_font.open
-			end
+			-- create arcade_font.make ("ARCADECLASSIC.ttf", 36)
 			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1, item_surfaces)
 			create board.make (path_card_surfaces, item_surfaces)
 			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
 			create l_window_builder
-			create back.make (img_to_surface("Images/back_main.png"))
-			create back_title.make (img_to_surface("Images/back_titlescreen.png"))
-			create current_player.make (player_surfaces[4], 79, 56)
+			create back.make (background_surfaces[1])
+			create back_title.make (background_surfaces[2])
+			create current_player.make (player_surfaces[5], 79, 56)
 				-- le offset du player par rapport à la path_card est de 23 pixels
 			create btn_rotate_left.make (button_surfaces[1], 745, 159)
 			create btn_rotate_right.make (button_surfaces[2], 904, 159)
@@ -48,7 +44,7 @@ feature {NONE} -- Initialisation
 			game_state := "start"
 			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
 			btn_rotate_right.on_click_actions.extend(agent rotate_spare_card (1))
-			btn_create_game.on_click_actions.extend (agent change_state("menu_players"))
+			btn_create_game.on_click_actions.extend (agent change_state("ok"))
 			btn_join_game.on_click_actions.extend (agent change_state("menu_join"))
 			on_screen_sprites.extend (back)
 --            on_screen_sprites.extend (board)
@@ -91,18 +87,19 @@ feature {NONE} -- Implementation
 		-- La carte que le joueur doit placer
 	current_player: PLAYER
 	-- players: LIST[PLAYER]
+	-- arcade_font_24: TEXT_FONT
+	-- text_image:GAME_SURFACE
+
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
 		do
 			if game_state.is_equal ("start") then
-				back_title.draw_self (game_window.surface)
-				btn_create_game.draw_self (game_window.surface)
-				btn_join_game.draw_self (game_window.surface)
+				show_start_menu(a_timestamp, game_window)
 			elseif game_state.is_equal ("menu_players") then
-
+				show_player_menu(a_timestamp, game_window)
 			elseif game_state.is_equal ("menu_join") then
-
+				show_network_menu(a_timestamp, game_window)
 			else
 				board.adjust_paths(32)
 				if game_state.is_equal ("ok") then
@@ -120,6 +117,24 @@ feature {NONE} -- Implementation
             end
             game_window.update
             audio_library.update
+		end
+
+	show_start_menu(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
+		do
+			back_title.draw_self (game_window.surface)
+			btn_create_game.draw_self (game_window.surface)
+			btn_join_game.draw_self (game_window.surface)
+			game_window.surface.draw_surface (text_image, 10, 10)
+		end
+
+	show_player_menu(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
+		do
+
+		end
+
+	show_network_menu(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
+		do
+
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
@@ -154,9 +169,10 @@ feature {NONE} -- Implementation
 					-- Si le joueur clique sur le board:
 					if current_player.path.is_empty then
 						if not ((((current_player.x - 56) // 84) + 1) = (((a_mouse_state.x - 56) // 84) + 1) and
-							(((current_player.y - 56) // 84) + 1) = (((a_mouse_state.y - 56) // 84) + 1))	then
+							(((current_player.y - 56) // 84) + 1) = (((a_mouse_state.y - 56) // 84) + 1))
+						then
 							current_player.path := board.pathfind_to((((current_player.x - 56) // 84) + 1), ((current_player.y - 56) // 84) + 1,
-																				(((a_mouse_state.x - 56) // 84) + 1), ((a_mouse_state.y - 56) // 84) + 1)
+								  									(((a_mouse_state.x - 56) // 84) + 1), ((a_mouse_state.y - 56) // 84) + 1)
 						end
 					end
 					-- Si le joueur clique sur la carte jouable:

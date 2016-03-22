@@ -22,6 +22,14 @@ feature {GAME_ENGINE} -- Initialisation
 			player_surfaces := init_player_surfaces
 			button_surfaces := init_button_surfaces
 			item_surfaces := init_item_surfaces
+			background_surfaces := init_background_surfaces
+			create arcade_font_36.make ("ARCADECLASSIC.ttf", 36)
+			if arcade_font_36.is_openable then
+				arcade_font_36.open
+				create {TEXT_SURFACE_BLENDED} text_image.make ("Player 1", arcade_font_36, create {GAME_COLOR} .make_rgb (255, 255, 255))
+			else
+				create text_image.make (1, 1)
+			end
 		end
 
 feature {NONE} -- Implementation
@@ -95,6 +103,12 @@ feature {NONE} -- Implementation
 			Result.at (4) .extend(img_to_surface("Images/p4_walk_up.png"))
 			Result.at (4) .extend(img_to_surface("Images/p4_walk_right.png"))
 			Result.at (4) .extend(img_to_surface("Images/p4_walk_left.png"))
+			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(5))
+			Result.at (5) .extend(img_to_surface("Images/p5_still.png"))
+			Result.at (5) .extend(img_to_surface("Images/p5_walk_down.png"))
+			Result.at (5) .extend(img_to_surface("Images/p5_walk_up.png"))
+			Result.at (5) .extend(img_to_surface("Images/p5_walk_right.png"))
+			Result.at (5) .extend(img_to_surface("Images/p5_walk_left.png"))
 		end
 
 	init_button_surfaces:ARRAYED_LIST[GAME_SURFACE]
@@ -104,6 +118,13 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/btn_rotate_left.png"))
 			Result.extend (img_to_surface ("Images/btn_rotate_right.png"))
 			Result.extend (img_to_surface ("Images/btn_back.png"))
+		end
+
+	init_background_surfaces:ARRAYED_LIST[GAME_SURFACE]
+		do
+			create Result.make(10)
+			Result.extend (img_to_surface("Images/back_main.png"))
+			Result.extend (img_to_surface("Images/back_titlescreen.png"))
 		end
 
 	init_item_surfaces:ARRAYED_LIST[GAME_SURFACE]
@@ -128,5 +149,11 @@ feature {GAME_ENGINE} -- Attributs
 	player_surfaces: ARRAYED_LIST[LIST[GAME_SURFACE]]
 	button_surfaces: ARRAYED_LIST[GAME_SURFACE]
 	item_surfaces: ARRAYED_LIST[GAME_SURFACE]
+	background_surfaces: ARRAYED_LIST[GAME_SURFACE]
+
+feature {NONE} -- Private
+
+	arcade_font_36: TEXT_FONT
+	text_image:GAME_SURFACE
 
 end
