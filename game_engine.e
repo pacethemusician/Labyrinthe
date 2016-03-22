@@ -37,8 +37,8 @@ feature {NONE} -- Initialisation
 			create board.make (path_card_surfaces, item_surfaces)
 			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
 			create l_window_builder
-			create back.make (img_to_surface("Images/back_main.png"), 11, 11)
-			create back_title.make (img_to_surface("Images/back_titlescreen.png"), 0, 0)
+			create back.make (img_to_surface("Images/back_main.png"))
+			create back_title.make (img_to_surface("Images/back_titlescreen.png"))
 			create current_player.make (player_surfaces[4], 79, 56)
 				-- le offset du player par rapport à la path_card est de 23 pixels
 			create btn_rotate_left.make (button_surfaces[1], 745, 159)

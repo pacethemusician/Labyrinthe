@@ -18,13 +18,14 @@ create
 	make
 
 feature {NONE} -- Initialisation
-	-- Musique et image de fond de la fenêtre principale
-	make (a_surface:GAME_SURFACE; a_x, a_y:INTEGER_32)
+
+	make (a_surface:GAME_SURFACE)
+			-- Initialise `current' avec la surface `a_surface' à la position (0, 0).
 		local
 			l_music_file:AUDIO_SOUND_FILE
 		do
 			audio_library.sources_add
-			music_source:= audio_library.last_source_added
+			music_source := audio_library.last_source_added
 			make_sprite(a_surface, 0, 0)
 			create l_music_file.make("Audio/Solitaire.ogg")
 			if l_music_file.is_openable then
@@ -41,6 +42,8 @@ feature {NONE} -- Initialisation
 		end
 
 feature {NONE} -- Implementation
+
 	music_source: AUDIO_SOURCE
+		-- Source de la musique de fond.
 
 end

@@ -22,7 +22,6 @@ feature {GAME_ENGINE} -- Initialisation
 			player_surfaces := init_player_surfaces
 			button_surfaces := init_button_surfaces
 			item_surfaces := init_item_surfaces
-			corner_surfaces := init_corner_surfaces
 		end
 
 feature {NONE} -- Implementation
@@ -48,7 +47,7 @@ feature {NONE} -- Implementation
 		end
 
 	init_path_card_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
-
+			-- Retourne une liste des images des PATH_CARD.
 		do
 			create Result.make (3)
 			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
@@ -69,7 +68,7 @@ feature {NONE} -- Implementation
 		end
 
 	init_player_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
-
+			-- Retourne une liste des images des PLAYER.
 		do
 			create Result.make (4)
 			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(5))
@@ -96,16 +95,6 @@ feature {NONE} -- Implementation
 			Result.at (4) .extend(img_to_surface("Images/p4_walk_up.png"))
 			Result.at (4) .extend(img_to_surface("Images/p4_walk_right.png"))
 			Result.at (4) .extend(img_to_surface("Images/p4_walk_left.png"))
-		end
-
-	init_corner_surfaces:ARRAYED_LIST[GAME_SURFACE]
-
-		do
-			create Result.make(4)
-			Result.extend (img_to_surface ("Images/corner_up_left.png"))
-			Result.extend (img_to_surface ("Images/corner_up_right.png"))
-			Result.extend (img_to_surface ("Images/corner_down_left.png"))
-			Result.extend (img_to_surface ("Images/corner_down_right.png"))
 		end
 
 	init_button_surfaces:ARRAYED_LIST[GAME_SURFACE]
@@ -139,6 +128,5 @@ feature {GAME_ENGINE} -- Attributs
 	player_surfaces: ARRAYED_LIST[LIST[GAME_SURFACE]]
 	button_surfaces: ARRAYED_LIST[GAME_SURFACE]
 	item_surfaces: ARRAYED_LIST[GAME_SURFACE]
-	corner_surfaces: ARRAYED_LIST[GAME_SURFACE]
 
 end

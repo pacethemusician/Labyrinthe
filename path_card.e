@@ -154,10 +154,10 @@ feature {BOARD, GAME_ENGINE}
 feature {NONE}	-- Attributs
 
 	items : LIST[GAME_SURFACE]
-		-- Les images des items que le joueur peut ramasser
+		-- Les images des items que le joueur peut ramasser.
 
 	index : INTEGER
-		-- Index de la surface de `current' dans `rotated_surfaces'
+		-- Index de la surface de `current' dans `rotated_surfaces'.
 
 	rotated_surfaces: LIST[GAME_SURFACE]
 
@@ -170,6 +170,6 @@ feature {NONE}	-- Attributs
 		-- Les bits valent 1 si un chemin est connecté sur leur côté, sinon 0.
 
 	item_index: INTEGER assign set_item_index
-		-- `item_index' le numéro de l'item, aucun item si index = 0
+		-- `item_index' le numéro de l'item, aucun item si index = 0.
 
 end

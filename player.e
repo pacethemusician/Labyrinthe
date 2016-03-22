@@ -19,7 +19,7 @@ create
 feature {NONE} -- Initialisation
 
 	make (a_surfaces: LIST[GAME_SURFACE]; a_x, a_y:INTEGER_32)
-		-- Les `a_type' sont 1= explorateur 2= magicien
+		-- Initialisation de `current' avec `a_default_surface' à la position (`a_x', `a_y').
 		do
 			animations := a_surfaces
 			make_animated_sprite (a_surfaces[1], 22, 5, a_x, a_y)
@@ -39,6 +39,7 @@ feature {GAME_ENGINE} -- Implementation
 		-- L'index du PATH dans `current_path' vers lequel `current' se déplace.
 
 	set_path(a_path_list: LINKED_LIST[PATH_CARD])
+			-- Assigne `a_path_list' à `path'.
 		do
 			path := a_path_list
 		end
