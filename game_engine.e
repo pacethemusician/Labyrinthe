@@ -8,6 +8,7 @@ class
 
 inherit
 	GAME_LIBRARY_SHARED
+
 	AUDIO_LIBRARY_SHARED
 	IMG_LIBRARY_SHARED
 	IMAGE_FACTORY
@@ -25,8 +26,13 @@ feature {NONE} -- Initialisation
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
+			l_font: TEXT_FONT
 		do
 			make_image_factory
+			create l_font.make ("ARCADECLASSIC.ttf", 36)
+			if l_font.is_openable then
+				l_font.open
+			end
 			create spare_card.make(3, path_card_surfaces[3], 801, 144, 1, item_surfaces)
 			create board.make (path_card_surfaces, item_surfaces)
 			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
