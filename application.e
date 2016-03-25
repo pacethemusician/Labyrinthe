@@ -28,6 +28,7 @@ feature {NONE} -- Initialization
 			image_file_library.enable_image (true, false, false)
 			create l_engine.make
 			l_engine := Void
+			game_library.clear_all_events
 			text_library.quit_library
 			audio_library.quit_library
 			image_file_library.quit_library

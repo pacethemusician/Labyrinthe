@@ -21,8 +21,10 @@ feature {NONE} -- Initialisation
 	make (a_surfaces: LIST[GAME_SURFACE]; a_x, a_y:INTEGER_32)
 		-- Initialisation de `current' avec `a_default_surface' à la position (`a_x', `a_y').
 		do
+			x := a_x
+			y := a_y
 			animations := a_surfaces
-			make_animated_sprite (a_surfaces[1], 22, 5, a_x, a_y)
+			make_animated_sprite (a_surfaces[1], 22, 5, x, y)
 			create path.make
 			path_index := 1
 		end

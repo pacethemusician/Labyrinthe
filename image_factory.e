@@ -18,18 +18,14 @@ feature {GAME_ENGINE} -- Initialisation
 
 	make
 		do
-			path_card_surfaces := init_path_card_surfaces
-			player_surfaces := init_player_surfaces
-			button_surfaces := init_button_surfaces
-			item_surfaces := init_item_surfaces
-			background_surfaces := init_background_surfaces
-			create arcade_font_36.make ("ARCADECLASSIC.ttf", 36)
-			if arcade_font_36.is_openable then
-				arcade_font_36.open
-				create {TEXT_SURFACE_BLENDED} text_image.make ("Player 1", arcade_font_36, create {GAME_COLOR} .make_rgb (255, 255, 255))
-			else
-				create text_image.make (1, 1)
-			end
+			-- create arcade_font_36.make ("ARCADECLASSIC.ttf", 36)
+			path_cards := init_path_card_surfaces
+			players := init_player_surfaces
+			buttons := init_button_surfaces
+			items := init_item_surfaces
+			backgrounds := init_background_surfaces
+			player_choice_menu := init_player_choice_menu_surfaces
+
 		end
 
 feature {NONE} -- Implementation
@@ -117,7 +113,13 @@ feature {NONE} -- Implementation
 			create Result.make(10)
 			Result.extend (img_to_surface ("Images/btn_rotate_left.png"))
 			Result.extend (img_to_surface ("Images/btn_rotate_right.png"))
-			Result.extend (img_to_surface ("Images/btn_back.png"))
+			Result.extend (img_to_surface ("Images/btn_new_game.png"))
+			Result.extend (img_to_surface ("Images/btn_join_game.png"))
+			Result.extend (img_to_surface ("Images/arrow_choice_left.png"))
+			Result.extend (img_to_surface ("Images/arrow_choice_right.png"))
+			Result.extend (img_to_surface ("Images/btn_add_local.png"))
+			Result.extend (img_to_surface ("Images/btn_add_net.png"))
+			Result.extend (img_to_surface ("Images/btn_cancel.png"))
 		end
 
 	init_background_surfaces:ARRAYED_LIST[GAME_SURFACE]
@@ -133,27 +135,34 @@ feature {NONE} -- Implementation
 			i:INTEGER
 		do
 			create Result.make(24)
-			from
-				i := 1
-			until
-				i = 25
-			loop
+			from i := 1 until i = 25 loop
 				Result.extend (img_to_surface ("Images/item" + i.out + ".png"))
 				i := i + 1
 			end
 		end
 
-feature {GAME_ENGINE} -- Attributs
+	init_player_choice_menu_surfaces:ARRAYED_LIST[GAME_SURFACE]
+		do
+			create Result.make(10)
+			Result.extend (img_to_surface ("Images/back_player1.png"))
+			Result.extend (img_to_surface ("Images/back_player2.png"))
+			Result.extend (img_to_surface ("Images/back_player3.png"))
+			Result.extend (img_to_surface ("Images/back_player4.png"))
+			Result.extend (img_to_surface ("Images/back_connexion_choice.png"))
+			Result.extend (img_to_surface ("Images/back_local.png"))
+			Result.extend (img_to_surface ("Images/back_network.png"))
 
-	path_card_surfaces: ARRAYED_LIST[LIST[GAME_SURFACE]]
-	player_surfaces: ARRAYED_LIST[LIST[GAME_SURFACE]]
-	button_surfaces: ARRAYED_LIST[GAME_SURFACE]
-	item_surfaces: ARRAYED_LIST[GAME_SURFACE]
-	background_surfaces: ARRAYED_LIST[GAME_SURFACE]
 
-feature {NONE} -- Private
+		end
 
-	arcade_font_36: TEXT_FONT
-	text_image:GAME_SURFACE
+feature {GAME_ENGINE, PLAYER_SELECT_MENU_SURFACE} -- Attributs
+
+	path_cards: ARRAYED_LIST[LIST[GAME_SURFACE]]
+	players: ARRAYED_LIST[LIST[GAME_SURFACE]]
+	buttons: ARRAYED_LIST[GAME_SURFACE]
+	items: ARRAYED_LIST[GAME_SURFACE]
+	backgrounds: ARRAYED_LIST[GAME_SURFACE]
+	player_choice_menu: ARRAYED_LIST[GAME_SURFACE]
+	-- arcade_font_36: TEXT_FONT
 
 end

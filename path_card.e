@@ -20,12 +20,12 @@ inherit
 create
 	make
 
-feature {NONE}
+feature {NONE} -- Initialisation
 
 	make (a_type: INTEGER; a_surfaces: LIST[GAME_SURFACE]; a_x, a_y, a_rotation: INTEGER_32; a_items: LIST[GAME_SURFACE])
-		-- Le `type' peut être soit 1='╗' 2='║'  3='╣'
-		-- `a_surfaces' contient les 4 rotations du chemin
-		-- `a_rotation' est un index de 1 à 4 pour savoir quelle image utiliser
+			-- Le `type' peut être soit 1='╗' 2='║'  3='╣'
+			-- `a_surfaces' contient les 4 rotations du chemin
+			-- `a_rotation' est un index de 1 à 4 pour savoir quelle image utiliser
 		require
 			a_type > 0
 			a_type < 4
@@ -140,6 +140,7 @@ feature {BOARD, GAME_ENGINE}
 		do
 			item_index := a_value
 		end
+
 	draw_self (destination_surface: GAME_SURFACE)
 		do
 			destination_surface.draw_surface (current_surface, x, y)

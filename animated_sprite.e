@@ -26,7 +26,7 @@ feature {NONE} -- Initialisation
 			set_timer(0)
 		end
 
-feature {GAME_ENGINE} -- Implementation
+feature {GAME_ENGINE, PLAYER_SELECT_MENU_SURFACE} -- Implementation
 
 	draw_self (destination_surface: GAME_SURFACE)
 			-- Dessiner `current' sur `destination_surface' et mettre à jour `animation_timer'.

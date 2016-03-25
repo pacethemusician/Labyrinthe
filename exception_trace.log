@@ -617,3 +617,63 @@ APPLICATION         root's creation        Unexpected harmful signal (Segmentati
 -------------------------------------------------------------------------------
 
 projetlabyrinthe: dumping core to generate debugging information...
+
+projetlabyrinthe: PANIC: Unexpected harmful signal (Segmentation violation) ...
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions.
+NB: The raised panic may have induced completely inconsistent information:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+APPLICATION         root's creation        Unexpected harmful signal (Segmentation violation):
+<0000000004F81368>                         Eiffel run-time panic.        Bye
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: dumping core to generate debugging information...
+
+projetlabyrinthe: PANIC: Unexpected harmful signal (Segmentation violation) ...
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions.
+NB: The raised panic may have induced completely inconsistent information:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+APPLICATION         root's creation        Unexpected harmful signal (Segmentation violation):
+<0000000004D51368>                         Eiffel run-time panic.        Bye
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: dumping core to generate debugging information...
+
+projetlabyrinthe: PANIC: Unexpected harmful signal (Segmentation violation) ...
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions.
+NB: The raised panic may have induced completely inconsistent information:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+APPLICATION         root's creation        Unexpected harmful signal (Segmentation violation):
+<0000000004D01368>                         Eiffel run-time panic.        Bye
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: dumping core to generate debugging information...
+
+projetlabyrinthe: PANIC: Unexpected harmful signal (Segmentation violation) ...
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions.
+NB: The raised panic may have induced completely inconsistent information:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+APPLICATION         root's creation        Unexpected harmful signal (Segmentation violation):
+<0000000004F01368>                         Eiffel run-time panic.        Bye
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: dumping core to generate debugging information...
