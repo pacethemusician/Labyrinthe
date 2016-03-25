@@ -41,30 +41,23 @@ feature {NONE} -- Initialisation
 
 			-- Création des boutons:
 			create btn_rotate_left.make (game_surfaces.buttons[1], 745, 159)
-			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
 
 			create btn_rotate_right.make (game_surfaces.buttons[2], 904, 159)
-			btn_rotate_right.on_click_actions.extend(agent rotate_spare_card (1))
 
 			create btn_create_game.make (game_surfaces.buttons[3], 60, 230)
-			btn_create_game.on_click_actions.extend (agent change_state("menu_player"))
 
 			create btn_join_game.make (game_surfaces.buttons[4], 60, 340)
-			btn_join_game.on_click_actions.extend (agent change_state("menu_join"))
 
 			create btn_add_player.make (game_surfaces.buttons[7], 136, 510)
-			btn_add_player.on_click_actions.extend (agent add_player(current_player))
 
 			create btn_add_connexion.make (game_surfaces.buttons[8], 136, 589)
 
 			create btn_cancel_p2.make (game_surfaces.buttons[9], 548, 135)
-			btn_cancel_p2.on_click_actions.extend (agent cancel(2))
 
 			create btn_cancel_p3.make (game_surfaces.buttons[9], 290, 323)
-			btn_cancel_p3.on_click_actions.extend (agent cancel(3))
 
 			create btn_cancel_p4.make (game_surfaces.buttons[9], 548, 323)
-			btn_cancel_p4.on_click_actions.extend (agent cancel(4))
+
 			-- Faire le bouton 'back' (retour au menu titre)
 			----------------------------------------------------
 
@@ -90,6 +83,15 @@ feature {NONE} -- Initialisation
 			l_window.mouse_button_pressed_actions.extend (agent on_mouse_pressed(?,?,?))
 			l_window.mouse_button_released_actions.extend (agent on_mouse_released(?,?,?))
 			l_window.mouse_motion_actions.extend (agent on_mouse_move(?, ?, ?, ?))
+			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
+			btn_rotate_right.on_click_actions.extend(agent rotate_spare_card (1))
+			btn_create_game.on_click_actions.extend (agent change_state("menu_player"))
+			btn_join_game.on_click_actions.extend (agent change_state("menu_join"))
+			btn_add_player.on_click_actions.extend (agent add_player(current_player))
+			btn_cancel_p2.on_click_actions.extend (agent cancel(2))
+			btn_cancel_p3.on_click_actions.extend (agent cancel(3))
+			btn_cancel_p4.on_click_actions.extend (agent cancel(4))
+			
 			game_library.launch
 
 		end
