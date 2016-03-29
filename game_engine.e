@@ -17,52 +17,31 @@ create
 feature {NONE} -- Initialisation
 
 	make
-		-- Créer les ressources et lancer le jeu.
+		-- Créé les ressources et lancé le jeu.
 		-- "Gérer les erreurs!!!!!"
 
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
 		do
+			create l_window_builder
+			l_window_builder.set_dimension (Window_width, Window_height)
+			l_window_builder.set_title ("Shameless labyrinthe clone")
+			l_window := l_window_builder.generate_window
+
 			create game_surfaces.make
-			-- create arcade_font.make ("ARCADECLASSIC.ttf", 36)
 			create spare_card.make(3, game_surfaces.path_cards[3], 801, 144, 1, game_surfaces.items)
 			create board.make (game_surfaces.path_cards, game_surfaces.items)
 			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
 			create {ARRAYED_LIST[PLAYER]} players.make (4)
-			create {ARRAYED_LIST[INTEGER]} used_sprites.make (5)
-			create l_window_builder
+
+			create {MENU_PLAYER} menu_player.make (game_surfaces)
+			create {MENU_TITLE_SCREEN} menu_title_screen.make (game_surfaces)
+			-- create {MENU_CONNEXION} menu_connexion.make (game_surfaces)
 			create back.make (game_surfaces.backgrounds[1])
-			create back_title.make (game_surfaces.backgrounds[2])
-			players.extend (create {PLAYER} .make (game_surfaces.players[1], 79, 56))
-				-- le offset x du player par rapport à la path_card est de 23 pixels
-			current_player := players.at(1)
-			used_sprites.extend(1)
-
-			-- Création des boutons:
+			create current_player.make (game_surfaces.players[1], 0, 0)
 			create btn_rotate_left.make (game_surfaces.buttons[1], 745, 159)
-
 			create btn_rotate_right.make (game_surfaces.buttons[2], 904, 159)
-
-			create btn_create_game.make (game_surfaces.buttons[3], 60, 230)
-
-			create btn_join_game.make (game_surfaces.buttons[4], 60, 340)
-
-			create btn_add_player.make (game_surfaces.buttons[7], 136, 510)
-
-			create btn_add_connexion.make (game_surfaces.buttons[8], 136, 589)
-
-			create btn_cancel_p2.make (game_surfaces.buttons[9], 548, 135)
-
-			create btn_cancel_p3.make (game_surfaces.buttons[9], 290, 323)
-
-			create btn_cancel_p4.make (game_surfaces.buttons[9], 548, 323)
-
-			-- Faire le bouton 'back' (retour au menu titre)
-			----------------------------------------------------
-
-			create {ARRAYED_LIST[PLAYER_SELECT_MENU_SURFACE]} player_menu_surfaces.make(4)
-			player_menu_surfaces.extend (create {PLAYER_SELECT_MENU_SURFACE} .make (current_player, game_surfaces, 80, 130, 1, used_sprites))
 			game_state := "start"
 
 			on_screen_sprites.extend (back)
@@ -74,10 +53,8 @@ feature {NONE} -- Initialisation
 					on_screen_sprites.extend (l_cards.item)
 				end
 			end
-			on_screen_sprites.extend (current_player)
-			l_window_builder.set_dimension (Window_width, Window_height)
-			l_window_builder.set_title ("Shameless labyrinthe clone")
-			l_window := l_window_builder.generate_window
+
+			-- Création des agents:
 			game_library.quit_signal_actions.extend (agent on_quit(?))
 			game_library.iteration_actions.extend (agent on_iteration(?, l_window))
 			l_window.mouse_button_pressed_actions.extend (agent on_mouse_pressed(?,?,?))
@@ -85,13 +62,7 @@ feature {NONE} -- Initialisation
 			l_window.mouse_motion_actions.extend (agent on_mouse_move(?, ?, ?, ?))
 			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
 			btn_rotate_right.on_click_actions.extend(agent rotate_spare_card (1))
-			btn_create_game.on_click_actions.extend (agent change_state("menu_player"))
-			btn_join_game.on_click_actions.extend (agent change_state("menu_join"))
-			btn_add_player.on_click_actions.extend (agent add_player(current_player))
-			btn_cancel_p2.on_click_actions.extend (agent cancel(2))
-			btn_cancel_p3.on_click_actions.extend (agent cancel(3))
-			btn_cancel_p4.on_click_actions.extend (agent cancel(4))
-			
+
 			game_library.launch
 
 		end
@@ -106,30 +77,34 @@ feature {NONE} -- Implementation
 		-- "busy" le GAME_ENGINE performe une action, il faut attendre
 		-- "drag" quand l'utilisateur déplace la `spare_card'.
 		-- "menu_player" ou "menu_join" affiche le menu x
-	back, back_title:BACKGROUND
+	back:BACKGROUND
 	board: BOARD
 	btn_rotate_left, btn_rotate_right: BUTTON
-	btn_create_game, btn_join_game: BUTTON
-	btn_add_player, btn_add_connexion: BUTTON
-	btn_cancel_p2, btn_cancel_p3, btn_cancel_p4: BUTTON
+
 	on_screen_sprites: LIST[SPRITE]
 		-- Liste des sprites à afficher.
 	spare_card: PATH_CARD
 		-- La carte que le joueur doit placer
 	current_player: PLAYER
 	players: LIST[PLAYER]
-	player_menu_surfaces: LIST[PLAYER_SELECT_MENU_SURFACE]
-	used_sprites: LIST[INTEGER]
+	menu_player, menu_title_screen: MENU
+	-- menu_connexion: MENU
+
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
 		do
 			if game_state.is_equal ("start") then
-				show_start_menu(a_timestamp, game_window)
+				if (menu_title_screen.done = false) then
+					menu_title_screen.show(a_timestamp, game_window)
+				else
+					game_state := menu_title_screen.choice
+				end
+
 			elseif game_state.is_equal ("menu_player") then
-				show_player_menu(a_timestamp, game_window)
+				menu_player.show (a_timestamp, game_window)
 			elseif game_state.is_equal ("menu_join") then
-				show_network_menu(a_timestamp, game_window)
+				-- menu_connexion.show(a_timestamp, game_window)
 			else
 				board.adjust_paths(32)
 				if game_state.is_equal ("ok") then
@@ -149,25 +124,6 @@ feature {NONE} -- Implementation
             audio_library.update
 		end
 
-	show_start_menu(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
-		do
-			back_title.draw_self (game_window.surface)
-			btn_create_game.draw_self (game_window.surface)
-			btn_join_game.draw_self (game_window.surface)
-			-- game_window.surface.draw_surface (text_image, 10, 10)
-		end
-
-	show_player_menu(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
-		do
-			back_title.draw_self (game_window.surface)
-			players.extend (create {PLAYER} .make (game_surfaces.players[1], 79, 56))
-		end
-
-	show_network_menu(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
-		do
-
-		end
-
 	on_quit(a_timestamp: NATURAL_32)
 			-- Méthode appelée si l'utilisateur quitte la partie (par ex. en fermant la fenêtre).
 		do
@@ -180,16 +136,12 @@ feature {NONE} -- Implementation
 			game_state := a_new_state
 		end
 
-	cancel (a_index: INTEGER)
-		do
 
-		end
 	on_mouse_pressed(a_timestamp: NATURAL_32; a_mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; a_nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		local
 			l_next_spare_card: PATH_CARD
 		do
---			board.refresh_board_surface
 			if game_state.is_equal ("ok") then
 				if a_mouse_state.is_right_button_pressed then
 					l_next_spare_card := board.get_next_spare_card_row (4, true)
@@ -217,12 +169,11 @@ feature {NONE} -- Implementation
 						spare_card.set_y_offset(a_mouse_state.y - spare_card.y)
 				end
 			elseif game_state.is_equal ("start") then
-				btn_create_game.execute_actions (a_mouse_state)
-				btn_join_game.execute_actions (a_mouse_state)
+				menu_title_screen.check_btn(a_mouse_state)
 			elseif game_state.is_equal ("menu_player") then
-
+				menu_player.check_btn(a_mouse_state)
 			elseif game_state.is_equal ("menu_join") then
-
+				-- À faire
 			end
 
 		end
@@ -232,13 +183,9 @@ feature {NONE} -- Implementation
 			Result := (mouse.x >= x1) and (mouse.x < x2) and (mouse.y >= y1) and (mouse.y < y2)
 		end
 
-	add_player (a_player: PLAYER)
-		do
-			if players.count.is_less (4) then
-				players.extend (a_player)
-				-- used_sprites.extend (v: G)
-			end
-		end
+
+
+
 
 	rotate_spare_card(a_steps: INTEGER)
 			-- Méthode qui se déclenche lorsq'on clique sur
@@ -249,8 +196,6 @@ feature {NONE} -- Implementation
 			spare_card.rotate (a_steps)
 			spare_card.play_rotate_sfx
 		end
-
-
 
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.

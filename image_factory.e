@@ -143,7 +143,7 @@ feature {NONE} -- Implementation
 
 	init_player_choice_menu_surfaces:ARRAYED_LIST[GAME_SURFACE]
 		do
-			create Result.make(10)
+			create Result.make(15)
 			Result.extend (img_to_surface ("Images/back_player1.png"))
 			Result.extend (img_to_surface ("Images/back_player2.png"))
 			Result.extend (img_to_surface ("Images/back_player3.png"))
@@ -151,11 +151,15 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/back_connexion_choice.png"))
 			Result.extend (img_to_surface ("Images/back_local.png"))
 			Result.extend (img_to_surface ("Images/back_network.png"))
+			Result.extend (img_to_surface ("Images/p1_preview.png"))
+			Result.extend (img_to_surface ("Images/p2_preview.png"))
+			Result.extend (img_to_surface ("Images/p3_preview.png"))
+			Result.extend (img_to_surface ("Images/p4_preview.png"))
 
 
 		end
 
-feature {GAME_ENGINE, PLAYER_SELECT_MENU_SURFACE} -- Attributs
+feature {GAME_ENGINE, MENU, PLAYER_SELECT_MENU_SURFACE} -- Attributs
 
 	path_cards: ARRAYED_LIST[LIST[GAME_SURFACE]]
 	players: ARRAYED_LIST[LIST[GAME_SURFACE]]
