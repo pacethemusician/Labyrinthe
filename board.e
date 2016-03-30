@@ -21,10 +21,10 @@ feature {NONE} -- Initialisation
 feature {BOARD_ENGINE} -- Implementation
 
 	board_paths : ARRAYED_LIST[ARRAYED_LIST[PATH_CARD]]
-		-- Liste des PATH_CARDS contenuent dans `current'.
+		-- Liste des `PATH_CARD' contenues dans `current'.
 
 	init_board_paths (a_surfaces: LIST[LIST[GAME_SURFACE]]; a_items: LIST[GAME_SURFACE])
-			-- Initialise `board_paths' en le remplissant de PATH_CARD.
+			-- Initialise `board_paths' en le remplissant de `PATH_CARD'.
 		local
 			l_type_amount: ARRAYED_LIST[INTEGER]
 			l_rng: GAME_RANDOM

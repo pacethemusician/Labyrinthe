@@ -4,9 +4,12 @@ note
 	date: "15 Février 2016"
 	revision: "0.2"
 
-deferred class
+class
 	SPRITE
 
+create
+	make
+	
 feature {NONE} -- Initialisation
 
 	make (a_default_surface: GAME_SURFACE; a_x, a_y: INTEGER_32)
@@ -17,7 +20,7 @@ feature {NONE} -- Initialisation
 			set_y(a_y)
 		end
 
-feature {ENGINE, BOARD, PLAYER_SELECT_MENU_SURFACE} -- Implementation
+feature -- Implementation
 
 	draw_self (destination_surface: GAME_SURFACE)
 			-- Dessiner `current' sur `destination_surface'.
@@ -59,7 +62,7 @@ feature {ENGINE, BOARD, PLAYER_SELECT_MENU_SURFACE} -- Implementation
 			is_assign: current_surface = a_surface
 		end
 
-feature {GAME_ENGINE, BOARD, PLAYER} -- Attributs
+feature -- Attributs
 
 	x: INTEGER_32 assign set_x
 			-- La position horizontale du `current'.

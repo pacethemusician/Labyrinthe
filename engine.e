@@ -1,8 +1,8 @@
 note
-	description: "Summary description for {ENGINE}."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Classe abstraite pour défénir la base des engins (menus et jeu)"
+	author: "Pascal Belisle"
+	date: "Mars 2016"
+	revision: ""
 
 deferred class
 	ENGINE
@@ -16,7 +16,7 @@ feature {NONE} -- Initialization
 		end
 
 
-feature {GAME_ENGINE} -- Implementation
+feature -- Implementation
 
 	image_factory: IMAGE_FACTORY
 
@@ -26,15 +26,12 @@ feature {GAME_ENGINE} -- Implementation
 	check_btn(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
 			-- déclanche l'action des boutons s'il y a click
 		deferred
-
 		end
-
-	on_mouse_move(
 
 	show(a_game_window:GAME_WINDOW_SURFACED)
 		do
-			across on_screen_sprites as la_sprites  loop
-				la_sprites.item.draw_self (a_game_window.surface)
+			across on_screen_sprites as la_on_screen_sprites  loop
+				la_on_screen_sprites.item.draw_self (a_game_window.surface)
 			end
 		end
 end

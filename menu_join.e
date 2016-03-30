@@ -21,7 +21,7 @@ feature {NONE} -- Initialisation
 	make (a_image_factory: IMAGE_FACTORY)
 		do
 			Precursor(a_image_factory)
-			create background.make (image_factory.backgrounds[2])
+			create background.make (image_factory.backgrounds[2], 0, 0)
 		end
 
 end

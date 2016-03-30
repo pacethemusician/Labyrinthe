@@ -24,7 +24,7 @@ feature {NONE} -- Initialization
 		end
 
 feature
-	background : BACKGROUND
+	background : SPRITE
 
 	is_done: BOOLEAN
 	choice: INTEGER
@@ -33,8 +33,6 @@ feature
 		do
 			Result := choice = 1
 		end
-
-
 
 	buttons: LIST[BUTTON]
 
