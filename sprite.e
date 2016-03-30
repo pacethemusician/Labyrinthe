@@ -17,7 +17,7 @@ feature {NONE} -- Initialisation
 			set_y(a_y)
 		end
 
-feature {GAME_ENGINE, BOARD, MENU, PLAYER_SELECT_MENU_SURFACE} -- Implementation
+feature {ENGINE, BOARD, PLAYER_SELECT_MENU_SURFACE} -- Implementation
 
 	draw_self (destination_surface: GAME_SURFACE)
 			-- Dessiner `current' sur `destination_surface'.

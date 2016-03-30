@@ -1,5 +1,5 @@
 ﻿note
-	description : "projet Labyrinthe application root class"
+	description : "Projet Labyrinthe application root class"
 	author: "Pascal Belisle et Charles Lemay"
 	date: "1 mars 2016"
 	version: "24 mars 2016"
@@ -17,7 +17,7 @@ create
 feature {NONE} -- Initialisation
 
 	make
-		-- Créé les ressources et lancé le jeu.
+		-- Créer les ressources et lance le jeu.
 		-- "Gérer les erreurs!!!!!"
 
 		local
@@ -29,30 +29,8 @@ feature {NONE} -- Initialisation
 			l_window_builder.set_title ("Shameless labyrinthe clone")
 			l_window := l_window_builder.generate_window
 
-			create game_surfaces.make
-			create spare_card.make(3, game_surfaces.path_cards[3], 801, 144, 1, game_surfaces.items)
-			create board.make (game_surfaces.path_cards, game_surfaces.items)
-			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
-			create {ARRAYED_LIST[PLAYER]} players.make (4)
-
-			create {MENU_PLAYER} menu_player.make (game_surfaces)
-			create {MENU_TITLE_SCREEN} menu_title_screen.make (game_surfaces)
-			-- create {MENU_CONNEXION} menu_connexion.make (game_surfaces)
-			create back.make (game_surfaces.backgrounds[1])
-			create current_player.make (game_surfaces.players[1], 0, 0)
-			create btn_rotate_left.make (game_surfaces.buttons[1], 745, 159)
-			create btn_rotate_right.make (game_surfaces.buttons[2], 904, 159)
-			game_state := "start"
-
-			on_screen_sprites.extend (back)
-			on_screen_sprites.extend (btn_rotate_left)
-			on_screen_sprites.extend (btn_rotate_right)
-			on_screen_sprites.extend (spare_card)
-			across board.board_paths as l_rows loop
-				across l_rows.item as l_cards loop
-					on_screen_sprites.extend (l_cards.item)
-				end
-			end
+			create image_factory.make
+			create {MENU_TITLE_SCREEN} current_engine.make (image_factory)
 
 			-- Création des agents:
 			game_library.quit_signal_actions.extend (agent on_quit(?))
@@ -69,45 +47,40 @@ feature {NONE} -- Initialisation
 
 
 feature {NONE} -- Implementation
-	game_surfaces: IMAGE_FACTORY
-	game_state: STRING
-		-- Le `game_state' contient l'état du jeu:
-		-- "start" on ouvre l'écran titre pour lancer une nouvelle partie
-		-- "ok" le GAME_ENGINE attend une action du `current_player'
-		-- "busy" le GAME_ENGINE performe une action, il faut attendre
-		-- "drag" quand l'utilisateur déplace la `spare_card'.
-		-- "menu_player" ou "menu_join" affiche le menu x
-	back:BACKGROUND
-	board: BOARD
-	btn_rotate_left, btn_rotate_right: BUTTON
-
-	on_screen_sprites: LIST[SPRITE]
-		-- Liste des sprites à afficher.
-	spare_card: PATH_CARD
-		-- La carte que le joueur doit placer
-	current_player: PLAYER
-	players: LIST[PLAYER]
-	menu_player, menu_title_screen: MENU
-	-- menu_connexion: MENU
-
+	image_factory: IMAGE_FACTORY
+		-- Contient toutes les images du projet
+	current_engine:ENGINE
+		-- Pointe vers l'engin en court (différents menus et jeu)
 
 	on_iteration(a_timestamp:NATURAL_32; game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
 		do
-			if game_state.is_equal ("start") then
-				if (menu_title_screen.done = false) then
-					menu_title_screen.show(a_timestamp, game_window)
+			if attached {MENU_TITLE_SCREEN} current_engine as la_menu_title_screen then
+				if not la_menu_title_screen.is_done then
+					la_menu_title_screen.show(game_window)
 				else
-					game_state := menu_title_screen.choice
+					inspect la_menu_title_screen.choice
+					when 1 then
+						current_engine := create {MENU_PLAYER}.make(image_factory)
+					when 2 then
+						current_engine := create {MENU_JOIN}.make(image_factory)
+					end
 				end
-
-			elseif game_state.is_equal ("menu_player") then
-				menu_player.show (a_timestamp, game_window)
-			elseif game_state.is_equal ("menu_join") then
-				-- menu_connexion.show(a_timestamp, game_window)
+			elseif attached {MENU_PLAYER} current_engine as la_menu_player then
+				if la_menu_player.is_done then
+					la_menu_player.show (game_window)
+				else
+					inspect la_menu_player.choice
+					when 1 then
+						-- "Récupérer la liste des `JOUEUR'"
+						-- "Créer le GAME_ENGINE pour démarrer la partie
+					end
+				end
+			elseif attached {MENU_JOIN} current_engine as la_menu_join then
+				la_menu_join.show(game_window)
 			else
 				board.adjust_paths(32)
-				if game_state.is_equal ("ok") then
+				if not is_dragging then
 					spare_card.approach_point (801, 144, 64)
 				end
 				if not current_player.path.is_empty then
@@ -130,19 +103,12 @@ feature {NONE} -- Implementation
 			game_library.stop  -- Stop the controller loop (allow game_library.launch to return)
 		end
 
-	change_state(a_new_state:STRING)
-			-- change le `game_state'
-		do
-			game_state := a_new_state
-		end
-
-
 	on_mouse_pressed(a_timestamp: NATURAL_32; a_mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; a_nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		local
 			l_next_spare_card: PATH_CARD
 		do
-			if game_state.is_equal ("ok") then
+			if not is_dragging then
 				if a_mouse_state.is_right_button_pressed then
 					l_next_spare_card := board.get_next_spare_card_row (4, true)
 					board.rotate_row (4, spare_card, true)
@@ -164,15 +130,12 @@ feature {NONE} -- Implementation
 					end
 					-- Si le joueur clique sur la carte jouable:
 				elseif click_on(a_mouse_state, spare_card.x, spare_card.y, spare_card.x + 84, spare_card.y + 84) then
-						game_state := "drag"
+						is_dragging := True
 						spare_card.set_x_offset(a_mouse_state.x - spare_card.x)
 						spare_card.set_y_offset(a_mouse_state.y - spare_card.y)
 				end
-			elseif game_state.is_equal ("start") then
-				menu_title_screen.check_btn(a_mouse_state)
-			elseif game_state.is_equal ("menu_player") then
-				menu_player.check_btn(a_mouse_state)
-			elseif game_state.is_equal ("menu_join") then
+			else
+				current_engine.check_btn(a_mouse_state)
 				-- À faire
 			end
 
@@ -185,46 +148,25 @@ feature {NONE} -- Implementation
 
 
 
-
-
-	rotate_spare_card(a_steps: INTEGER)
-			-- Méthode qui se déclenche lorsq'on clique sur
-			-- btn_rotate_left ou btn_rotate_right.
-		require
-			a_steps.abs <= 4
-		do
-			spare_card.rotate (a_steps)
-			spare_card.play_rotate_sfx
-		end
-
 	on_mouse_released(a_timestamp: NATURAL_32; mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.
 		do
-			if game_state.is_equal ("drag") then
+			if is_dragging then
 				-- "Vérifier si la spare_card est au-dessus d'une zone dropable"
 
 				-- Sinon on reset:
 				spare_card.x := 801
 				spare_card.y := 144
-				game_state := "ok"
+				is_dragging := false
 			end
 		end
 
 	on_mouse_move(a_timestamp: NATURAL_32; a_mouse_state: GAME_MOUSE_MOTION_STATE; a_delta_x, a_delta_y: INTEGER_32)
-		-- Routine de mise à jour du drag and drop
+			-- Routine de mise à jour du drag and drop
 		do
-			if a_mouse_state.is_left_button_pressed and game_state.is_equal ("drag") then
-				spare_card.x := a_mouse_state.x - spare_card.x_offset
-				spare_card.y := a_mouse_state.y - spare_card.y_offset
+			if attached {BOARD_ENGINE} current_engine as la_game_engine then
+				la_game_engine.on_mouse_move(a_mouse_state)
 			end
-
-		end
-
-feature {PLAYER_SELECT_MENU_SURFACE} -- implementation
-
-	cancel_menu_choice(a_index: INTEGER)
-		do
-
 		end
 
 feature {NONE} -- Constantes
@@ -236,4 +178,3 @@ feature {NONE} -- Constantes
 		-- La hauteur de la fenêtre en pixels.
 
 end
-

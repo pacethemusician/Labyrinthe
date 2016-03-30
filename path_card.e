@@ -66,7 +66,7 @@ feature {NONE} -- Initialisation
 			rotate(a_rotation - 1)
 		end
 
-feature {BOARD, GAME_ENGINE}
+feature
 
 	play_rotate_sfx
 		do

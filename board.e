@@ -7,12 +7,6 @@
 class
 	BOARD
 
---inherit
---	SPRITE
---		rename
---			make as make_sprite
---		end
-
 create
 	make
 
@@ -22,34 +16,12 @@ feature {NONE} -- Initialisation
 
 		do
 			init_board_paths(a_surfaces, a_items)
---			create board_surface.make(84 * 7, 84 * 7)
---			refresh_board_surface
---			make_sprite(board_surface, 56, 56)
 		end
 
-feature {GAME_ENGINE} -- Implementation
+feature {BOARD_ENGINE} -- Implementation
 
 	board_paths : ARRAYED_LIST[ARRAYED_LIST[PATH_CARD]]
 		-- Liste des PATH_CARDS contenuent dans `current'.
-
---	board_surface: GAME_SURFACE
---		-- Surface sur laquelle est dessinée la liste "board_paths".
-
---	refresh_board_surface
---		-- Mets à jour board_surface.
---		do
---			across
---				board_paths as l_board
---            loop
---            	across
---            		l_board.item as l_row
---            	loop
---            		if l_row.item /= void then
---            			l_row.item.draw_self(board_surface)
---            		end
---            	end
---            end
---		end
 
 	init_board_paths (a_surfaces: LIST[LIST[GAME_SURFACE]]; a_items: LIST[GAME_SURFACE])
 			-- Initialise `board_paths' en le remplissant de PATH_CARD.

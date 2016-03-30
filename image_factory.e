@@ -14,7 +14,7 @@ inherit
 create
 	make
 
-feature {GAME_ENGINE} -- Initialisation
+feature {NONE} -- Initialization
 
 	make
 		do
@@ -110,7 +110,7 @@ feature {NONE} -- Implementation
 	init_button_surfaces:ARRAYED_LIST[GAME_SURFACE]
 
 		do
-			create Result.make(10)
+			create Result.make(15)
 			Result.extend (img_to_surface ("Images/btn_rotate_left.png"))
 			Result.extend (img_to_surface ("Images/btn_rotate_right.png"))
 			Result.extend (img_to_surface ("Images/btn_new_game.png"))
@@ -120,6 +120,7 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/btn_add_local.png"))
 			Result.extend (img_to_surface ("Images/btn_add_net.png"))
 			Result.extend (img_to_surface ("Images/btn_cancel.png"))
+			Result.extend (img_to_surface ("Images/btn_go.png"))
 		end
 
 	init_background_surfaces:ARRAYED_LIST[GAME_SURFACE]
@@ -156,10 +157,9 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/p3_preview.png"))
 			Result.extend (img_to_surface ("Images/p4_preview.png"))
 
-
 		end
 
-feature {GAME_ENGINE, MENU, PLAYER_SELECT_MENU_SURFACE} -- Attributs
+feature
 
 	path_cards: ARRAYED_LIST[LIST[GAME_SURFACE]]
 	players: ARRAYED_LIST[LIST[GAME_SURFACE]]
