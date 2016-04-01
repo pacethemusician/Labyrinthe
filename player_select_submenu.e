@@ -18,100 +18,76 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_image_factory: IMAGE_FACTORY; a_x, a_y: INTEGER; a_used_sprites: LIST[INTEGER]; a_available_sprites: LIST[BOOLEAN])
+	make (a_index: INTEGER; a_image_factory: IMAGE_FACTORY; a_x, a_y: INTEGER; a_available_sprites: LIST[BOOLEAN]; a_sprite_list: LIST[ANIMATED_SPRITE])
 		do
 			make_menu (a_image_factory)
 			x := a_x
 			y := a_y
+			index := a_index;
 			available_sprites := a_available_sprites
 			sprite_index := first_available_index(1)
-			sprite_preview_surface_list := a_sprite_preview_surface_list
-
-			create btn_cancel_p2.make (image_factory.buttons[9], 548, 135)
-			create btn_cancel_p3.make (image_factory.buttons[9], 290, 323)
-			create btn_cancel_p4.make (image_factory.buttons[9], 548, 323)
-			create background.make (image_factory.player_choice_menu.at(1), x, y)
+			sprite_list := a_sprite_list
+			create btn_cancel.make (image_factory.buttons[9], x + 208, y + 5)
+			create background.make (image_factory.player_choice_menu.at(index), x, y)
 			create left_arrow.make (image_factory.buttons[5], x + 35, y + 74)
 			create right_arrow.make (image_factory.buttons[6], x + 164, y + 74)
 
-			left_arrow.on_click_actions.extend (agent switch_sprite_index(1))
-			right_arrow.on_click_actions.extend (agent switch_sprite_index(-1))
-			btn_cancel_p2.on_click_actions.extend (agent cancel(2))
-			btn_cancel_p3.on_click_actions.extend (agent cancel(3))
-			btn_cancel_p4.on_click_actions.extend (agent cancel(4))
+			left_arrow.on_click_actions.extend (agent set_sprite_index(first_available_index(-1)))
+			right_arrow.on_click_actions.extend (agent set_sprite_index(first_available_index(1)))
+			btn_cancel.on_click_actions.extend (agent cancel(index))
 
 			buttons.extend(left_arrow)
 			buttons.extend(right_arrow)
-			buttons.extend (btn_cancel_p2)
-			buttons.extend (btn_cancel_p3)
-			buttons.extend (btn_cancel_p4)
+			buttons.extend (btn_cancel)
 
 			on_screen_sprites.extend (background)
+			on_screen_sprites.extend (sprite_list[index])
+			on_screen_sprites.at (2).x := x + 100
+			on_screen_sprites.at (2).y := y + 30
 			on_screen_sprites.extend (left_arrow)
 			on_screen_sprites.extend (right_arrow)
-			on_screen_sprites.extend (btn_cancel_p2)
-			on_screen_sprites.extend (btn_cancel_p3)
-			on_screen_sprites.extend (btn_cancel_p4)
-			on_screen_sprites.extend (create {SPRITE} .make (sprite_preview_surface_list[1], x + 87, y + 35))
+			if index > 1 then
+				on_screen_sprites.extend (btn_cancel)
+			end
 		end
 
 
 feature {MENU_PLAYER} -- Implementation
 
 	left_arrow, right_arrow: BUTTON
-	btn_cancel_p2, btn_cancel_p3, btn_cancel_p4: BUTTON
+	btn_cancel: BUTTON
 	sprite_index: INTEGER assign set_sprite_index
-	sprite_preview_surface_list: LIST[GAME_SURFACE]
+	sprite_list: LIST[ANIMATED_SPRITE]
 	available_sprites: LIST[BOOLEAN]
+	index: INTEGER
+	 	-- La position de `current' dans la `player_select_submenus' de la classe `MENU_PLAYER'
 	x, y: INTEGER
 		-- Position du sous-menu
 
-	first_available_index (a_direction: INTEGER): INTEGER
-		-- Trouve un sprite inutilisé en vérifiant `available_sprites'
-		-- `a_direction' indicte dans quel sens. 1 = ordre croissant, -1 = décroissant
-		local
-			found: BOOLEAN
-		do
-			if (a_direction > 1) then
-				Result := 1
-				from found := false	until found	loop
-					if used_sprites.has (Result) then
-						Result := Result + 1
-					else
-						found := true
-					end
-				end
-			else
-				Result := 5
-				from found := false until found loop
-					if used_sprites.has (Result) then
-						Result := Result - 1
-					else
-						found := true
-					end
-				end
-			end
-		end
+	is_cancel_selected: BOOLEAN assign set_is_cancel_selected
 
-	switch_sprite_index(a_direction: INTEGER)
-		-- Change le sprite en appelant
+	set_is_cancel_selected (a_value: BOOLEAN)
+		-- Setter pour `is_cancel_selected'
 		do
-			sprite_index := first_available_index(a_direction)
+			is_cancel_selected := a_value
 		end
 
 	cancel (a_index: INTEGER)
 		do
+			is_done := True
+			is_cancel_selected := True
+		end
 
+	first_available_index(a_direction: INTEGER):INTEGER
+			-- Retourne l'index du premier `SPRITE' disponible dans `available_sprites'
+		do
+
+			Result := 0
 		end
 
 	set_sprite_index(a_index: INTEGER)
 		do
 			sprite_index := a_index
 		end
-
-feature {NONE} -- Private
-
-	-- arcade_font_36: TEXT_FONT
-	-- text_image: GAME_SURFACE
 
 end

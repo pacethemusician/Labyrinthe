@@ -28,15 +28,15 @@ feature {NONE} -- Initialisation
 			create background.make (image_factory.backgrounds[2], 0, 0)
 			create {ARRAYED_LIST[PLAYER_SELECT_SUBMENU]} player_select_submenus.make(4)
 
-			create {ARRAYED_LIST[GAME_SURFACE]} sprite_preview_surface_list.make (5)
-			sprite_preview_surface_list.extend(image_factory.player_choice_menu[8])
-			sprite_preview_surface_list.extend(image_factory.player_choice_menu[9])
-			sprite_preview_surface_list.extend(image_factory.player_choice_menu[10])
-			sprite_preview_surface_list.extend(image_factory.player_choice_menu[11])
+			create {ARRAYED_LIST[ANIMATED_SPRITE]} sprite_preview_surface_list.make (5)
+			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (1)[1], 22, 10, 0, 0))
+			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (2)[1], 22, 10, 0, 0))
+			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (3)[1], 22, 10, 0, 0))
+			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (4)[1], 22, 10, 0, 0))
+			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (5)[1], 22, 10, 0, 0))
 
 			-- Action des boutons:
 			btn_add_player.on_click_actions.extend (agent add_player)
-
 			btn_go.on_click_actions.extend (agent start_game)
 			buttons.extend(btn_add_player)
 
@@ -54,12 +54,19 @@ feature {GAME_ENGINE} -- Implementation
 
 	player_select_submenus: LIST[PLAYER_SELECT_SUBMENU]
 	available_sprites: LIST[BOOLEAN]
-	sprite_preview_surface_list: LIST[GAME_SURFACE]
+	sprite_preview_surface_list: LIST[ANIMATED_SPRITE]
 	btn_add_player, btn_add_connexion: BUTTON
-
 	btn_go: BUTTON
 
+	is_go_selected: BOOLEAN assign set_is_go_selected
+
+	set_is_go_selected (a_value: BOOLEAN)
+		do
+			is_go_selected := a_value
+		end
+
 	add_player
+		-- Ajoute un objet `PLAYER_SELECT_SUBMENU' à `player_select_submenus'
 		local
 			l_x, l_y, l_count: INTEGER
 		do
@@ -79,7 +86,18 @@ feature {GAME_ENGINE} -- Implementation
 					l_x := 340
 					l_y := 318
 				end
-				player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (image_factory, l_x, l_y, used_sprites, sprite_preview_surface_list))
+				player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (l_count + 1, image_factory, l_x, l_y, available_sprites, sprite_preview_surface_list))
+			end
+		end
+
+	get_players:LIST[PLAYER]
+		local
+			l_count: INTEGER
+		do
+			l_count := player_select_submenus.count
+			create {ARRAYED_LIST[PLAYER]} Result.make (l_count)
+			across player_select_submenus as la_players loop
+				Result.extend (create {PLAYER} .make (image_factory.players[la_players.item.index], 0, 0))
 			end
 		end
 
@@ -98,13 +116,8 @@ feature {GAME_ENGINE} -- Implementation
 
 	start_game
 		do
-			is_done := true
-		end
-
-	get_players: LIST[PLAYER]
-		-- Retourne la liste des joueurs sélectionnés
-		do
-			create {ARRAYED_LIST[PLAYER]} Result.make(player_select_submenus.count)
+			is_done := True
+			is_go_selected := True
 		end
 
 	on_mouse_move(a_mouse_state: GAME_MOUSE_MOTION_STATE)

@@ -47,6 +47,7 @@ feature {NONE} -- Initialisation
 			end
 
 			create image_factory.make
+			create {ARRAYED_LIST[PLAYER]} players.make (4)
 			create {MENU_TITLE_SCREEN} current_engine.make (image_factory)
 
 			-- Création des agents:
@@ -56,8 +57,6 @@ feature {NONE} -- Initialisation
 			l_window.mouse_button_released_actions.extend (agent on_mouse_released(?,?,?))
 			l_window.mouse_motion_actions.extend (agent on_mouse_move(?, ?, ?, ?))
 
-
-
 			game_library.launch
 
 		end
@@ -66,6 +65,8 @@ feature {NONE} -- Initialisation
 feature {NONE} -- Implementation
 
 	music_source: AUDIO_SOURCE
+
+	players: LIST[PLAYER]
 
 	image_factory: IMAGE_FACTORY
 		-- Contient toutes les images du projet
@@ -89,8 +90,13 @@ feature {NONE} -- Implementation
 				if not la_menu_player.is_done then
 					la_menu_player.show (a_game_window)
 				else
-					-- "Récupérer la liste des `JOUEUR'"
-					-- "Créer le GAME_ENGINE pour démarrer la partie"
+					if la_menu_player.is_go_selected then
+						players := la_menu_player.get_players
+						current_engine := create {BOARD_ENGINE}.make(image_factory, players)
+
+					-- elseif la_menu_player.is_cancel_selected then
+						-- À faire...
+					end
 				end
 			elseif attached {MENU_JOIN} current_engine as la_menu_join then
 				la_menu_join.show(a_game_window)

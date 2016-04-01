@@ -1,10 +1,10 @@
 note
 	description: "Objet ayant une animation et des coordonnées pouvant être affichées."
-	author: "Pascal Belisle et Charles Lemay"
-	date: "15 Février 2016"
-	revision: None
+	author: "Charles Lemay"
+	date: "Février 2016"
+	revision: ""
 
-deferred class
+class
 	ANIMATED_SPRITE
 
 inherit
@@ -14,6 +14,9 @@ inherit
 		redefine
 			draw_self
 		end
+
+create
+	make
 
 feature {NONE} -- Initialisation
 
