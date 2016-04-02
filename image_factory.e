@@ -152,11 +152,6 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/back_connexion_choice.png"))
 			Result.extend (img_to_surface ("Images/back_local.png"))
 			Result.extend (img_to_surface ("Images/back_network.png"))
-			Result.extend (img_to_surface ("Images/p1_preview.png"))
-			Result.extend (img_to_surface ("Images/p2_preview.png"))
-			Result.extend (img_to_surface ("Images/p3_preview.png"))
-			Result.extend (img_to_surface ("Images/p4_preview.png"))
-
 		end
 
 feature

@@ -10,7 +10,7 @@ class
 inherit
 	MENU
 		redefine
-			make, show
+			make, show, check_btn
 		end
 
 create
@@ -24,7 +24,14 @@ feature {NONE} -- Initialisation
 			create btn_add_player.make (image_factory.buttons[7], 80, 510)
 			create btn_add_connexion.make (image_factory.buttons[8], 80, 589)
 			create btn_go.make (image_factory.buttons[10], 434, 510)
+
 			create {ARRAYED_LIST[BOOLEAN]} available_sprites.make (5)
+			available_sprites.extend (True)
+			available_sprites.extend (True)
+			available_sprites.extend (True)
+			available_sprites.extend (True)
+			available_sprites.extend (True)
+
 			create background.make (image_factory.backgrounds[2], 0, 0)
 			create {ARRAYED_LIST[PLAYER_SELECT_SUBMENU]} player_select_submenus.make(4)
 
@@ -101,11 +108,56 @@ feature {GAME_ENGINE} -- Implementation
 			end
 		end
 
+	update_player_select_submenus(a_index: INTEGER):LIST[PLAYER_SELECT_SUBMENU]
+			-- Recréer et retourne une liste de `PLAYER_SELECT_SUBMENU' sans celui cancellé
+		local
+			l_x, l_y, i: INTEGER
+			l_skipped: BOOLEAN
+		do
+			i := 1
+			create {ARRAYED_LIST[PLAYER_SELECT_SUBMENU]} Result.make (4)
+			across player_select_submenus as la_list loop
+				if i = a_index and not l_skipped then
+					l_skipped := True
+				else
+					inspect i
+						when 1 then
+							l_x := 80
+							l_y := 130
+						when 2 then
+							l_x := 340
+							l_y := 130
+						when 3 then
+							l_x := 80
+							l_y := 318
+						else
+							l_x := 340
+							l_y := 318
+					end
+					la_list.item.update_coordinates(l_x, l_y, i)
+					Result.extend (la_list.item)
+					i := i + 1
+				end
+			end
+		end
+
+	check_cancellation
+			-- On vérifie si le joueur a cancellé un `PLAYER_SELECT_SUBMENU'
+		do
+			across player_select_submenus as la_player_select_submenus loop
+				if la_player_select_submenus.item.is_cancel_selected then
+					player_select_submenus := update_player_select_submenus(la_player_select_submenus.item.index)
+					available_sprites[la_player_select_submenus.item.current_sprite_index] := True
+				end
+			end
+		end
+
 	show(a_game_window:GAME_WINDOW_SURFACED)
 		do
 			Precursor (a_game_window)
+			check_cancellation
 			across player_select_submenus as la_player_select_submenus loop
-				la_player_select_submenus.item.show(a_game_window)
+				la_player_select_submenus.item.show (a_game_window)
 			end
 		end
 
@@ -122,6 +174,15 @@ feature {GAME_ENGINE} -- Implementation
 
 	on_mouse_move(a_mouse_state: GAME_MOUSE_MOTION_STATE)
 		do
+		end
+
+	check_btn (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- On ajoute une vérification pour les sous-menus
+		do
+			Precursor (a_mouse_state)
+			across player_select_submenus as la_list loop
+				la_list.item.check_btn(a_mouse_state)
+			end
 		end
 
 end
