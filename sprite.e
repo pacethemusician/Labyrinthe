@@ -9,7 +9,7 @@ class
 
 create
 	make
-	
+
 feature {NONE} -- Initialisation
 
 	make (a_default_surface: GAME_SURFACE; a_x, a_y: INTEGER_32)
@@ -72,5 +72,14 @@ feature -- Attributs
 
 	current_surface: GAME_SURFACE assign set_surface
 			-- La surface actuelle de `current'. C'est cette image qui est affichée.
+
+invariant
+
+note
+	license: "WTFPL"
+	source: "[
+				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+			]"
 
 end

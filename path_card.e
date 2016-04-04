@@ -173,4 +173,13 @@ feature {NONE}	-- Attributs
 	item_index: INTEGER assign set_item_index
 		-- `item_index' le numéro de l'item, aucun item si index = 0.
 
+invariant
+
+note
+	license: "WTFPL"
+	source: "[
+				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+			]"
+
 end

@@ -1350,3 +1350,78 @@ APPLICATION         make @5
 APPLICATION         root's creation                                     
 <00000000041305A8>                         Routine failure.              Exit
 -------------------------------------------------------------------------------
+Catcall detected in {PROCEDURE}.call for arg#1: expected TUPLE [!GAME_MOUSE_BUTTON_PRESSED_STATE] but got TUPLE
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+PROCEDURE           call @1                valid_operands:              
+<000000000496AD68>                         Precondition violated.        Fail
+-------------------------------------------------------------------------------
+BUTTON              execute_actions @3                                  
+<000000000496AC88>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+BOARD_ENGINE        check_button @2                                     
+<0000000004963C98>  (From MENU)            Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         on_mouse_pressed @1                                 
+<00000000049613C8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           fast_call                                           
+<000000000496C2D8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           call @5                                             
+<000000000496C2D8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ACTION_SEQUENCE     call @22                                            
+<000000000496C218>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_WINDOW_SURFACED
+                    mouse_button_pressed_events_dispatcher @4
+<000000000496B8A8>  (From GAME_WINDOW_EVENTS)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_WINDOW_SURFACED
+                    inline-agent#7 of make @1
+<000000000496B8A8>  (From GAME_WINDOW_EVENTS)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           fast_call                                           
+<000000000496C408>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           call @5                                             
+<000000000496C408>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ACTION_SEQUENCE     call @22                                            
+<000000000496D5D8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_EVENTS_CONTROLLER
+                    decode_event @17       
+<000000000496CF08>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_EVENTS_CONTROLLER
+                    poll_event @8          
+<000000000496CF08>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    update_events @1       
+<000000000496B3C8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    launch @4              
+<000000000496B3C8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @23                                            
+<00000000049613C8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         make @5                                             
+<0000000004961368>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<0000000004961368>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+Catcall detected in {PROCEDURE}.call for arg#1: expected TUPLE [!GAME_MOUSE_BUTTON_PRESSED_STATE] but got TUPLE
+Catcall detected in {PROCEDURE}.call for arg#1: expected TUPLE [!GAME_MOUSE_BUTTON_PRESSED_STATE] but got TUPLE

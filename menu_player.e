@@ -1,8 +1,8 @@
 note
-	description: "Menu pour sélectionner le nombre de joueurs"
+	description: "Sélection du nombre de joueurs et de leur sprite"
 	author: "Pascal Belisle"
 	date: "Mars 2016"
-	revision: ""
+	revision: "1.0"
 
 class
 	MENU_PLAYER
@@ -10,7 +10,7 @@ class
 inherit
 	MENU
 		redefine
-			make, show, check_btn
+			make, show, check_button
 		end
 
 create
@@ -19,61 +19,53 @@ create
 feature {NONE} -- Initialisation
 
 	make (a_image_factory: IMAGE_FACTORY)
+			-- <Precursor>
 		do
 			Precursor(a_image_factory)
-			create btn_add_player.make (image_factory.buttons[7], 80, 510)
-			create btn_add_connexion.make (image_factory.buttons[8], 80, 589)
-			create btn_go.make (image_factory.buttons[10], 434, 510)
-
+			create button_add_player.make (image_factory.buttons[7], 80, 510)
+			create button_add_connexion.make (image_factory.buttons[8], 80, 589)
+			create button_go.make (image_factory.buttons[10], 434, 510)
 			create {ARRAYED_LIST[BOOLEAN]} available_sprites.make (5)
-			available_sprites.extend (True)
-			available_sprites.extend (True)
-			available_sprites.extend (True)
-			available_sprites.extend (True)
-			available_sprites.extend (True)
-
+			create {ARRAYED_LIST[ANIMATED_SPRITE]} sprite_preview_surface_list.make (5)
 			create background.make (image_factory.backgrounds[2], 0, 0)
 			create {ARRAYED_LIST[PLAYER_SELECT_SUBMENU]} player_select_submenus.make(4)
-
-			create {ARRAYED_LIST[ANIMATED_SPRITE]} sprite_preview_surface_list.make (5)
-			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (1)[1], 22, 10, 0, 0))
-			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (2)[1], 22, 10, 0, 0))
-			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (3)[1], 22, 10, 0, 0))
-			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (4)[1], 22, 10, 0, 0))
-			sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (5)[1], 22, 10, 0, 0))
-
-			-- Action des boutons:
-			btn_add_player.on_click_actions.extend (agent add_player)
-			btn_go.on_click_actions.extend (agent start_game)
-			buttons.extend(btn_add_player)
-
-			buttons.extend (btn_go)
+			across 1 |..| 5 as la_index loop
+				available_sprites.extend (True)
+				sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (la_index.item)[1], 22, 10, 0, 0))
+			end
+			button_add_player.on_click_actions.extend (agent add_player)
+			button_go.on_click_actions.extend (agent set_choice(Menu_choice_go))
+			buttons.extend(button_add_player)
+			buttons.extend (button_go)
 			on_screen_sprites.extend(background)
-			on_screen_sprites.extend(btn_add_player)
-			on_screen_sprites.extend(btn_add_connexion)
-			on_screen_sprites.extend(btn_go)
-
+			on_screen_sprites.extend(button_add_player)
+			on_screen_sprites.extend(button_add_connexion)
+			on_screen_sprites.extend(button_go)
 			add_player
-
 		end
 
 feature {GAME_ENGINE} -- Implementation
 
 	player_select_submenus: LIST[PLAYER_SELECT_SUBMENU]
+		-- Contient les choix des personnages des usagers
+
 	available_sprites: LIST[BOOLEAN]
+		-- True si un sprite est disponible à l'index
+
 	sprite_preview_surface_list: LIST[ANIMATED_SPRITE]
-	btn_add_player, btn_add_connexion: BUTTON
-	btn_go: BUTTON
+		-- Contient les sprites affichés par les sous-menus de `player_select_submenus'
 
-	is_go_selected: BOOLEAN assign set_is_go_selected
+	button_add_player: BUTTON
+	button_add_connexion: BUTTON
+	button_go: BUTTON
 
-	set_is_go_selected (a_value: BOOLEAN)
+	is_go_selected: BOOLEAN
 		do
-			is_go_selected := a_value
+			Result := choice = Menu_choice_go
 		end
 
 	add_player
-		-- Ajoute un objet `PLAYER_SELECT_SUBMENU' à `player_select_submenus'
+			-- Ajoute un objet {PLAYER_SELECT_SUBMENU} à `player_select_submenus'
 		local
 			l_x, l_y, l_count: INTEGER
 		do
@@ -95,6 +87,9 @@ feature {GAME_ENGINE} -- Implementation
 				end
 				player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (l_count + 1, image_factory, l_x, l_y, available_sprites, sprite_preview_surface_list))
 			end
+		ensure
+			new_player_added:  old player_select_submenus.count < 4 implies player_select_submenus.count = old player_select_submenus.count + 1
+			new_player_not_over:  old player_select_submenus.count >= 4 implies player_select_submenus.count = old player_select_submenus.count
 		end
 
 	get_players:LIST[PLAYER]
@@ -161,28 +156,32 @@ feature {GAME_ENGINE} -- Implementation
 			end
 		end
 
-	set_is_done (new_value: BOOLEAN)
-		do
-			is_done := new_value
-		end
 
-	start_game
-		do
-			is_done := True
-			is_go_selected := True
-		end
 
 	on_mouse_move(a_mouse_state: GAME_MOUSE_MOTION_STATE)
 		do
 		end
 
-	check_btn (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+	check_button (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
 			-- On ajoute une vérification pour les sous-menus
 		do
 			Precursor (a_mouse_state)
 			across player_select_submenus as la_list loop
-				la_list.item.check_btn(a_mouse_state)
+				la_list.item.check_button(a_mouse_state)
 			end
 		end
+
+feature {NONE} -- Constants
+
+	Menu_choice_go: INTEGER = 1
+
+invariant
+
+note
+	license: "WTFPL"
+	source: "[
+				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+			]"
 
 end
