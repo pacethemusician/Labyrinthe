@@ -2,12 +2,12 @@ note
 	description: "Objet ayant une animation et des coordonnées pouvant être affichées."
 	author: "Charles Lemay"
 	date: "Février 2016"
-	revision: ""
 
 class
 	ANIMATED_SPRITE
 
 inherit
+
 	SPRITE
 		rename
 			make as make_sprite
@@ -22,11 +22,13 @@ feature {NONE} -- Initialisation
 
 	make (a_default_surface: GAME_SURFACE; a_frame_count, a_delay, a_x, a_y: INTEGER_32)
 			-- Initialisation de `current' avec l'animation `a_default_surface' à la position (`a_x', `a_y').
+		require
+			frame_over_zero: a_frame_count > 0
 		do
-			make_sprite(a_default_surface, a_x, a_y)
-			set_frame_count(a_frame_count)
-			set_delay(a_delay)
-			set_timer(0)
+			make_sprite (a_default_surface, a_x, a_y)
+			set_frame_count (a_frame_count)
+			set_delay (a_delay)
+			set_timer (0)
 		end
 
 feature {GAME_ENGINE, PLAYER_SELECT_SUBMENU} -- Implementation
@@ -40,7 +42,7 @@ feature {GAME_ENGINE, PLAYER_SELECT_SUBMENU} -- Implementation
 			l_frame_width := current_surface.width // frame_count
 			l_frame_offset := l_frame_width * (animation_timer // delay)
 			destination_surface.draw_sub_surface (current_surface, l_frame_offset, 0, l_frame_width, current_surface.height, x, y)
-			set_timer(animation_timer + 1)
+			set_timer (animation_timer + 1)
 		end
 
 	change_animation (a_surface: detachable GAME_SURFACE; a_frame_count, a_delay: INTEGER_32)
@@ -52,7 +54,7 @@ feature {GAME_ENGINE, PLAYER_SELECT_SUBMENU} -- Implementation
 			if attached a_surface as surface then
 				make (surface, a_frame_count, a_delay, x, y)
 			else
-				print("Cannot change animation. Surface does not exist.")
+				print ("Cannot change animation. Surface does not exist.")
 			end
 		end
 
@@ -93,13 +95,13 @@ feature {GAME_ENGINE, PLAYER_SELECT_SUBMENU} -- Implementation
 feature {GAME_ENGINE} -- Attributs
 
 	animation_timer: INTEGER_32 assign set_timer
-			-- Timer qui indique l'avancement de `current_surface'.
+			-- 'Timer' qui indique l'avancement de `current_surface'.
 
 	frame_count: INTEGER_32 assign set_frame_count
 			-- Le nombre de 'frames' de l'animation actuelle.
 
 	delay: INTEGER_32 assign set_delay
-			-- Le délai entre chaque changement de 'frame'
+			-- Le délai entre chaque changement de 'frame'.
 
 invariant
 	timer_valid: animation_timer < (frame_count * delay)

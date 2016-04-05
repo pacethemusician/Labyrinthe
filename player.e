@@ -1,13 +1,13 @@
 note
-	description: "Pion d'un joueur et ses informations"
+	description: "Pion d'un joueur et ses informations."
 	author: "Pascal Belisle et Charles Lemay"
 	date: "18 février 2016"
-	revision: "0.1"
 
 class
 	PLAYER
 
 inherit
+
 	ANIMATED_SPRITE
 		rename
 			make as make_animated_sprite
@@ -18,30 +18,30 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_surfaces: LIST[GAME_SURFACE]; a_x, a_y:INTEGER_32)
-		-- Initialisation de `current' à la position (`a_x', `a_y').
-		-- le offset x du player par rapport à la path_card est de 23 pixels
+	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32)
+			-- Initialisation de `current' à la position (`a_x', `a_y').
+			-- le offset x du player par rapport à la path_card est de 23 pixels
 		do
 			x := a_x
 			y := a_y
 			animations := a_surfaces
-			make_animated_sprite (a_surfaces[1], 22, 5, x, y)
+			make_animated_sprite (a_surfaces [1], 22, 5, x, y)
 			create path.make
 			path_index := 1
 		end
 
 feature {ENGINE} -- Implementation
 
-	animations : LIST[GAME_SURFACE]
-		-- Liste des animations du joueur.
+	animations: LIST [GAME_SURFACE]
+			-- Liste des animations du joueur.
 
-	path: LINKED_LIST[PATH_CARD] assign set_path
-		-- Le chemin que `current' peut suivre avec `follow_path'.
+	path: LINKED_LIST [PATH_CARD] assign set_path
+			-- Le chemin que `current' peut suivre avec `follow_path'.
 
 	path_index: INTEGER
-		-- L'index du PATH dans `current_path' vers lequel `current' se déplace.
+			-- L'index du {PATH} dans `current_path' vers lequel `current' se déplace.
 
-	set_path(a_path_list: LINKED_LIST[PATH_CARD])
+	set_path (a_path_list: LINKED_LIST [PATH_CARD])
 			-- Assigne `a_path_list' à `path'.
 		do
 			path := a_path_list
@@ -54,24 +54,23 @@ feature {ENGINE} -- Implementation
 		require
 			has_path: not path.is_empty
 		do
-			approach_point (path[path_index].x + 23, path[path_index].y, 3)
-			if (x = path[path_index].x + 23 and y = path[path_index].y) then
+			approach_point (path [path_index].x + 23, path [path_index].y, 3)
+			if (x = path [path_index].x + 23 and y = path [path_index].y) then
 				path_index := path_index + 1
 				if path_index > path.count then
-					change_animation (animations[1], 22, 5)
+					change_animation (animations [1], 22, 5)
 					path.wipe_out
 					path_index := 1
-				elseif (path[path_index].x > x) then
-					change_animation (animations[4], 6, 3)
-				elseif (path[path_index].x < x - 23) then
-					change_animation (animations[5], 6, 3)
-				elseif (path[path_index].y > y) then
-					change_animation (animations[2], 6, 3)
-				elseif (path[path_index].y < y) then
-					change_animation (animations[3], 6, 3)
+				elseif (path [path_index].x > x) then
+					change_animation (animations [4], 6, 3)
+				elseif (path [path_index].x < x - 23) then
+					change_animation (animations [5], 6, 3)
+				elseif (path [path_index].y > y) then
+					change_animation (animations [2], 6, 3)
+				elseif (path [path_index].y < y) then
+					change_animation (animations [3], 6, 3)
 				end
 			end
-
 		end
 
 end

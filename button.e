@@ -7,6 +7,7 @@ class
 	BUTTON
 
 inherit
+
 	SPRITE
 		rename
 			make as make_sprite
@@ -26,15 +27,16 @@ feature -- Initialisation
 
 feature -- implementation
 
-	on_click_actions: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
-		-- Liste de procédures éxécutées par `current' quand on clique dessus.
+	on_click_actions: LINKED_LIST [PROCEDURE [ANY, TUPLE]]
+			-- Liste de procédures éxécutées par `current' quand on clique dessus.
 
-	execute_actions(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
-			-- Execute les routines de on_click_actions si la souris est au dessus de `current'.
+	execute_actions (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- Execute les routines de `on_click_actions' si la souris est au dessus de `current'.
 		do
-			if (a_mouse_state.x >= x) and (a_mouse_state.x < (x + current_surface.width))
-			and (a_mouse_state.y >= y) and (a_mouse_state.y < (y + current_surface.height)) then
-				across on_click_actions as l_actions loop
+			if (a_mouse_state.x >= x) and (a_mouse_state.x < (x + current_surface.width)) and (a_mouse_state.y >= y) and (a_mouse_state.y < (y + current_surface.height)) then
+				across
+					on_click_actions as l_actions
+				loop
 					l_actions.item.call
 				end
 			end

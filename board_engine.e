@@ -76,8 +76,8 @@ feature -- Implementation
 		-- La liste de tous les joueurs actifs
 
 	rotate_spare_card(a_steps: INTEGER)
-			-- Méthode qui se déclenche lorsq'on clique sur
-			-- btn_rotate_left ou btn_rotate_right.
+			-- Méthode qui se déclenche lorsqu'on clique sur
+			-- `btn_rotate_left' ou btn_rotate_right.
 		require
 			a_steps.abs <= 4
 		do

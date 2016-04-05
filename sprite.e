@@ -1,23 +1,22 @@
 note
-	description: "Objet pouvant être affiché selon ses coordonnées."
+	description: "Objet pouvant être affiché."
 	author: "Pascal Belisle et Charles Lemay"
 	date: "15 Février 2016"
-	revision: "0.2"
 
 class
 	SPRITE
 
 create
 	make
-	
+
 feature {NONE} -- Initialisation
 
 	make (a_default_surface: GAME_SURFACE; a_x, a_y: INTEGER_32)
 			-- Initialisation de `current' avec `a_default_surface' à la position (`a_x', `a_y').
 		do
 			current_surface := a_default_surface
-			set_x(a_x)
-			set_y(a_y)
+			set_x (a_x)
+			set_y (a_y)
 		end
 
 feature -- Implementation
@@ -28,7 +27,7 @@ feature -- Implementation
 			destination_surface.draw_surface (current_surface, x, y)
 		end
 
-	approach_point (a_x, a_y, a_speed:INTEGER_32)
+	approach_point (a_x, a_y, a_speed: INTEGER_32)
 			-- Approche `current' du point (`a_x', `a_y') d'un maximum de
 			-- `a_speed' verticalement et horizontalement.
 		require
