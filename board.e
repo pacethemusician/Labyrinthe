@@ -79,6 +79,42 @@ feature {BOARD_ENGINE} -- Implementation
 				end
 				l_i := l_i + 1
 			end
+			distribute_items(a_items)
+		end
+
+	distribute_items (a_items: LIST [GAME_SURFACE])
+			-- Change l' `item_index' des {PATH_CARD} contenues dans `board_paths'.
+		local
+			l_rng: GAME_RANDOM
+			l_index_x: INTEGER
+			l_index_y: INTEGER
+			l_item_index: INTEGER
+			l_free_position_found: BOOLEAN
+		do
+			create l_rng
+			from
+				l_item_index := a_items.count
+			until
+				l_item_index <= 0
+			loop
+				l_rng.generate_new_random
+				l_index_x := l_rng.last_random_integer_between (1, board_paths.count)
+				l_rng.generate_new_random
+				l_index_y := l_rng.last_random_integer_between (1, board_paths[l_index_x].count)
+				from
+					l_free_position_found := (board_paths[l_index_x].i_th (l_index_y).item_index = 0)
+				until
+					l_free_position_found = true
+				loop
+					l_index_x := (l_index_x \\ board_paths.count) + 1
+					if l_index_x = 1 then
+						l_index_y := (l_index_y \\ board_paths[l_index_x].count) + 1
+					end
+					l_free_position_found := (board_paths[l_index_x].i_th (l_index_y).item_index = 0)
+				end
+				board_paths[l_index_x].i_th (l_index_y).item_index := l_item_index
+				l_item_index := l_item_index - 1
+			end
 		end
 
 	init_sticky_cards (a_surfaces: LIST [LIST [GAME_SURFACE]]; a_items: LIST [GAME_SURFACE]): ARRAYED_LIST [PATH_CARD]
