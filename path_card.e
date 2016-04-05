@@ -191,4 +191,13 @@ feature -- Attributs
 			-- Index de l'item sur `current' dans la liste `items'.
 			-- Est égual à 0 si aucun item n'est sur `current'.
 
+invariant
+
+note
+	license: "WTFPL"
+	source: "[
+				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+			]"
+
 end

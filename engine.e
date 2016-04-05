@@ -10,6 +10,7 @@ deferred class
 feature {NONE} -- Initialization
 
 	make (a_image_factory: IMAGE_FACTORY)
+			-- Initialisation de `Current' assignant `a_image_factory' à `image_factory'
 		do
 			image_factory := a_image_factory
 			create {LINKED_LIST[SPRITE]} on_screen_sprites.make
@@ -34,4 +35,14 @@ feature -- Implementation
 				la_on_screen_sprites.item.draw_self (a_game_window.surface)
 			end
 		end
+
+invariant
+
+note
+	license: "WTFPL"
+	source: "[
+				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+			]"
+
 end

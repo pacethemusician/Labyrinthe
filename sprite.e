@@ -72,4 +72,13 @@ feature -- Attributs
 	current_surface: GAME_SURFACE assign set_surface
 			-- La surface actuelle de `current'. C'est cette image qui est affichée.
 
+invariant
+
+note
+	license: "WTFPL"
+	source: "[
+				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+			]"
+
 end

@@ -164,4 +164,13 @@ feature
 	player_choice_menu: ARRAYED_LIST[GAME_SURFACE]
 	-- arcade_font_36: TEXT_FONT
 
+invariant
+
+note
+	license: "WTFPL"
+	source: "[
+				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+			]"
+
 end
