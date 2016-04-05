@@ -90,6 +90,7 @@ feature {BOARD_ENGINE} -- Implementation
 			l_index_y: INTEGER
 			l_item_index: INTEGER
 			l_free_position_found: BOOLEAN
+			l_remaining_cards: INTEGER
 		do
 			create l_rng
 			from
@@ -102,7 +103,10 @@ feature {BOARD_ENGINE} -- Implementation
 				l_rng.generate_new_random
 				l_index_y := l_rng.last_random_integer_between (1, board_paths[l_index_x].count)
 				from
-					l_free_position_found := (board_paths[l_index_x].i_th (l_index_y).item_index = 0)
+					l_free_position_found := (board_paths[l_index_x].i_th (l_index_y).item_index = 100)
+					l_remaining_cards := (board_paths.count * board_paths[1].count) - (l_item_index - a_items.count)
+				variant
+					enough_cards: l_remaining_cards
 				until
 					l_free_position_found = true
 				loop
@@ -110,7 +114,8 @@ feature {BOARD_ENGINE} -- Implementation
 					if l_index_x = 1 then
 						l_index_y := (l_index_y \\ board_paths[l_index_x].count) + 1
 					end
-					l_free_position_found := (board_paths[l_index_x].i_th (l_index_y).item_index = 0)
+					l_free_position_found := (board_paths[l_index_x].i_th (l_index_y).item_index = 100)
+					l_remaining_cards := l_remaining_cards - 1
 				end
 				board_paths[l_index_x].i_th (l_index_y).item_index := l_item_index
 				l_item_index := l_item_index - 1
