@@ -93,13 +93,28 @@ feature {GAME_ENGINE} -- Implementation
 		end
 
 	get_players:LIST[PLAYER]
+			-- Créer et retourne la liste des {PLAYER} choisis
 		local
-			l_count: INTEGER
+			l_count, l_x, l_y: INTEGER
 		do
 			l_count := player_select_submenus.count
 			create {ARRAYED_LIST[PLAYER]} Result.make (l_count)
 			across player_select_submenus as la_players loop
-				Result.extend (create {PLAYER} .make (image_factory.players[la_players.item.index], 0, 0))
+				inspect la_players.item.index
+					when 1 then
+						l_x := 79
+						l_y := 56
+					when 2 then
+						l_x := 583
+						l_y := 56
+					when 3 then
+						l_x := 79
+						l_y := 560
+					else
+						l_x := 583
+						l_y := 560
+					end
+				Result.extend (create {PLAYER} .make (image_factory.players[la_players.item.index], l_x, l_y))
 			end
 		end
 
@@ -154,12 +169,6 @@ feature {GAME_ENGINE} -- Implementation
 			across player_select_submenus as la_player_select_submenus loop
 				la_player_select_submenus.item.show (a_game_window)
 			end
-		end
-
-
-
-	on_mouse_move(a_mouse_state: GAME_MOUSE_MOTION_STATE)
-		do
 		end
 
 	check_button (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)

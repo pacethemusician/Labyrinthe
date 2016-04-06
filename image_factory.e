@@ -17,6 +17,7 @@ create
 feature {NONE} -- Initialization
 
 	make
+			-- Initialisation de `current'
 		do
 			-- create arcade_font_36.make ("ARCADECLASSIC.ttf", 36)
 			path_cards := init_path_card_surfaces
@@ -51,7 +52,7 @@ feature {NONE} -- Implementation
 		end
 
 	init_path_card_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
-			-- Retourne une liste des images des PATH_CARD.
+			-- Retournes les {GAME_SURFACE} des {PATH_CARD}
 		do
 			create Result.make (3)
 			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
@@ -72,7 +73,7 @@ feature {NONE} -- Implementation
 		end
 
 	init_player_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
-			-- Retourne une liste des images des PLAYER.
+			-- Retournes les {GAME_SURFACE} des personnages.
 		do
 			create Result.make (4)
 			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(5))
@@ -108,7 +109,7 @@ feature {NONE} -- Implementation
 		end
 
 	init_button_surfaces:ARRAYED_LIST[GAME_SURFACE]
-
+			-- Retournes les {GAME_SURFACE} des boutons.
 		do
 			create Result.make(15)
 			Result.extend (img_to_surface ("Images/btn_rotate_left.png"))
@@ -124,6 +125,7 @@ feature {NONE} -- Implementation
 		end
 
 	init_background_surfaces:ARRAYED_LIST[GAME_SURFACE]
+			-- Retournes les {GAME_SURFACE} des backgrounds.
 		do
 			create Result.make(10)
 			Result.extend (img_to_surface("Images/back_main.png"))
@@ -131,18 +133,16 @@ feature {NONE} -- Implementation
 		end
 
 	init_item_surfaces:ARRAYED_LIST[GAME_SURFACE]
-
-		local
-			i:INTEGER
+			-- Retournes les {GAME_SURFACE} des items.
 		do
 			create Result.make(24)
-			from i := 1 until i = 25 loop
-				Result.extend (img_to_surface ("Images/item" + i.out + ".png"))
-				i := i + 1
+			across 1 |..| 25 as la_index loop
+				Result.extend (img_to_surface ("Images/item" + la_index.item.out + ".png"))
 			end
 		end
 
 	init_player_choice_menu_surfaces:ARRAYED_LIST[GAME_SURFACE]
+			-- Retournes les {GAME_SURFACE} nécessaire aux {PLAYER_SELECT_SUBMENU}
 		do
 			create Result.make(15)
 			Result.extend (img_to_surface ("Images/back_player1.png"))

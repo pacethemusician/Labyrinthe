@@ -1,8 +1,8 @@
 note
-	description: "Summary description for {APPLICATION}."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Classe principale qui lance le jeu et le ferme correctement"
+	author: "Pascal Belisle Louis Marchand"
+	date: "Session Hiver 2016"
+	revision: "1.0"
 
 class
 	APPLICATION
@@ -19,6 +19,7 @@ create
 feature {NONE} -- Initialization
 
 	make
+			-- Initialisation de `Current'
 		local
 			l_engine:detachable GAME_ENGINE
 		do

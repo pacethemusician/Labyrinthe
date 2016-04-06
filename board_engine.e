@@ -23,61 +23,60 @@ feature {NONE} -- Initialization
 		do
 			make_menu (a_image_factory)
 			players := a_players
+			current_player := players[1]
 			create {LINKED_LIST[SPRITE]} on_screen_sprites.make
-			create spare_card.make(3, image_factory.path_cards[3], 801, 144, 1, image_factory.items)
-			create board.make (image_factory.path_cards, image_factory.items)
-			create {ARRAYED_LIST[PLAYER]} players.make (4)
+			create spare_card.make(3, image_factory, 801, 144, 1)
+			create board.make (image_factory)
 			create background.make(image_factory.backgrounds[1], 0, 0)
-			create current_player.make (image_factory.players[1], 0, 0)
 			create btn_rotate_left.make (image_factory.buttons[1], 745, 159)
 			create btn_rotate_right.make (image_factory.buttons[2], 904, 159)
-			create btn_board.make (create {GAME_SURFACE} .make (644, 644), 56, 56)
-			create btn_spare_card.make (create {GAME_SURFACE} .make (84, 84), 801, 144)
-			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(70)
+			create {ARRAYED_LIST[SPRITE]} on_screen_sprites.make(100)
 			on_screen_sprites.extend (background)
 			on_screen_sprites.extend (btn_rotate_left)
 			on_screen_sprites.extend (btn_rotate_right)
-			on_screen_sprites.extend (spare_card)
+			board.on_click_actions.extend(agent board_click_action)
 			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
 			btn_rotate_right.on_click_actions.extend(agent rotate_spare_card (1))
-			btn_board.on_click_actions.extend(agent board_click_action)
-			btn_spare_card.on_click_actions.extend(agent spare_card_click_action)
 			across board.board_paths as l_rows loop
 				across l_rows.item as l_cards loop
 					on_screen_sprites.extend (l_cards.item)
 				end
 			end
+			across players as la_players loop
+				on_screen_sprites.extend (la_players.item)
+			end
+			on_screen_sprites.extend (spare_card)
+			spare_card.on_click_actions.extend(agent spare_card_click_action(?))
 			buttons.extend(btn_rotate_left)
 			buttons.extend(btn_rotate_right)
-			buttons.extend(btn_board)
-			buttons.extend(btn_spare_card)
+			buttons.extend(spare_card)
+			buttons.extend (board)
 			is_dragging := False
-
 		end
 
 feature -- Implementation
 
 	board: BOARD
 		-- Le board principal avec les cartes chemin
-	btn_board: BUTTON
-		-- Définie une zone cliquable pour le `board'
-	btn_spare_card: BUTTON
-		-- Définie une zone cliquable pour la `spare_card'
+
+	spare_card: SPARE_PATH_CARD
+		-- la carte que le joueur doit placer
+
 	btn_rotate_left, btn_rotate_right: BUTTON
 		-- Les boutons qui tourne la `spare_card'
+
 	is_dragging: BOOLEAN
 		-- True si le joueur déplace la `spare_card'
-	spare_card: PATH_CARD
-		-- La carte que le joueur doit placer
 
 	current_player: PLAYER
+		-- Pointe vers le {PLAYER} dans `players' dont c'est le tour à jouer.
 
 	players: LIST[PLAYER]
-		-- La liste de tous les joueurs actifs
+		-- La liste de tous les {PLAYER} actifs
 
 	rotate_spare_card(a_steps: INTEGER)
 			-- Méthode qui se déclenche lorsqu'on clique sur
-			-- `btn_rotate_left' ou btn_rotate_right.
+			-- `btn_rotate_left' ou `btn_rotate_right'.
 		require
 			a_steps.abs <= 4
 		do
@@ -114,13 +113,14 @@ feature -- Implementation
 				-- "Vérifier si la spare_card est au-dessus d'une zone dropable"
 
 				-- Sinon on reset:
-				spare_card.x := 801
-				spare_card.y := 144
+				-- spare_card.x := 801
+				-- spare_card.y := 144
 				is_dragging := false
 			end
 		end
 
 	spare_card_click_action (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- Update la `spare_card' lors du drag, utilisant les coordonnées de `a_mouse_state'
 		do
 			is_dragging := True
 			spare_card.set_x_offset(a_mouse_state.x - spare_card.x)
@@ -128,13 +128,19 @@ feature -- Implementation
 		end
 
 	board_click_action (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- Action à faire si l'usager clique sur le {BOARD}
+		local
+			l_player_x_to_coordinate, l_player_y_to_coordinate: INTEGER
+			l_mouse_x_to_coordinate, l_mouse_y_to_coordinate: INTEGER
+			-- Ces coordonnées donnent un chiffre de 1 à 7 pour servir d'index pour accéder au vecteur de {PATH_CARD} du {BOARD}
 		do
+			l_player_x_to_coordinate := ((current_player.x - 56) // 84) + 1
+			l_player_y_to_coordinate := ((current_player.y - 56) // 84) + 1
+			l_mouse_x_to_coordinate := ((a_mouse_state.x - 56) // 84) + 1
+			l_mouse_y_to_coordinate := ((a_mouse_state.y - 56) // 84) + 1
 			if current_player.path.is_empty then
-				if not ((((current_player.x - 56) // 84) + 1) = (((a_mouse_state.x - 56) // 84) + 1) and
-					(((current_player.y - 56) // 84) + 1) = (((a_mouse_state.y - 56) // 84) + 1))
-				then
-					current_player.path := board.pathfind_to((((current_player.x - 56) // 84) + 1), ((current_player.y - 56) // 84) + 1,
-						  									(((a_mouse_state.x - 56) // 84) + 1), ((a_mouse_state.y - 56) // 84) + 1)
+				if not ((l_player_x_to_coordinate = l_mouse_x_to_coordinate) and (l_player_y_to_coordinate = l_mouse_y_to_coordinate)) then
+					current_player.path := board.pathfind_to(l_player_x_to_coordinate, l_player_y_to_coordinate, l_mouse_x_to_coordinate, l_mouse_y_to_coordinate)
 				end
 			end
 		end

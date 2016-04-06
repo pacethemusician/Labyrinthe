@@ -24,7 +24,7 @@ feature -- Implementation
 	on_screen_sprites: LIST[SPRITE]
 		-- Liste des sprites à afficher.
 
-	check_btn(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+	check_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
 			-- déclanche l'action des boutons s'il y a click
 		deferred
 		end

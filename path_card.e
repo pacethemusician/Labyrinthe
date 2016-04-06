@@ -24,9 +24,9 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_type: INTEGER; a_surfaces: LIST [GAME_SURFACE]; a_x, a_y, a_rotation: INTEGER_32; a_items: LIST [GAME_SURFACE])
+	make (a_type: INTEGER; a_image_factory: IMAGE_FACTORY; a_x, a_y, a_rotation: INTEGER_32)
 			-- `a_type' peut être soit 1='╗' 2='║'  3='╣'.
-			-- `a_surfaces' contient les 4 rotations du chemin.
+			-- `a_game_factory' contient les images du jeu
 			-- `a_rotation' est un index de 1 à 4 pour savoir quelle image utiliser.
 		require
 			type_over_zero: a_type > 0
@@ -41,10 +41,11 @@ feature {NONE} -- Initialisation
 			x_offset := 0
 			y_offset := 0
 			item_index := 0
-			items := a_items
+			image_factory := a_image_factory
+			items := a_image_factory.items
 			index := 1
 			create {ARRAYED_LIST [GAME_SURFACE]} rotated_surfaces.make (4)
-			rotated_surfaces := a_surfaces
+			rotated_surfaces := image_factory.path_cards[a_type]
 			make_sprite (rotated_surfaces [a_rotation], a_x, a_y)
 			if a_type = 1 then
 				connections := 0b0011
@@ -170,6 +171,9 @@ feature -- Attributs
 
 	items: LIST [GAME_SURFACE]
 			-- Les images des items que le joueur peut ramasser.
+
+	image_factory: IMAGE_FACTORY
+			-- Les images du jeu
 
 	index: INTEGER
 			-- Index de la surface de `current' dans `rotated_surfaces'.

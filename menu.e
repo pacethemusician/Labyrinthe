@@ -9,8 +9,6 @@ deferred class
 
 inherit
 	ENGINE
-		rename
-			check_btn as check_button
 		redefine
 			make
 		end

@@ -1,8 +1,8 @@
 ﻿note
 	description : "Projet Labyrinthe application root class"
 	author: "Pascal Belisle et Charles Lemay"
-	date: "1 mars 2016"
-	version: "24 mars 2016"
+	date: "Session Hiver 2016"
+	version: "2.0"
 
 class
 	GAME_ENGINE
@@ -116,7 +116,7 @@ feature {NONE} -- Implementation
 	on_mouse_pressed(a_timestamp: NATURAL_32; a_mouse_state:GAME_MOUSE_BUTTON_PRESSED_STATE; a_nb_clicks:NATURAL_8)
 			-- Méthode appelée lorsque le joueur appuie sur un bouton de la souris.
 		do
-			current_engine.check_btn(a_mouse_state)
+			current_engine.check_button(a_mouse_state)
 		end
 
 	on_mouse_released(a_timestamp: NATURAL_32; a_mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE; a_nb_clicks:NATURAL_8)
