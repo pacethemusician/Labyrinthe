@@ -37,7 +37,7 @@ feature -- implementation
 				across
 					on_click_actions as l_actions
 				loop
-					l_actions.item.call
+					l_actions.item.call(a_mouse_state)
 				end
 			end
 		end

@@ -18,22 +18,28 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_index: INTEGER; a_image_factory: IMAGE_FACTORY; a_x, a_y: INTEGER; a_available_sprites: LIST[BOOLEAN]; a_sprite_list: LIST[ANIMATED_SPRITE])
+	make (a_index: INTEGER; a_image_factory: IMAGE_FACTORY; a_x, a_y: INTEGER; a_available_sprites: LIST[BOOLEAN]; a_sprite_list: LIST[ANIMATED_SPRITE]; a_type:INTEGER)
 			-- `a_index' est la position de `current' sur dans la liste pour créer le bon `background'
-			-- `a_available_sprites' pointe vers la liste du `MENU_PLAYER' pour savoir si les sprites sont disponibles.
-			-- `a_sprite_list' pointe vers la liste du `MENU_PLAYER' pour avoir accès aux sprites
+			-- `a_available_sprites' pointe vers la liste du {MENU_PLAYER} pour savoir si les sprites sont disponibles.
+			-- `a_sprite_list' pointe vers la liste du {MENU_PLAYER} pour avoir accès aux sprites
+			-- Si `a_type' = 1 c'est un joueur local sinon c'est un joueur réseau.
 		do
 			make_menu (a_image_factory)
 			x := a_x
 			y := a_y
-			index := a_index;
+			type := a_type
+			index := a_index
 			available_sprites := a_available_sprites
 			sprite_list := a_sprite_list
 			create btn_cancel.make (image_factory.buttons[9], x + 208, y + 5)
 			create background.make (image_factory.player_choice_menu.at(index), x, y)
 			create left_arrow.make (image_factory.buttons[5], x + 35, y + 44)
 			create right_arrow.make (image_factory.buttons[6], x + 164, y + 44)
-
+			if type ~ 1 then
+				create type_image.make (image_factory.player_choice_menu[6], x, y + 150)
+			else
+				create type_image.make (image_factory.player_choice_menu[7], x, y + 150)
+			end
 			buttons.extend(left_arrow)
 			buttons.extend(right_arrow)
 			buttons.extend (btn_cancel)
@@ -48,6 +54,7 @@ feature {NONE} -- Initialisation
 			if index > 1 then
 				on_screen_sprites.extend (btn_cancel)
 			end
+			on_screen_sprites.extend (type_image)
 
 			on_screen_sprites.at (2).x := x + 87
 			on_screen_sprites.at (2).y := y + 35
@@ -60,17 +67,26 @@ feature {NONE} -- Initialisation
 feature {MENU_PLAYER} -- Implementation
 
 	left_arrow, right_arrow: BUTTON
+
 	btn_cancel: BUTTON
+
 	current_sprite_index: INTEGER assign set_current_sprite_index
 
 	sprite_list: LIST[ANIMATED_SPRITE]
-		-- pointe vers la liste du `MENU_PLAYER' pour avoir accès aux sprites
+		-- pointe vers la liste du {MENU_PLAYER} pour avoir accès aux sprites
+
+	type_image: SPRITE
+		-- une image indiquant s'il s'agit d'un jouer local ou réseau
+
+	type: INTEGER
+		-- Si = 1 le joueur est local sinon réseau
 
 	available_sprites: LIST[BOOLEAN]
-		-- pointe vers la liste du `MENU_PLAYER' pour savoir si les sprites sont disponibles.
+		-- pointe vers la liste du {MENU_PLAYER} pour savoir si les sprites sont disponibles.
 
 	index: INTEGER assign set_index
-	 	-- La position de `current' dans la `player_select_submenus' de la classe `MENU_PLAYER'
+	 	-- La position de `current' dans la `player_select_submenus' de la classe {MENU_PLAYER}
+
 	x, y: INTEGER
 		-- Position du sous-menu
 

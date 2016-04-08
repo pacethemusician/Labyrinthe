@@ -165,9 +165,9 @@ feature {BOARD_ENGINE} -- Implementation
 			valid_index: a_column_id <= board_paths.last.count and a_column_id <= board_paths[1].count
 		do
 			if a_add_on_top then
-				result := (board_paths.last) [a_column_id]
+				Result := (board_paths.last) [a_column_id]
 			else
-				result := (board_paths [1]) [a_column_id]
+				Result := (board_paths [1]) [a_column_id]
 			end
 		end
 
@@ -178,9 +178,9 @@ feature {BOARD_ENGINE} -- Implementation
 			valid_index: a_row_id <= board_paths.count
 		do
 			if a_add_on_right then
-				result := (board_paths [a_row_id]) [1]
+				Result := (board_paths [a_row_id]) [1]
 			else
-				result := board_paths [a_row_id].last
+				Result := board_paths [a_row_id].last
 			end
 		end
 

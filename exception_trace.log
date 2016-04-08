@@ -1438,3 +1438,64 @@ Catcall detected in {PROCEDURE}.call for arg#1: expected TUPLE [!GAME_MOUSE_BUTT
 Catcall detected in {PROCEDURE}.call for arg#1: expected TUPLE [!GAME_MOUSE_BUTTON_PRESSED_STATE] but got TUPLE
 Catcall detected in {PROCEDURE}.call for arg#1: expected TUPLE [!GAME_MOUSE_BUTTON_PRESSED_STATE] but got TUPLE
 Catcall detected in {PROCEDURE}.call for arg#1: expected TUPLE [!GAME_MOUSE_BUTTON_PRESSED_STATE] but got TUPLE
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+ARRAYED_LIST        i_th @2                valid_index:                 
+<0000000004106598>                         Precondition violated.        Fail
+-------------------------------------------------------------------------------
+BOARD_ENGINE        make @13                                            
+<000000000431E418>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         on_iteration @13                                    
+<00000000040F2A98>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           fast_call                                           
+<0000000004109548>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           call @5                                             
+<0000000004109548>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ACTION_SEQUENCE     call @22                                            
+<00000000041093B8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    inline-agent#5 of make @1
+<00000000040F05E8>  (From GAME_COMMON_EVENTS)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           fast_call                                           
+<00000000040F1BE8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           call @5                                             
+<00000000040F1BE8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ACTION_SEQUENCE     call @22                                            
+<00000000040F08A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_EVENTS_CONTROLLER
+                    poll_event @4          
+<00000000040F0768>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    update_events @1       
+<00000000040F05E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    launch @4              
+<00000000040F05E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @23                                            
+<00000000040F2A98>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         make @5                                             
+<00000000040F05A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000040F05A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+Catcall detected in {PROCEDURE}.call for arg#1: expected TUPLE [!GAME_MOUSE_BUTTON_PRESSED_STATE] but got TUPLE

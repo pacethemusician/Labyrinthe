@@ -26,8 +26,12 @@ feature {NONE} -- Initialisation
 			y := a_y
 			animations := a_surfaces
 			make_animated_sprite (a_surfaces [1], 22, 5, x, y)
-			create path.make
+			create {LINKED_LIST[PATH_CARD]} path.make
+			create {LINKED_LIST[INTEGER]} items_to_find.make
+			items_to_find.extend (1)
 			path_index := 1
+			item_found_number := 0
+
 		end
 
 feature {ENGINE} -- Implementation
@@ -35,16 +39,27 @@ feature {ENGINE} -- Implementation
 	animations: LIST [GAME_SURFACE]
 			-- Liste des animations du joueur.
 
-	path: LINKED_LIST [PATH_CARD] assign set_path
+	path: LIST [PATH_CARD] assign set_path
 			-- Le chemin que `current' peut suivre avec `follow_path'.
+
+	items_to_find: LIST[INTEGER]
+	item_found_number: INTEGER assign set_item_found_number
 
 	path_index: INTEGER
 			-- L'index du {PATH} dans `current_path' vers lequel `current' se déplace.
 
-	set_path (a_path_list: LINKED_LIST [PATH_CARD])
+	set_path (a_path_list: LIST [PATH_CARD])
 			-- Assigne `a_path_list' à `path'.
 		do
 			path := a_path_list
+		end
+
+	set_item_found_number (a_value: INTEGER)
+			-- Assigne `a_value' à `item_found_number' s'assurant qu'il y a eu incrémentation de 1 seulement
+		do
+			item_found_number := a_value
+		ensure
+			is_increment_one: item_found_number = old item_found_number + 1
 		end
 
 	follow_path

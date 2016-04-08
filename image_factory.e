@@ -24,6 +24,7 @@ feature {NONE} -- Initialization
 			players := init_player_surfaces
 			buttons := init_button_surfaces
 			items := init_item_surfaces
+			text := init_text_surfaces
 			backgrounds := init_background_surfaces
 			player_choice_menu := init_player_choice_menu_surfaces
 
@@ -52,7 +53,7 @@ feature {NONE} -- Implementation
 		end
 
 	init_path_card_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
-			-- Retournes les {GAME_SURFACE} des {PATH_CARD}
+			-- Retourne les {GAME_SURFACE} des {PATH_CARD}
 		do
 			create Result.make (3)
 			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(4))
@@ -73,7 +74,7 @@ feature {NONE} -- Implementation
 		end
 
 	init_player_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
-			-- Retournes les {GAME_SURFACE} des personnages.
+			-- Retourne les {GAME_SURFACE} des personnages.
 		do
 			create Result.make (4)
 			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(5))
@@ -109,7 +110,7 @@ feature {NONE} -- Implementation
 		end
 
 	init_button_surfaces:ARRAYED_LIST[GAME_SURFACE]
-			-- Retournes les {GAME_SURFACE} des boutons.
+			-- Retourne les {GAME_SURFACE} des boutons.
 		do
 			create Result.make(15)
 			Result.extend (img_to_surface ("Images/btn_rotate_left.png"))
@@ -122,10 +123,11 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/btn_add_net.png"))
 			Result.extend (img_to_surface ("Images/btn_cancel.png"))
 			Result.extend (img_to_surface ("Images/btn_go.png"))
+			Result.extend (img_to_surface ("Images/btn_ok.png"))
 		end
 
 	init_background_surfaces:ARRAYED_LIST[GAME_SURFACE]
-			-- Retournes les {GAME_SURFACE} des backgrounds.
+			-- Retourne les {GAME_SURFACE} des backgrounds.
 		do
 			create Result.make(10)
 			Result.extend (img_to_surface("Images/back_main.png"))
@@ -133,16 +135,19 @@ feature {NONE} -- Implementation
 		end
 
 	init_item_surfaces:ARRAYED_LIST[GAME_SURFACE]
-			-- Retournes les {GAME_SURFACE} des items.
+			-- Retourne les {GAME_SURFACE} des items.
 		do
 			create Result.make(24)
-			across 1 |..| 25 as la_index loop
+			across 1 |..| 24 as la_index loop
 				Result.extend (img_to_surface ("Images/item" + la_index.item.out + ".png"))
+			end
+			across 1 |..| 4 as la_index loop
+				Result.extend (img_to_surface ("start_item_" + la_index.item.out + ".png"))
 			end
 		end
 
 	init_player_choice_menu_surfaces:ARRAYED_LIST[GAME_SURFACE]
-			-- Retournes les {GAME_SURFACE} nécessaire aux {PLAYER_SELECT_SUBMENU}
+			-- Retourne les {GAME_SURFACE} nécessaires aux {PLAYER_SELECT_SUBMENU}
 		do
 			create Result.make(15)
 			Result.extend (img_to_surface ("Images/back_player1.png"))
@@ -151,7 +156,18 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/back_player4.png"))
 			Result.extend (img_to_surface ("Images/back_connexion_choice.png"))
 			Result.extend (img_to_surface ("Images/back_local.png"))
+			Result.extend (img_to_surface ("Images/back_waiting.png"))
 			Result.extend (img_to_surface ("Images/back_network.png"))
+		end
+
+	init_text_surfaces:ARRAYED_LIST[GAME_SURFACE]
+			-- Retourne les {GAME_SURFACE} contenant du texte
+		do
+			create Result.make(15)
+			Result.extend (img_to_surface ("Images/txt_player1.png"))
+			Result.extend (img_to_surface ("Images/txt_player2.png"))
+			Result.extend (img_to_surface ("Images/txt_player3.png"))
+			Result.extend (img_to_surface ("Images/txt_player4.png"))
 		end
 
 feature
@@ -160,6 +176,7 @@ feature
 	players: ARRAYED_LIST[LIST[GAME_SURFACE]]
 	buttons: ARRAYED_LIST[GAME_SURFACE]
 	items: ARRAYED_LIST[GAME_SURFACE]
+	text: ARRAYED_LIST[GAME_SURFACE]
 	backgrounds: ARRAYED_LIST[GAME_SURFACE]
 	player_choice_menu: ARRAYED_LIST[GAME_SURFACE]
 	-- arcade_font_36: TEXT_FONT
