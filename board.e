@@ -191,17 +191,17 @@ feature {BOARD_ENGINE} -- Implementation
 			l_i: INTEGER
 		do
 			if a_add_on_top then
-				from l_i := 1 until l_i > 6 loop
-					(board_paths [l_i]) [a_column_id] := (board_paths [l_i + 1]) [a_column_id]
-					l_i := l_i + 1
-				end
-				(board_paths [7]) [a_column_id] := a_path_card
-			else
 				from l_i := 7 until l_i < 2 loop
 					(board_paths [l_i]) [a_column_id] := (board_paths [l_i - 1]) [a_column_id]
 					l_i := l_i - 1
 				end
 				(board_paths [1]) [a_column_id] := a_path_card
+			else
+				from l_i := 1 until l_i > 6 loop
+					(board_paths [l_i]) [a_column_id] := (board_paths [l_i + 1]) [a_column_id]
+					l_i := l_i + 1
+				end
+				(board_paths [7]) [a_column_id] := a_path_card
 			end
 		end
 
