@@ -1,8 +1,8 @@
 note
-	description: "Summary description for {IMAGE_FACTORY}."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Contient toutes les images du jeu."
+	author: "Pascal Belisle"
+	date: "Session Hiver 2016"
+	revision: "1.0"
 
 class
 	IMAGE_FACTORY
@@ -124,14 +124,17 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/btn_cancel.png"))
 			Result.extend (img_to_surface ("Images/btn_go.png"))
 			Result.extend (img_to_surface ("Images/btn_ok.png"))
+			Result.extend (img_to_surface ("Images/cannot_drop.png"))
 		end
 
 	init_background_surfaces:ARRAYED_LIST[GAME_SURFACE]
 			-- Retourne les {GAME_SURFACE} des backgrounds.
 		do
 			create Result.make(10)
-			Result.extend (img_to_surface("Images/back_main.png"))
-			Result.extend (img_to_surface("Images/back_titlescreen.png"))
+			Result.extend (img_to_surface ("Images/back_main.png"))
+			Result.extend (img_to_surface ("Images/back_titlescreen.png"))
+			Result.extend (img_to_surface ("Images/ui_animation_circle.png"))
+			Result.extend (img_to_surface ("Images/back_get_ready.png"))
 		end
 
 	init_item_surfaces:ARRAYED_LIST[GAME_SURFACE]

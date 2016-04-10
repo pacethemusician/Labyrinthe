@@ -33,8 +33,6 @@ feature {NONE} -- Initialisation
 			type_below_four: a_type < 4
 			rotation_over_zero: a_rotation > 0
 			rotation_below_five: a_rotation < 5
-		local
-			l_sfx_file: AUDIO_SOUND_FILE
 		do
 			x := a_x
 			y := a_y
@@ -54,32 +52,10 @@ feature {NONE} -- Initialisation
 			elseif a_type = 3 then
 				connections := 0b1011
 			end
-			audio_library.sources_add
-			sound_fx_source := audio_library.last_source_added
-			create l_sfx_file.make ("Audio/rotate.wav")
-			if l_sfx_file.is_openable then
-				l_sfx_file.open
-				if not l_sfx_file.is_open then
-					print ("Cannot open sound file")
-				end
-			else
-				print ("Sound file not valid.")
-			end
-			sound_fx_rotate := l_sfx_file
 			rotate (a_rotation - 1)
 		end
 
 feature
-
-	play_rotate_sfx
-			-- Fait jouer le son `sound_fx_rotate'.
-		do
-			if sound_fx_rotate.is_open then
-				sound_fx_source.stop
-				sound_fx_source.queue_sound (sound_fx_rotate)
-				sound_fx_source.play
-			end
-		end
 
 	rotate (a_steps: INTEGER)
 			-- Tourne `current' `a_steps' fois. Si `a_steps' est positif, la rotation
@@ -180,12 +156,6 @@ feature -- Attributs
 
 	rotated_surfaces: LIST [GAME_SURFACE]
 			-- Liste d'images utilisées par `current'.
-
-	sound_fx_source: AUDIO_SOURCE
-			-- Source de `sound_fx_rotate'.
-
-	sound_fx_rotate: AUDIO_SOUND
-			-- Son qui joue pendant la rotation.
 
 	connections: INTEGER
 			-- Nombre de 4 bits. Chaque bit représente un côté de `current'.

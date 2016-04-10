@@ -31,7 +31,7 @@ feature {NONE} -- Initialisation
 			set_timer (0)
 		end
 
-feature {GAME_ENGINE, PLAYER_SELECT_SUBMENU} -- Implementation
+feature {ENGINE} -- Implementation
 
 	draw_self (destination_surface: GAME_SURFACE)
 			-- Dessiner `current' sur `destination_surface' et mettre à jour `animation_timer'.
@@ -114,5 +114,5 @@ note
 				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
 				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
 			]"
-			
+
 end
