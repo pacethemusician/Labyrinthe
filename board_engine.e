@@ -269,8 +269,6 @@ feature
 					has_finished := False
 
 					-- Vérifier si le joueur a trouvé l'item... À FAIRE!!!
-
-					players[current_player_index].item_found_number := players[current_player_index].item_found_number + 1
 					current_player_index := (current_player_index \\ number_of_players) + 1
 					has_to_move := False
 					has_to_place_spare_card := True
