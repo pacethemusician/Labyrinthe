@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 			create item_to_find.make (image_factory.items[players[current_player_index].items_to_find.first], 801, 327)
 			create {LINKED_LIST[SPRITE]} on_screen_sprites.make
 			create spare_card.make(3, image_factory, 801, 144, 1)
-			create spare_card_button.make (create {GAME_SURFACE}.make (84, 84), 801, 144)
+			-- create spare_card_button.make (create {GAME_SURFACE}.make (84, 84), 801, 144)
 			create board.make (image_factory)
 			-- create no_drop.make (image_factory.buttons[12], -130, -130)
 			create sound_fx_error.make ("Audio/sfx_error.wav")
@@ -47,27 +47,28 @@ feature {NONE} -- Initialization
 			on_screen_sprites.extend (btn_rotate_left)
 			on_screen_sprites.extend (btn_rotate_right)
 			on_screen_sprites.extend (item_to_find)
-			across board.board_paths as l_rows loop
-				across l_rows.item as l_cards loop
-					on_screen_sprites.extend (l_cards.item)
+			across board.board_paths as la_rows loop
+				across la_rows.item as la_cards loop
+					on_screen_sprites.extend (la_cards.item)
+					if attached {BUTTON} la_cards.item as la_button then
+						buttons.extend (la_button)
+					end
 				end
 			end
-			on_screen_sprites.extend (circle_player)
-			across players as la_players loop
-				on_screen_sprites.extend (la_players.item)
-			end
+
 			on_screen_sprites.extend (text_player)
 --			on_screen_sprites.extend (no_drop)
+			on_screen_sprites.extend (spare_card)
 
 			board.on_click_actions.extend(agent board_click_action)
-			spare_card_button.on_click_actions.extend(agent spare_card_click_action(?))
+			spare_card.on_click_actions.extend(agent spare_card_click_action(?))
 			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
 			btn_rotate_right.on_click_actions.extend(agent rotate_spare_card (1))
 			btn_ok.on_click_actions.extend (agent confirm_finished)
 
 			buttons.extend(btn_rotate_left)
 			buttons.extend(btn_rotate_right)
-			buttons.extend(spare_card_button)
+			buttons.extend(spare_card)
 			buttons.extend (board)
 			buttons.extend (btn_ok)
 
@@ -96,9 +97,9 @@ feature -- Implementation
 	-- no_drop: SPRITE
 			-- Le jeu ne peut pas y droper la `spare_card'
 
-	spare_card: PATH_CARD
+	spare_card: SPARE_PATH_CARD
 			-- la carte que le joueur doit placer
-	spare_card_button: BUTTON
+	-- spare_card_button: BUTTON
 			-- pour détecter si le joueur clique sur la `spare_card' et assigner une action
 
 	has_finished, has_to_place_spare_card, has_to_move, is_setting_next_player: BOOLEAN
@@ -160,7 +161,7 @@ feature -- Implementation
 			-- Appelle la fonction de rotation du {BOARD} selon `a_index'
 			-- Si `a_is_row' est vrai, on bouge une rangée sinon une colonne
 		local
-			l_next_spare_card: PATH_CARD
+			l_next_spare_card: SPARE_PATH_CARD
 		do
 			sound_fx_slide.play
 			if a_is_row then
@@ -170,7 +171,12 @@ feature -- Implementation
 				l_next_spare_card := board.get_next_spare_card_column (a_index, a_is_from_top_or_right)
 				board.rotate_column (a_index, spare_card, a_is_from_top_or_right)
 			end
+			spare_card.on_click_actions.wipe_out
 			spare_card := l_next_spare_card
+			on_screen_sprites.start
+			on_screen_sprites.prune (spare_card)
+			on_screen_sprites.extend (spare_card)
+			spare_card.on_click_actions.extend (agent spare_card_click_action(?))
 			has_to_move := True
 			has_to_place_spare_card := False
 		end
@@ -266,7 +272,6 @@ feature
 
 					players[current_player_index].item_found_number := players[current_player_index].item_found_number + 1
 					current_player_index := (current_player_index \\ number_of_players) + 1
-					print(current_player_index.out)
 					has_to_move := False
 					has_to_place_spare_card := True
 					item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find.first])
@@ -285,7 +290,10 @@ feature
             	btn_ok.draw_self (a_game_window.surface)
             	circle_btn_ok.draw_self (a_game_window.surface)
             end
-            spare_card.draw_self (a_game_window.surface)
+			circle_player.draw_self (a_game_window.surface)
+            across players as l_sprites loop
+				l_sprites.item.draw_self (a_game_window.surface)
+            end
 
 		end
 

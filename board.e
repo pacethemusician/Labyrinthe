@@ -82,7 +82,7 @@ feature {BOARD_ENGINE} -- Implementation
 							l_random_type := (l_random_type \\ 3) + 1
 						end
 						l_type_amount [l_random_type] := l_type_amount [l_random_type] - 1
-						board_paths [l_i].extend (create {PATH_CARD}.make (l_random_type, image_factory, ((l_j - 1) * 84) + 56, ((l_i - 1) * 84) + 56, l_random_rotation))
+						board_paths [l_i].extend (create {SPARE_PATH_CARD}.make (l_random_type, image_factory, ((l_j - 1) * 84) + 56, ((l_i - 1) * 84) + 56, l_random_rotation))
 					else
 						board_paths [l_i].extend (l_sticky_cards [l_sticky_cards_index])
 						l_sticky_cards [l_sticky_cards_index].x := l_sticky_cards [l_sticky_cards_index].x + 56
@@ -158,29 +158,40 @@ feature {BOARD_ENGINE} -- Implementation
 			Result.extend (create {PATH_CARD}.make (1, image_factory, 504, 504, 2))
 		end
 
-	get_next_spare_card_column(a_column_id:NATURAL_8; a_add_on_top:BOOLEAN): PATH_CARD
+	get_next_spare_card_column(a_column_id:NATURAL_8; a_add_on_top:BOOLEAN): SPARE_PATH_CARD
 			-- Retourne la {PATH_CARD} qui sera éjectée du board si la
 			-- méthode rotate_column est lancée.
 		require
 			valid_index: a_column_id <= board_paths.last.count and a_column_id <= board_paths[1].count
+		local
+			l_result: PATH_CARD
 		do
 			if a_add_on_top then
-				Result := (board_paths.last) [a_column_id]
+				l_result := (board_paths.last) [a_column_id]
 			else
-				Result := (board_paths [1]) [a_column_id]
+				l_result := (board_paths [1]) [a_column_id]
 			end
+			check attached {SPARE_PATH_CARD} l_result as la_result then
+				Result := la_result
+			end
+
 		end
 
-	get_next_spare_card_row (a_row_id: NATURAL_8; a_add_on_right: BOOLEAN): PATH_CARD
+	get_next_spare_card_row (a_row_id: NATURAL_8; a_add_on_right: BOOLEAN): SPARE_PATH_CARD
 			-- Retourne la {PATH_CARD} qui sera éjectée du board si la
 			-- méthode rotate_row est lancée.
 		require
 			valid_index: a_row_id <= board_paths.count
+		local
+			l_result: PATH_CARD
 		do
 			if a_add_on_right then
-				Result := (board_paths [a_row_id]) [1]
+				l_result := (board_paths [a_row_id]) [1]
 			else
-				Result := board_paths [a_row_id].last
+				l_result := board_paths [a_row_id].last
+			end
+			check attached {SPARE_PATH_CARD} l_result as la_result then
+				Result := la_result
 			end
 		end
 
