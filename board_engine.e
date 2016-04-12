@@ -267,12 +267,9 @@ feature
 			if players[current_player_index].path.is_empty then
 				if has_finished then
 					has_finished := False
-
-					-- Vérifier si le joueur a trouvé l'item... À FAIRE!!!
 					current_player_index := (current_player_index \\ number_of_players) + 1
 					has_to_move := False
 					has_to_place_spare_card := True
-					item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find.first])
 					text_player.current_surface := (image_factory.text[current_player_index])
 					circle_player.x := players[current_player_index].x - 23
 					circle_player.y := players[current_player_index].y
@@ -280,7 +277,7 @@ feature
 			else
             	players[current_player_index].follow_path
             end
-
+			item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
 			across on_screen_sprites as l_sprites loop
 				l_sprites.item.draw_self (a_game_window.surface)
             end
@@ -292,7 +289,6 @@ feature
             across players as l_sprites loop
 				l_sprites.item.draw_self (a_game_window.surface)
             end
-
 		end
 
 invariant

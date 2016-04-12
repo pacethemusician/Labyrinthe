@@ -28,7 +28,6 @@ feature {NONE} -- Initialisation
 			make_animated_sprite (a_surfaces [1], 22, 5, x, y)
 			create {LINKED_LIST[PATH_CARD]} path.make
 			create {LINKED_LIST[INTEGER]} items_to_find.make
-			items_to_find.extend (1)
 			path_index := 1
 			item_found_number := 0
 

@@ -97,9 +97,10 @@ feature {GAME_ENGINE} -- Implementation
 	get_players:LIST[PLAYER]
 			-- Créer et retourne la liste des {PLAYER} choisis
 		local
-			l_count, l_x, l_y: INTEGER
+			l_count, l_x, l_y, l_i, l_item_index: INTEGER
 		do
 			l_count := player_select_submenus.count
+			l_item_index := 1
 			create {ARRAYED_LIST[PLAYER]} Result.make (l_count)
 			across player_select_submenus as la_players loop
 				inspect la_players.item.index
@@ -117,6 +118,15 @@ feature {GAME_ENGINE} -- Implementation
 						l_y := 560
 					end
 				Result.extend (create {PLAYER} .make (image_factory.players[la_players.item.index], l_x, l_y))
+				from
+					l_i := 1
+				until
+					l_i > (image_factory.items.count // l_count)
+				loop
+					Result.last.items_to_find.extend (l_item_index)
+					l_item_index := l_item_index + 1
+					l_i := l_i + 1
+				end
 			end
 		end
 
