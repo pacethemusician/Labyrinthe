@@ -25,6 +25,7 @@ feature {NONE} -- Initialization
 			players := a_players
 			current_player_index := 1
 			create sound_fx_rotate.make ("Audio/rotate.wav")
+			create {ARRAYED_LIST[PLAYER]} players_to_move.make (0)
 			create item_to_find.make (image_factory.items[players[current_player_index].items_to_find.first], 801, 327)
 			create {LINKED_LIST[SPRITE]} on_screen_sprites.make
 			create spare_card.make(3, image_factory, 801, 144, 1)
@@ -99,8 +100,6 @@ feature -- Implementation
 
 	spare_card: SPARE_PATH_CARD
 			-- la carte que le joueur doit placer
-	-- spare_card_button: BUTTON
-			-- pour détecter si le joueur clique sur la `spare_card' et assigner une action
 
 	has_finished, has_to_place_spare_card, has_to_move, is_setting_next_player: BOOLEAN
 			-- Pour contrôler les étapes que doit suivre le `current_player'
@@ -116,6 +115,9 @@ feature -- Implementation
 
 	players: LIST[PLAYER]
 			-- La liste de tous les {PLAYER} actifs
+
+	players_to_move: LIST[PLAYER]
+			-- On y met les {PLAYER} qui devront bouger en même temps que les {PATH_CARD}
 
 	current_player_index: INTEGER
 			-- Index vers le {PLAYER} dans `players' dont c'est le tour à jouer.
@@ -166,9 +168,43 @@ feature -- Implementation
 			sound_fx_slide.play
 			if a_is_row then
 				l_next_spare_card := board.get_next_spare_card_row (a_index, a_is_from_top_or_right)
+				across players as la_players loop
+					if la_players.item.get_row_index ~ a_index then
+						players_to_move.extend (la_players.item)
+						if a_is_from_top_or_right then
+							if la_players.item.get_col_index ~ 1 then
+								la_players.item.x := 667
+							end
+							la_players.item.next_x := la_players.item.x - 84
+						else
+							if la_players.item.get_col_index ~ 7 then
+								la_players.item.x := -5
+							end
+							la_players.item.next_x := la_players.item.x + 84
+						end
+						la_players.item.next_y := la_players.item.y
+					end
+				end
 				board.rotate_row (a_index, spare_card, a_is_from_top_or_right)
 			else
 				l_next_spare_card := board.get_next_spare_card_column (a_index, a_is_from_top_or_right)
+				across players as la_players loop
+					if la_players.item.get_col_index ~ a_index then
+						players_to_move.extend (la_players.item)
+						if a_is_from_top_or_right then
+							if la_players.item.get_row_index ~ 7 then
+								la_players.item.y := -5
+							end
+							la_players.item.next_y := la_players.item.y + 84
+						else
+							if la_players.item.get_col_index ~ 1 then
+								la_players.item.y := 667
+							end
+							la_players.item.next_y := la_players.item.y - 84
+						end
+						la_players.item.next_x := la_players.item.x
+					end
+				end
 				board.rotate_column (a_index, spare_card, a_is_from_top_or_right)
 			end
 			spare_card.on_click_actions.wipe_out
@@ -229,18 +265,18 @@ feature -- Implementation
 	board_click_action (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
 			-- Action à faire si l'usager clique sur le {BOARD}
 		local
-			l_player_x_to_coordinate, l_player_y_to_coordinate: INTEGER
-			l_mouse_x_to_coordinate, l_mouse_y_to_coordinate: INTEGER
+			l_player_col_index, l_player_row_index: INTEGER
+			l_mouse_col_index, l_mouse_row_index: INTEGER
 			-- Ces coordonnées donnent un chiffre de 1 à 7 pour servir d'index pour accéder au vecteur de {PATH_CARD} du {BOARD}
 		do
 			if has_to_move then
-				l_player_x_to_coordinate := ((players[current_player_index].x - 56) // 84) + 1
-				l_player_y_to_coordinate := ((players[current_player_index].y - 56) // 84) + 1
-				l_mouse_x_to_coordinate := ((a_mouse_state.x - 56) // 84) + 1
-				l_mouse_y_to_coordinate := ((a_mouse_state.y - 56) // 84) + 1
+				l_player_col_index := players[current_player_index].get_col_index
+				l_player_row_index := players[current_player_index].get_row_index
+				l_mouse_col_index := ((a_mouse_state.x - 56) // 84) + 1
+				l_mouse_row_index := ((a_mouse_state.y - 56) // 84) + 1
 				if players[current_player_index].path.is_empty then
-					if not ((l_player_x_to_coordinate = l_mouse_x_to_coordinate) and (l_player_y_to_coordinate = l_mouse_y_to_coordinate)) then
-						players[current_player_index].path := board.pathfind_to(l_player_x_to_coordinate, l_player_y_to_coordinate, l_mouse_x_to_coordinate, l_mouse_y_to_coordinate)
+					if not ((l_player_col_index = l_mouse_col_index) and (l_player_row_index = l_mouse_row_index)) then
+						players[current_player_index].path := board.pathfind_to(l_player_col_index, l_player_row_index, l_mouse_col_index, l_mouse_row_index)
 					end
 				end
 			end
@@ -261,6 +297,11 @@ feature
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
 		do
 			board.adjust_paths(3)
+			if not players_to_move.is_empty then
+				across players_to_move as la_players loop
+					la_players.item.approach_point(la_players.item.next_x, la_players.item.next_y, 3)
+				end
+			end
 			if not is_dragging then
 				spare_card.approach_point (801, 144, 64)
 			end
@@ -273,11 +314,13 @@ feature
 					text_player.current_surface := (image_factory.text[current_player_index])
 					circle_player.x := players[current_player_index].x - 23
 					circle_player.y := players[current_player_index].y
+					players_to_move.wipe_out
+					item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
 				end
 			else
             	players[current_player_index].follow_path
             end
-			item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
+
 			across on_screen_sprites as l_sprites loop
 				l_sprites.item.draw_self (a_game_window.surface)
             end
@@ -286,8 +329,8 @@ feature
             	circle_btn_ok.draw_self (a_game_window.surface)
             end
 			circle_player.draw_self (a_game_window.surface)
-            across players as l_sprites loop
-				l_sprites.item.draw_self (a_game_window.surface)
+            across players as la_players loop
+				la_players.item.draw_self (a_game_window.surface)
             end
 		end
 

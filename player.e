@@ -47,6 +47,22 @@ feature {ENGINE} -- Implementation
 	path_index: INTEGER
 			-- L'index du {PATH} dans `current_path' vers lequel `current' se déplace.
 
+	get_col_index: INTEGER
+			-- Retourne le numéro de la colonne où se trouve `Current' sur le {BOARD}
+		do
+			Result := ((x - 56) // 84) + 1
+		end
+
+	get_row_index: INTEGER
+			-- Retourne le numéro de la rangée où se trouve `Current' sur le {BOARD}
+		do
+			Result := ((y - 56) // 84) + 1
+		end
+
+	next_x: INTEGER assign set_next_x
+	next_y: INTEGER assign set_next_y
+			-- Où le {PLAYER} devra se rendre s'il est sur une {PATH_CARD} qui bouge
+
 	set_path (a_path_list: LIST [PATH_CARD])
 			-- Assigne `a_path_list' à `path'.
 		do
@@ -61,9 +77,21 @@ feature {ENGINE} -- Implementation
 			is_increment_one: item_found_number = old item_found_number + 1
 		end
 
+	set_next_x (a_value: INTEGER)
+			-- Assigne `a_value' à `next_x'
+		do
+			next_x := a_value
+		end
+
+	set_next_y (a_value: INTEGER)
+			-- Assigne `a_value' à `next_y'
+		do
+			next_y := a_value
+		end
+
 	follow_path
-			-- Fait suivre `path' à `current'. Si `current' arrive à destination, `path'
-			-- est vidé. L'animation de `current' est changée selon sa position relative à la destination.
+			-- Fait suivre `path' à `current'. Si `current' arrive à destination, `path' est vidé.
+			-- L'animation de `current' est changée selon sa position relative à la destination.
 			-- La destination est `path[path_index]'. Si une des {PATH_CARD} traversée a comme
 			-- `item_index' l'item que `current' doit trouver, l' `item_index' est mis à 0 et
 			-- `item_found_number' est incrémenté de 1.
@@ -71,7 +99,7 @@ feature {ENGINE} -- Implementation
 			has_path: not path.is_empty
 		do
 			approach_point (path [path_index].x + 23, path [path_index].y, 3)
-			if (x = path [path_index].x + 23 and y = path [path_index].y) then
+			if ((x = path [path_index].x + 23) and (y = path [path_index].y)) then
 				if (item_found_number < items_to_find.count) then
 					if (path [path_index].item_index = items_to_find[item_found_number + 1]) then
 						path [path_index].item_index := 0
