@@ -197,7 +197,7 @@ feature -- Implementation
 							end
 							la_players.item.next_y := la_players.item.y + 84
 						else
-							if la_players.item.get_col_index ~ 1 then
+							if la_players.item.get_row_index ~ 1 then
 								la_players.item.y := 667
 							end
 							la_players.item.next_y := la_players.item.y - 84
@@ -295,11 +295,24 @@ feature -- Implementation
 feature
 	update(a_game_window:GAME_WINDOW_SURFACED)
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
+		local
+			finised_sliding: BOOLEAN
+			l_i: INTEGER
 		do
 			board.adjust_paths(3)
 			if not players_to_move.is_empty then
-				across players_to_move as la_players loop
-					la_players.item.approach_point(la_players.item.next_x, la_players.item.next_y, 3)
+				from
+					finised_sliding := false
+					l_i := 1
+				until
+					finised_sliding or l_i > players_to_move.count
+				loop
+					players_to_move [l_i].approach_point (players_to_move [l_i].next_x, players_to_move [l_i].next_y, 3)
+					if (players_to_move [l_i].next_x = players_to_move [l_i].x) and (players_to_move [l_i].next_y = players_to_move [l_i].y) then
+						finised_sliding := true
+						players_to_move.wipe_out
+					end
+					l_i := l_i + 1
 				end
 			end
 			if not is_dragging then
@@ -314,13 +327,12 @@ feature
 					text_player.current_surface := (image_factory.text[current_player_index])
 					circle_player.x := players[current_player_index].x - 23
 					circle_player.y := players[current_player_index].y
-					players_to_move.wipe_out
 					item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
 				end
 			else
             	players[current_player_index].follow_path
             end
-
+			item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
 			across on_screen_sprites as l_sprites loop
 				l_sprites.item.draw_self (a_game_window.surface)
             end
