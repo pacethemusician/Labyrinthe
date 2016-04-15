@@ -295,24 +295,14 @@ feature -- Implementation
 feature
 	update(a_game_window:GAME_WINDOW_SURFACED)
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
-		local
-			finised_sliding: BOOLEAN
-			l_i: INTEGER
 		do
 			board.adjust_paths(3)
 			if not players_to_move.is_empty then
-				from
-					finised_sliding := false
-					l_i := 1
-				until
-					finised_sliding or l_i > players_to_move.count
-				loop
-					players_to_move [l_i].approach_point (players_to_move [l_i].next_x, players_to_move [l_i].next_y, 3)
-					if (players_to_move [l_i].next_x = players_to_move [l_i].x) and (players_to_move [l_i].next_y = players_to_move [l_i].y) then
-						finised_sliding := true
-						players_to_move.wipe_out
-					end
-					l_i := l_i + 1
+				across players_to_move as la_players loop
+					la_players.item.approach_point (la_players.item.next_x, la_players.item.next_y, 3)
+				end
+				if (players_to_move [1].next_x = players_to_move [1].x) and (players_to_move [1].next_y = players_to_move [1].y) then
+					players_to_move.wipe_out
 				end
 			end
 			if not is_dragging then
