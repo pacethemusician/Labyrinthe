@@ -86,6 +86,8 @@ feature {BOARD_ENGINE} -- Implementation
 					a_rng.generate_new_random
 					from
 						l_random_type := a_rng.last_random_integer_between (1, 3)
+					invariant
+						enough_cards: (a_type_amount [1] + a_type_amount [2] + a_type_amount [3] > 0)
 					until
 						a_type_amount [l_random_type] > 0
 					loop

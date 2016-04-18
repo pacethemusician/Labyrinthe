@@ -89,6 +89,16 @@ feature {ENGINE} -- Implementation
 			next_y := a_value
 		end
 
+	pick_up_item (a_path_card: PATH_CARD)
+		do
+			if (item_found_number < items_to_find.count) then
+				if (a_path_card.item_index = items_to_find[item_found_number + 1]) then
+					a_path_card.item_index := 0
+					item_found_number := item_found_number + 1
+				end
+			end
+		end
+
 	follow_path
 			-- Fait suivre `path' à `current'. Si `current' arrive à destination, `path' est vidé.
 			-- L'animation de `current' est changée selon sa position relative à la destination.
@@ -100,12 +110,7 @@ feature {ENGINE} -- Implementation
 		do
 			approach_point (path [path_index].x + 23, path [path_index].y, 3)
 			if ((x = path [path_index].x + 23) and (y = path [path_index].y)) then
-				if (item_found_number < items_to_find.count) then
-					if (path [path_index].item_index = items_to_find[item_found_number + 1]) then
-						path [path_index].item_index := 0
-						item_found_number := item_found_number + 1
-					end
-				end
+				pick_up_item (path [path_index])
 				path_index := path_index + 1
 				if path_index > path.count then
 					change_animation (animations [1], 22, 5)
