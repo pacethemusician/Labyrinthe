@@ -100,8 +100,13 @@ feature {NONE} -- Implementation
 				end
 			elseif attached {MENU_JOIN} current_engine as la_menu_join then
 				la_menu_join.show(a_game_window)
-			elseif attached {BOARD_ENGINE} current_engine as la_board_engine then
+			end
+			if attached {BOARD_ENGINE} current_engine as la_board_engine then
 				la_board_engine.update
+			else
+				-- On update `a_game_window' seulement si `current_engine' n'est pas un
+				-- {BOARD_ENGINE}, parce que dans ce cas là, c'est un {THREAD} qui s'en occupe.
+				a_game_window.update
 			end
             audio_library.update
 		end

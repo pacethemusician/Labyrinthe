@@ -178,7 +178,7 @@ feature {GAME_ENGINE} -- Implementation
 
 	show(a_game_window:GAME_WINDOW_SURFACED)
 		do
-			Precursor (a_game_window)
+			precursor(a_game_window)
 			check_cancellation
 			across player_select_submenus as la_player_select_submenus loop
 				la_player_select_submenus.item.show (a_game_window)
