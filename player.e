@@ -32,7 +32,7 @@ feature {NONE} -- Initialisation
 			item_found_number := 0
 		end
 
-feature {ENGINE} -- Implementation
+feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 
 	animations: LIST [GAME_SURFACE]
 			-- Liste des animations du joueur.

@@ -31,7 +31,7 @@ feature {NONE} -- Initialisation
 			set_timer (0)
 		end
 
-feature {ENGINE} -- Implementation
+feature -- Implementation
 
 	draw_self (destination_surface: GAME_SURFACE)
 			-- Dessiner `current' sur `destination_surface' et mettre à jour `animation_timer'.

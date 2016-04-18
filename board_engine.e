@@ -16,9 +16,9 @@ inherit
 create
 	make
 
-feature {NONE} -- Initialization
+feature {THREAD_BOARD_ENGINE} -- Initialization
 
-	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER])
+	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER]; a_game_window:GAME_WINDOW_SURFACED)
 			-- Initialisation de `Current'
 		do
 			make_menu (a_image_factory)
@@ -60,7 +60,7 @@ feature {NONE} -- Initialization
 			on_screen_sprites.extend (text_player)
 --			on_screen_sprites.extend (no_drop)
 			on_screen_sprites.extend (spare_card)
-
+			create thread.make (current, a_game_window)
 			board.on_click_actions.extend(agent board_click_action)
 			spare_card.on_click_actions.extend(agent spare_card_click_action(?))
 			btn_rotate_left.on_click_actions.extend(agent rotate_spare_card (-1))
@@ -75,6 +75,7 @@ feature {NONE} -- Initialization
 
 			number_of_players := players.count
 			has_to_place_spare_card := True
+			thread.launch
 		end
 
 feature -- Implementation
@@ -122,6 +123,8 @@ feature -- Implementation
 	current_player_index: INTEGER
 			-- Index vers le {PLAYER} dans `players' dont c'est le tour à jouer.
 
+	thread: THREAD_BOARD_ENGINE
+
 	number_of_players: INTEGER
 
 	item_to_find, text_player: SPRITE
@@ -149,14 +152,7 @@ feature -- Implementation
 	is_drop_zone(a_x, a_y: INTEGER; a_mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE):BOOLEAN
 			-- Vérifie que la {SPARE_PATH_CARD} est au dessus d'une zone dropable lors du mouse release selon les coordonnées
 		do
-			if (a_mouse_state.x >= a_x) and (a_mouse_state.x < a_x + 84) and (a_mouse_state.y >= a_y) and (a_mouse_state.y < a_y + 84) then
---				if is_drop_zone(no_drop.x, no_drop.y, a_mouse_state) then
---					sound_fx_error.play
---				end
-				Result := True
---				no_drop.x := a_x
---				no_drop.y := a_y
-			end
+			Result := (a_mouse_state.x >= a_x) and (a_mouse_state.x < a_x + 84) and (a_mouse_state.y >= a_y) and (a_mouse_state.y < a_y + 84)
 		end
 
 	rotate(a_index: NATURAL_8; a_is_row, a_is_from_top_or_right: BOOLEAN)
@@ -291,7 +287,7 @@ feature -- Implementation
 
 
 feature
-	update(a_game_window:GAME_WINDOW_SURFACED)
+	update
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
 		do
 			board.adjust_paths(3)
@@ -315,23 +311,18 @@ feature
 					text_player.current_surface := (image_factory.text[current_player_index])
 					circle_player.x := players[current_player_index].x - 23
 					circle_player.y := players[current_player_index].y
-					item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
+					if players[current_player_index].item_found_number ~ players[current_player_index].items_to_find.count then
+						item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
+					end
+
 				end
 			else
             	players[current_player_index].follow_path
             end
 			item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
-			across on_screen_sprites as l_sprites loop
-				l_sprites.item.draw_self (a_game_window.surface)
-            end
-            if has_to_move then
-            	btn_ok.draw_self (a_game_window.surface)
-            	circle_btn_ok.draw_self (a_game_window.surface)
-            end
-			circle_player.draw_self (a_game_window.surface)
-            across players as la_players loop
-				la_players.item.draw_self (a_game_window.surface)
-            end
+			if not is_dragging then
+				spare_card.approach_point (801, 144, 64)
+			end
 		end
 
 invariant

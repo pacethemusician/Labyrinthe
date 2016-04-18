@@ -92,7 +92,7 @@ feature {NONE} -- Implementation
 				else
 					if la_menu_player.is_go_selected then
 						players := la_menu_player.get_players
-						current_engine := create {BOARD_ENGINE}.make(image_factory, players)
+						current_engine := create {BOARD_ENGINE}.make(image_factory, players, a_game_window)
 
 					-- elseif la_menu_player.is_cancel_selected then
 						-- À faire...
@@ -101,15 +101,17 @@ feature {NONE} -- Implementation
 			elseif attached {MENU_JOIN} current_engine as la_menu_join then
 				la_menu_join.show(a_game_window)
 			elseif attached {BOARD_ENGINE} current_engine as la_board_engine then
-				la_board_engine.update(a_game_window)
+				la_board_engine.update
 			end
-            a_game_window.update
             audio_library.update
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
 			-- Méthode appelée si l'utilisateur quitte la partie (par ex. en fermant la fenêtre).
 		do
+			if attached {BOARD_ENGINE} current_engine as la_board_engine then
+				la_board_engine.thread.must_stop := true
+			end
 			game_library.stop  -- Stop the controller loop (allow game_library.launch to return)
 		end
 

@@ -34,6 +34,7 @@ feature -- Implementation
 			across on_screen_sprites as la_on_screen_sprites  loop
 				la_on_screen_sprites.item.draw_self (a_game_window.surface)
 			end
+			a_game_window.update
 		end
 
 invariant

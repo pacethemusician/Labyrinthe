@@ -28,7 +28,7 @@ feature {NONE} -- Initialisation
 			init_board_paths
 		end
 
-feature {BOARD_ENGINE} -- Implementation
+feature {BOARD_ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 
 	image_factory: IMAGE_FACTORY
 			-- Contient les images de `Current'
