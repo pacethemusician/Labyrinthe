@@ -118,6 +118,7 @@ feature -- Implementation
 			-- Index vers le {PLAYER} dans `players' dont c'est le tour à jouer.
 
 	thread: THREAD_BOARD_ENGINE
+			-- {THREAD} qui met à jour l'affichage du jeu.
 
 	number_of_players: INTEGER
 
