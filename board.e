@@ -41,14 +41,10 @@ feature {BOARD_ENGINE} -- Implementation
 		local
 			l_type_amount: ARRAYED_LIST [INTEGER]
 			l_rng: GAME_RANDOM
-			l_random_type: INTEGER
-			l_random_rotation: INTEGER
 			l_sticky_cards: ARRAYED_LIST [PATH_CARD]
-			l_sticky_cards_index: INTEGER
-			l_i, l_j: INTEGER
+			l_row_index: INTEGER
 		do
 			l_sticky_cards := init_sticky_cards
-			l_sticky_cards_index := 1
 			create l_type_amount.make (3)
 			l_type_amount.extend (16)
 				-- Le nombre de PATH_CARD de type 1.
@@ -60,40 +56,53 @@ feature {BOARD_ENGINE} -- Implementation
 			create l_rng
 			create board_paths.make (7)
 			from
-				l_i := 1
+				l_row_index := 1
 			until
-				l_i > 7
+				l_row_index > 7
 			loop
 				board_paths.extend (create {ARRAYED_LIST [PATH_CARD]}.make (7))
-				from
-					l_j := 1
-				until
-					l_j > 7
-				loop
-					if (l_i \\ 2) = 0 or (l_j \\ 2) = 0 then
-						l_rng.generate_new_random
-						l_random_rotation := l_rng.last_random_integer_between (1, 4)
-						l_rng.generate_new_random
-						from
-							l_random_type := l_rng.last_random_integer_between (1, 3)
-						until
-							l_type_amount [l_random_type] > 0
-						loop
-							l_random_type := (l_random_type \\ 3) + 1
-						end
-						l_type_amount [l_random_type] := l_type_amount [l_random_type] - 1
-						board_paths [l_i].extend (create {SPARE_PATH_CARD}.make (l_random_type, image_factory, ((l_j - 1) * 84) + 56, ((l_i - 1) * 84) + 56, l_random_rotation))
-					else
-						board_paths [l_i].extend (l_sticky_cards [l_sticky_cards_index])
-						l_sticky_cards [l_sticky_cards_index].x := l_sticky_cards [l_sticky_cards_index].x + 56
-						l_sticky_cards [l_sticky_cards_index].y := l_sticky_cards [l_sticky_cards_index].y + 56
-						l_sticky_cards_index := l_sticky_cards_index + 1
-					end
-					l_j := l_j + 1
-				end
-				l_i := l_i + 1
+				init_row (l_row_index, l_sticky_cards, l_type_amount, l_rng)
+				l_row_index := l_row_index + 1
 			end
 			distribute_items(image_factory.items)
+		end
+
+	init_row (a_row_index: INTEGER; a_sticky_cards: ARRAYED_LIST [PATH_CARD]; a_type_amount: ARRAYED_LIST [INTEGER]; a_rng: GAME_RANDOM)
+		local
+			l_column_index: INTEGER
+			l_sticky_cards_index: INTEGER
+			l_random_type: INTEGER
+			l_random_rotation: INTEGER
+		do
+			l_sticky_cards_index := ((a_row_index // 2) * 4) + 1
+			from
+				l_column_index := 1
+			until
+				l_column_index > 7
+			loop
+				if ((a_row_index \\ 2) = 0) or ((l_column_index \\ 2) = 0) then
+					a_rng.generate_new_random
+					l_random_rotation := a_rng.last_random_integer_between (1, 4)
+					a_rng.generate_new_random
+					from
+						l_random_type := a_rng.last_random_integer_between (1, 3)
+					until
+						a_type_amount [l_random_type] > 0
+					loop
+						l_random_type := (l_random_type \\ 3) + 1
+					end
+					a_type_amount [l_random_type] := a_type_amount [l_random_type] - 1
+					board_paths [a_row_index].extend (create {SPARE_PATH_CARD}.make
+						(l_random_type, image_factory, ((l_column_index - 1) * 84) + 56,
+						((a_row_index - 1) * 84) + 56, l_random_rotation))
+				else
+					board_paths [a_row_index].extend (a_sticky_cards [l_sticky_cards_index])
+					a_sticky_cards [l_sticky_cards_index].x := a_sticky_cards [l_sticky_cards_index].x + 56
+					a_sticky_cards [l_sticky_cards_index].y := a_sticky_cards [l_sticky_cards_index].y + 56
+					l_sticky_cards_index := l_sticky_cards_index + 1
+				end
+				l_column_index := l_column_index + 1
+			end
 		end
 
 	distribute_items (a_items: LIST [GAME_SURFACE])

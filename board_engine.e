@@ -219,8 +219,6 @@ feature -- Implementation
 
 	on_mouse_released(a_mouse_state:GAME_MOUSE_BUTTON_RELEASED_STATE)
 			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.
-		local
-			l_index: NATURAL_8
 		do
 			if is_dragging then
 				if is_drop_zone(140, -28, a_mouse_state) then
