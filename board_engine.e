@@ -29,9 +29,7 @@ feature {NONE} -- Initialization
 			create item_to_find.make (image_factory.items[players[current_player_index].items_to_find.first], 801, 327)
 			create {LINKED_LIST[SPRITE]} on_screen_sprites.make
 			create spare_card.make(3, image_factory, 801, 144, 1)
-			-- create spare_card_button.make (create {GAME_SURFACE}.make (84, 84), 801, 144)
 			create board.make (image_factory)
-			-- create no_drop.make (image_factory.buttons[12], -130, -130)
 			create sound_fx_error.make ("Audio/sfx_error.wav")
 			create sound_fx_ok.make ("Audio/sfx_ok.wav")
 			create sound_fx_slide.make ("Audio/sfx_slide.wav")
@@ -56,9 +54,7 @@ feature {NONE} -- Initialization
 					end
 				end
 			end
-
 			on_screen_sprites.extend (text_player)
---			on_screen_sprites.extend (no_drop)
 			on_screen_sprites.extend (spare_card)
 
 			board.on_click_actions.extend(agent board_click_action)
@@ -95,8 +91,6 @@ feature -- Implementation
 			-- Le son joué lorsque le {PLAYER} essaie de droper la `spare_card' sur le `no_drop'
 	sound_fx_slide: SOUND_FX
 			-- Le son joué lorsque le {PLAYER} drop la `spare_card' avec succès
-	-- no_drop: SPRITE
-			-- Le jeu ne peut pas y droper la `spare_card'
 
 	spare_card: SPARE_PATH_CARD
 			-- la carte que le joueur doit placer
@@ -178,7 +172,7 @@ feature -- Implementation
 							la_players.item.next_x := la_players.item.x - 84
 						else
 							if la_players.item.get_col_index ~ 7 then
-								la_players.item.x := -5
+								la_players.item.x := - 5
 							end
 							la_players.item.next_x := la_players.item.x + 84
 						end
@@ -193,12 +187,12 @@ feature -- Implementation
 						players_to_move.extend (la_players.item)
 						if a_is_from_top_or_right then
 							if la_players.item.get_row_index ~ 7 then
-								la_players.item.y := -5
+								la_players.item.y := - 28
 							end
 							la_players.item.next_y := la_players.item.y + 84
 						else
 							if la_players.item.get_row_index ~ 1 then
-								la_players.item.y := 667
+								la_players.item.y := 644
 							end
 							la_players.item.next_y := la_players.item.y - 84
 						end
@@ -315,7 +309,10 @@ feature
 					text_player.current_surface := (image_factory.text[current_player_index])
 					circle_player.x := players[current_player_index].x - 23
 					circle_player.y := players[current_player_index].y
-					item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
+					if players[current_player_index].item_found_number ~ players[current_player_index].items_to_find.count then
+						item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
+					end
+
 				end
 			else
             	players[current_player_index].follow_path

@@ -117,7 +117,7 @@ feature {GAME_ENGINE} -- Implementation
 						l_x := 583
 						l_y := 560
 					end
-				Result.extend (create {PLAYER} .make (image_factory.players[la_players.item.index], l_x, l_y))
+				Result.extend (create {PLAYER} .make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y))
 				from
 					l_i := 1
 				until
