@@ -98,6 +98,10 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 				if (a_path_card.item_index = items_to_find [item_found_number + 1]) then
 					a_path_card.item_index := 0
 					item_found_number := item_found_number + 1
+					if (item_found_number ~ items_to_find.count) then
+						print("Bravo! Vous avez gagné!")
+						-- "Jouer un son"
+					end
 				end
 			end
 		end
