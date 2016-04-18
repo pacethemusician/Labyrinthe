@@ -26,11 +26,10 @@ feature {NONE} -- Initialisation
 			y := a_y
 			animations := a_surfaces
 			make_animated_sprite (a_surfaces [1], 22, 5, x, y)
-			create {LINKED_LIST[PATH_CARD]} path.make
-			create {LINKED_LIST[INTEGER]} items_to_find.make
+			create {LINKED_LIST [PATH_CARD]} path.make
+			create {LINKED_LIST [INTEGER]} items_to_find.make
 			path_index := 1
 			item_found_number := 0
-
 		end
 
 feature {ENGINE} -- Implementation
@@ -41,7 +40,8 @@ feature {ENGINE} -- Implementation
 	path: LIST [PATH_CARD] assign set_path
 			-- Le chemin que `current' peut suivre avec `follow_path'.
 
-	items_to_find: LIST[INTEGER]
+	items_to_find: LIST [INTEGER]
+
 	item_found_number: INTEGER assign set_item_found_number
 
 	path_index: INTEGER
@@ -60,6 +60,7 @@ feature {ENGINE} -- Implementation
 		end
 
 	next_x: INTEGER assign set_next_x
+
 	next_y: INTEGER assign set_next_y
 			-- Où le {PLAYER} devra se rendre s'il est sur une {PATH_CARD} qui bouge
 
@@ -90,9 +91,11 @@ feature {ENGINE} -- Implementation
 		end
 
 	pick_up_item (a_path_card: PATH_CARD)
+			-- Si l' `item_index' de `a_path_card' est égual à `items_to_find[item_found_number + 1]',
+			-- `item_index' est mis à 0 et `item_found_number' est incrémenté de 1.
 		do
 			if (item_found_number < items_to_find.count) then
-				if (a_path_card.item_index = items_to_find[item_found_number + 1]) then
+				if (a_path_card.item_index = items_to_find [item_found_number + 1]) then
 					a_path_card.item_index := 0
 					item_found_number := item_found_number + 1
 				end
@@ -102,9 +105,8 @@ feature {ENGINE} -- Implementation
 	follow_path
 			-- Fait suivre `path' à `current'. Si `current' arrive à destination, `path' est vidé.
 			-- L'animation de `current' est changée selon sa position relative à la destination.
-			-- La destination est `path[path_index]'. Si une des {PATH_CARD} traversée a comme
-			-- `item_index' l'item que `current' doit trouver, l' `item_index' est mis à 0 et
-			-- `item_found_number' est incrémenté de 1.
+			-- La destination est `path[path_index]'. `pick_up_item' est éxécuté avec toutes les
+			-- {PATH_CARD} traversées.
 		require
 			has_path: not path.is_empty
 		do
@@ -133,8 +135,8 @@ invariant
 note
 	license: "WTFPL"
 	source: "[
-				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
-				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
-			]"
+		Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+		Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+	]"
 
 end

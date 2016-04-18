@@ -145,7 +145,7 @@ feature {NONE} -- Implementation
 				Result.extend (img_to_surface ("Images/item" + la_index.item.out + ".png"))
 			end
 			across 1 |..| 4 as la_index loop
-				Result.extend (img_to_surface ("start_item_" + la_index.item.out + ".png"))
+				Result.extend (img_to_surface ("Images/start_item_" + la_index.item.out + ".png"))
 			end
 		end
 

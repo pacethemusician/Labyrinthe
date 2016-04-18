@@ -68,6 +68,7 @@ feature {BOARD_ENGINE} -- Implementation
 		end
 
 	init_row (a_row_index: INTEGER; a_sticky_cards: ARRAYED_LIST [PATH_CARD]; a_type_amount: ARRAYED_LIST [INTEGER]; a_rng: GAME_RANDOM)
+			-- Initialise la rangée `a_row_index' de `board_paths' en la remplissant de {PATH_CARD}.
 		local
 			l_column_index: INTEGER
 			l_sticky_cards_index: INTEGER
@@ -118,8 +119,12 @@ feature {BOARD_ENGINE} -- Implementation
 			l_remaining_cards: INTEGER
 		do
 			create l_rng
+			board_paths[1].i_th (1).item_index := a_items.count
+			board_paths[1].i_th (7).item_index := a_items.count - 1
+			board_paths[7].i_th (1).item_index := a_items.count - 2
+			board_paths[7].i_th (7).item_index := a_items.count - 3
 			from
-				l_item_index := a_items.count
+				l_item_index := a_items.count - 4
 			until
 				l_item_index <= 0
 			loop
@@ -151,21 +156,25 @@ feature {BOARD_ENGINE} -- Implementation
 			-- Retourne la liste des {PATH_CARD} qui ne changent pas entre les parties.
 		do
 			create Result.make (16)
+			-- Rangée 1
 			Result.extend (create {PATH_CARD}.make (1, image_factory, 0, 0, 4))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 0, 2))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 0, 3))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 0, 4))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 0, 4))
 			Result.extend (create {PATH_CARD}.make (1, image_factory, 504, 0, 1))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 0, 168, 1))
+			-- Rangée 3
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 0, 168, 3))
 			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 168, 3))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 168, 2))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 504, 168, 4))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 0, 336, 4))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 168, 4))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 504, 168, 1))
+			-- Rangée 5
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 0, 336, 3))
 			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 336, 2))
-			Result.extend (create {PATH_CARD}.make (2, image_factory, 336, 336, 4))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 504, 336, 2))
+			Result.extend (create {PATH_CARD}.make (2, image_factory, 336, 336, 2))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 504, 336, 1))
+			-- Rangée 7
 			Result.extend (create {PATH_CARD}.make (1, image_factory, 0, 504, 3))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 504, 3))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 504, 1))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 504, 2))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 504, 2))
 			Result.extend (create {PATH_CARD}.make (1, image_factory, 504, 504, 2))
 		end
 
@@ -185,7 +194,6 @@ feature {BOARD_ENGINE} -- Implementation
 			check attached {SPARE_PATH_CARD} l_result as la_result then
 				Result := la_result
 			end
-
 		end
 
 	get_next_spare_card_row (a_row_id: NATURAL_8; a_add_on_right: BOOLEAN): SPARE_PATH_CARD

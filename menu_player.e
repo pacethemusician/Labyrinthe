@@ -121,12 +121,14 @@ feature {GAME_ENGINE} -- Implementation
 				from
 					l_i := 1
 				until
-					l_i > (image_factory.items.count // l_count)
+					l_i > ((image_factory.items.count - 4) // l_count)
+					-- Le -4 est là parce qu'il faut ignorer les points de départ.
 				loop
 					Result.last.items_to_find.extend (l_item_index)
 					l_item_index := l_item_index + 1
 					l_i := l_i + 1
 				end
+				Result.last.items_to_find.extend (image_factory.items.count - la_players.item.index + 1)
 			end
 		end
 
