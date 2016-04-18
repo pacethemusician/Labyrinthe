@@ -124,6 +124,13 @@ feature -- Implementation
 
 	item_to_find, text_player: SPRITE
 
+	close_thread
+			-- Ferme `thread'.
+		do
+			thread.must_stop := true
+			thread.join
+		end
+
 	rotate_spare_card(a_steps: INTEGER)
 			-- Méthode qui se déclenche lorsqu'on clique sur `btn_rotate_left' ou `btn_rotate_right'.
 		require

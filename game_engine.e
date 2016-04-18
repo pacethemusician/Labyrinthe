@@ -115,7 +115,7 @@ feature {NONE} -- Implementation
 			-- Méthode appelée si l'utilisateur quitte la partie (par ex. en fermant la fenêtre).
 		do
 			if attached {BOARD_ENGINE} current_engine as la_board_engine then
-				la_board_engine.thread.must_stop := true
+				la_board_engine.close_thread
 			end
 			game_library.stop  -- Stop the controller loop (allow game_library.launch to return)
 		end
