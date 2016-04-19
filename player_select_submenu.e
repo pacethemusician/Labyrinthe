@@ -112,7 +112,7 @@ feature {MENU_PLAYER} -- Implementation
 		end
 
 	first_available_index:INTEGER
-			-- Retourne l'index du premier `SPRITE' disponible dans `available_sprites'
+			-- Retourne l'index du premier {SPRITE} disponible dans `available_sprites'
 		local
 			l_found: BOOLEAN
 		do
@@ -128,6 +128,7 @@ feature {MENU_PLAYER} -- Implementation
 		end
 
 	update_coordinates (a_x, a_y, a_index: INTEGER)
+			-- Pour afficher `Current' à la bonne place si le joueur cancelle le {PLAYER_SELECT_SUBMENU} précédant
 		do
 			x := a_x
 			y := a_y
@@ -145,6 +146,8 @@ feature {MENU_PLAYER} -- Implementation
 			left_arrow.y := y + 44
 			right_arrow.x := x + 164
 			right_arrow.y := y + 44
+			type_image.x := x
+			type_image.y := y + 150
 		end
 
 	next_available_index(a_direction: INTEGER):INTEGER

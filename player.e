@@ -25,9 +25,11 @@ feature {NONE} -- Initialisation
 			x := a_x
 			y := a_y
 			animations := a_surfaces
-			make_animated_sprite (a_surfaces [1], 22, 5, x, y)
+			make_animated_sprite (a_surfaces [1], 22, 7, x, y)
 			create {LINKED_LIST [PATH_CARD]} path.make
 			create {LINKED_LIST [INTEGER]} items_to_find.make
+			create item_pickup_sound_fx.make("Audio/get_item.ogg")
+			create winner_sound_fx.make("Audio/winner.ogg")
 			path_index := 1
 			item_found_number := 0
 		end
@@ -46,6 +48,11 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 
 	path_index: INTEGER
 			-- L'index du {PATH} dans `current_path' vers lequel `current' se déplace.
+
+	item_pickup_sound_fx: SOUND_FX
+			-- Le son entendu quand `Current' ramasse un item
+	winner_sound_fx: SOUND_FX
+			-- Le son entendu quand `Current' gagne la partie
 
 	get_col_index: INTEGER
 			-- Retourne le numéro de la colonne où se trouve `Current' sur le {BOARD}
@@ -99,8 +106,9 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 					a_path_card.item_index := 0
 					item_found_number := item_found_number + 1
 					if (item_found_number ~ items_to_find.count) then
-						print("Bravo! Vous avez gagné!")
-						-- "Jouer un son"
+						winner_sound_fx.play
+					else
+						item_pickup_sound_fx.play
 					end
 				end
 			end
@@ -119,17 +127,17 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 				pick_up_item (path [path_index])
 				path_index := path_index + 1
 				if path_index > path.count then
-					change_animation (animations [1], 22, 5)
+					change_animation (animations [1], 22, 7)
 					path.wipe_out
 					path_index := 1
 				elseif (path [path_index].x > x) then
-					change_animation (animations [4], 6, 3)
+					change_animation (animations [4], 6, 7)
 				elseif (path [path_index].x < x - 23) then
-					change_animation (animations [5], 6, 3)
+					change_animation (animations [5], 6, 7)
 				elseif (path [path_index].y > y) then
-					change_animation (animations [2], 6, 3)
+					change_animation (animations [2], 6, 7)
 				elseif (path [path_index].y < y) then
-					change_animation (animations [3], 6, 3)
+					change_animation (animations [3], 6, 7)
 				end
 			end
 		end
