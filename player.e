@@ -18,12 +18,13 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32)
+	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32, a_is_local: BOOLEAN)
 			-- Initialisation de `current' à la position (`a_x', `a_y').
 			-- le offset x du player par rapport à la path_card est de 23 pixels
 		do
 			x := a_x
 			y := a_y
+			is_local := a_is_local
 			animations := a_surfaces
 			make_animated_sprite (a_surfaces [1], 22, 7, x, y)
 			create {LINKED_LIST [PATH_CARD]} path.make
@@ -35,6 +36,8 @@ feature {NONE} -- Initialisation
 		end
 
 feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
+
+	is_local: BOOLEAN
 
 	animations: LIST [GAME_SURFACE]
 			-- Liste des animations du joueur.
@@ -67,9 +70,8 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 		end
 
 	next_x: INTEGER assign set_next_x
-
 	next_y: INTEGER assign set_next_y
-			-- Où le {PLAYER} devra se rendre s'il est sur une {PATH_CARD} qui bouge
+			-- L'endroit où le {PLAYER} devra se rendre s'il est sur une {PATH_CARD} qui bouge
 
 	set_path (a_path_list: LIST [PATH_CARD])
 			-- Assigne `a_path_list' à `path'.

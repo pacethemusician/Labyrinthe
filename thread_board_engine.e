@@ -20,13 +20,13 @@ create
 feature {BOARD_ENGINE, GAME_ENGINE} -- Implementation
 
 	engine: BOARD_ENGINE
-			-- Le {BOARD_ENGINE} lié à `current'.
+			-- Le {BOARD_ENGINE} lié à `Current'.
 
 	game_window: GAME_WINDOW_SURFACED
 			-- La {GAME_WINDOW_SURFACED} sur laquelle afficher le {BOARD_ENGINE}.
 
 	must_stop: BOOLEAN assign set_must_stop
-			-- Indique si `current' doit s'arrêter.
+			-- Indique si `Current' doit s'arrêter.
 
 	set_must_stop (a_must_stop: BOOLEAN)
 			-- Assigne `a_must_stop' à `must_stop'.
@@ -37,7 +37,7 @@ feature {BOARD_ENGINE, GAME_ENGINE} -- Implementation
 		end
 
 	make (a_board_engine: BOARD_ENGINE; a_game_window: GAME_WINDOW_SURFACED)
-			-- Initialisation de `current'.
+			-- Initialisation de `Current'.
 		do
 			make_thread
 			engine := a_board_engine
@@ -72,5 +72,12 @@ feature {BOARD_ENGINE, GAME_ENGINE} -- Implementation
 		end
 
 invariant
+
+note
+	license: "WTFPL"
+	source: "[
+		Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+		Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+	]"
 
 end
