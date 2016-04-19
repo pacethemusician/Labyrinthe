@@ -1,5 +1,5 @@
 note
-	description: "Sélection du nombre de joueurs et de leur sprite"
+	description: "Sélection du nombre de joueurs et de leurs sprites. Gère aussi les sockets."
 	author: "Pascal Belisle"
 	date: "Mars 2016"
 	revision: "1.0"
@@ -33,8 +33,8 @@ feature {NONE} -- Initialisation
 				available_sprites.extend (True)
 				sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (la_index.item)[1], 22, 10, 0, 0))
 			end
-			button_add_player.on_click_actions.extend (agent add_player(1))
-			button_add_connexion.on_click_actions.extend (agent add_player(0))
+			button_add_player.on_click_actions.extend (agent add_player(True))
+			button_add_connexion.on_click_actions.extend (agent add_player(False))
 			button_go.on_click_actions.extend (agent set_choice(Menu_choice_go))
 			buttons.extend(button_add_player)
 			buttons.extend(button_add_connexion)
@@ -43,7 +43,7 @@ feature {NONE} -- Initialisation
 			on_screen_sprites.extend(button_add_player)
 			on_screen_sprites.extend(button_add_connexion)
 			on_screen_sprites.extend(button_go)
-			add_player (1)
+			add_player (True)
 		end
 
 feature {GAME_ENGINE} -- Implementation
@@ -61,12 +61,13 @@ feature {GAME_ENGINE} -- Implementation
 	button_add_connexion: BUTTON
 	button_go: BUTTON
 
+
 	is_go_selected: BOOLEAN
 		do
 			Result := choice = Menu_choice_go
 		end
 
-	add_player(a_type: INTEGER)
+	add_player(a_is_local: BOOLEAN)
 			-- Ajoute un objet {PLAYER_SELECT_SUBMENU} à `player_select_submenus' selon le `a_type'
 		local
 			l_x, l_y, l_count: INTEGER
@@ -87,7 +88,7 @@ feature {GAME_ENGINE} -- Implementation
 					l_x := 340
 					l_y := 318
 				end
-				player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (l_count + 1, image_factory, l_x, l_y, available_sprites, sprite_preview_surface_list, a_type))
+				player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (l_count + 1, image_factory, l_x, l_y, available_sprites, sprite_preview_surface_list, a_is_local))
 			end
 		ensure
 			new_player_added:  old player_select_submenus.count < 4 implies player_select_submenus.count = old player_select_submenus.count + 1
@@ -117,7 +118,7 @@ feature {GAME_ENGINE} -- Implementation
 						l_x := 583
 						l_y := 560
 					end
-				Result.extend (create {PLAYER} .make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y))
+				Result.extend (create {PLAYER} .make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y, la_players.item.is_local))
 				from
 					l_i := 1
 				until

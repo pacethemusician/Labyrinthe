@@ -92,15 +92,22 @@ feature {NONE} -- Implementation
 				else
 					if la_menu_player.is_go_selected then
 						players := la_menu_player.get_players
-						current_engine := create {BOARD_ENGINE}.make(image_factory, players, a_game_window)
+						current_engine := create {BOARD_ENGINE_SERVER}.make(image_factory, players, a_game_window)
 
 					-- elseif la_menu_player.is_cancel_selected then
 						-- À faire...
 					end
 				end
 			elseif attached {MENU_JOIN} current_engine as la_menu_join then
-				la_menu_join.show(a_game_window)
+				if not la_menu_join.is_done then
+					la_menu_join.show(a_game_window)
+				else
+					if la_menu_join.is_go_selected then
+						current_engine := create {BOARD_ENGINE_CLIENT}.make(image_factory, players, a_game_window)
+					end
+				end
 			end
+
 			if attached {BOARD_ENGINE} current_engine as la_board_engine then
 				la_board_engine.update
 			else

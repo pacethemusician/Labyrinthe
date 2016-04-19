@@ -18,16 +18,16 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_index: INTEGER; a_image_factory: IMAGE_FACTORY; a_x, a_y: INTEGER; a_available_sprites: LIST[BOOLEAN]; a_sprite_list: LIST[ANIMATED_SPRITE]; a_type:INTEGER)
-			-- `a_index' est la position de `current' sur dans la liste pour créer le bon `background'
+	make (a_index: INTEGER; a_image_factory: IMAGE_FACTORY; a_x, a_y: INTEGER; a_available_sprites: LIST[BOOLEAN]; a_sprite_list: LIST[ANIMATED_SPRITE]; a_is_local:BOOLEAN)
+			-- `a_index' est la position de `Current' dans la liste pour créer le bon `background'
 			-- `a_available_sprites' pointe vers la liste du {MENU_PLAYER} pour savoir si les sprites sont disponibles.
 			-- `a_sprite_list' pointe vers la liste du {MENU_PLAYER} pour avoir accès aux sprites
-			-- Si `a_type' = 1 c'est un joueur local sinon c'est un joueur réseau.
+			-- on assigne `a_is_local' à `is_local'
 		do
 			make_menu (a_image_factory)
 			x := a_x
 			y := a_y
-			type := a_type
+			is_local := a_is_local
 			index := a_index
 			available_sprites := a_available_sprites
 			sprite_list := a_sprite_list
@@ -35,7 +35,7 @@ feature {NONE} -- Initialisation
 			create background.make (image_factory.player_choice_menu.at(index), x, y)
 			create left_arrow.make (image_factory.buttons[5], x + 35, y + 44)
 			create right_arrow.make (image_factory.buttons[6], x + 164, y + 44)
-			if type ~ 1 then
+			if is_local then
 				create type_image.make (image_factory.player_choice_menu[6], x, y + 150)
 			else
 				create type_image.make (image_factory.player_choice_menu[7], x, y + 150)
@@ -78,8 +78,8 @@ feature {MENU_PLAYER} -- Implementation
 	type_image: SPRITE
 		-- une image indiquant s'il s'agit d'un jouer local ou réseau
 
-	type: INTEGER
-		-- Si = 1 le joueur est local sinon réseau
+	is_local: BOOLEAN
+		-- Si `True' le joueur est local sinon en réseau
 
 	available_sprites: LIST[BOOLEAN]
 		-- pointe vers la liste du {MENU_PLAYER} pour savoir si les sprites sont disponibles.

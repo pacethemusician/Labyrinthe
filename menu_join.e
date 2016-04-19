@@ -1,8 +1,8 @@
 note
 	description: "Demande les informations de connection à l'usager pour une partie en réseau."
 	author: "Pascal Belisle"
-	date: "Avril 2016"
-	revision: ""
+	date: "Session Hiver 2016"
+	revision: "1.0"
 
 class
 	MENU_JOIN
@@ -23,6 +23,26 @@ feature {NONE} -- Initialisation
 		do
 			Precursor(a_image_factory)
 			create background.make (image_factory.backgrounds[2], 0, 0)
+
+			-- Section hard codé à refaire si le temps le permet
+			is_done := True
+			is_go_selected := True
+		end
+
+feature
+	is_go_selected: BOOLEAN assign set_is_go_selected
+
+	set_is_go_selected (a_value: BOOLEAN)
+			-- Assigne `a_value' à `is_go_selected'
+		do
+			is_go_selected := a_value
+		end
+
+	get_ip: TUPLE[INTEGER]
+			-- Retourne l'adresse IP sélectionnée
+			-- Pour l'instant, l'adresse local_host est hard-codé
+		do
+			Result := [127, 0, 0, 1]
 		end
 
 invariant

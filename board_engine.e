@@ -1,10 +1,10 @@
 note
-	description: "Classe qui contrôle le gameplay."
+	description: "Classe abstraite qui contrôle le gameplay."
 	author: "Pascal Belisle, Charles Lemay"
 	date: "Mars 2016"
 	revision: ""
 
-class
+deferred class
 	BOARD_ENGINE
 
 inherit
@@ -12,9 +12,6 @@ inherit
 		rename
 			make as make_menu
 		end
-
-create
-	make
 
 feature {THREAD_BOARD_ENGINE} -- Initialization
 
