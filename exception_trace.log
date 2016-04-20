@@ -1499,3 +1499,21 @@ APPLICATION         root's creation
 <00000000040F05A8>                         Routine failure.              Exit
 -------------------------------------------------------------------------------
 Catcall detected in {PROCEDURE}.call for arg#1: expected TUPLE [!GAME_MOUSE_BUTTON_PRESSED_STATE] but got TUPLE
+
+projetlabyrinthe: PANIC: Unexpected harmful signal (Segmentation violation) ...
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions.
+NB: The raised panic may have induced completely inconsistent information:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+APPLICATION         root's creation        Unexpected harmful signal (Segmentation violation):
+<00000000055B1358>                         Eiffel run-time panic.        Bye
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: dumping core to generate debugging information...

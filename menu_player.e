@@ -8,9 +8,13 @@ class
 	MENU_PLAYER
 
 inherit
+	ARGUMENTS
+
 	MENU
+		rename
+			make as make_menu
 		redefine
-			make, show, check_button
+			show, check_button
 		end
 
 create
@@ -18,10 +22,12 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_image_factory: IMAGE_FACTORY)
+	make (a_image_factory: IMAGE_FACTORY; a_socket:NETWORK_STREAM_SOCKET)
 			-- <Precursor>
 		do
-			Precursor(a_image_factory)
+			make_menu(a_image_factory)
+			socket := a_socket
+
 			create button_add_player.make (image_factory.buttons[7], 80, 510)
 			create button_add_connexion.make (image_factory.buttons[8], 80, 589)
 			create button_go.make (image_factory.buttons[10], 434, 510)
@@ -34,19 +40,28 @@ feature {NONE} -- Initialisation
 				sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (la_index.item)[1], 22, 10, 0, 0))
 			end
 			button_add_player.on_click_actions.extend (agent add_player(True))
-			button_add_connexion.on_click_actions.extend (agent add_player(False))
 			button_go.on_click_actions.extend (agent set_choice(Menu_choice_go))
 			buttons.extend(button_add_player)
-			buttons.extend(button_add_connexion)
-			buttons.extend (button_go)
 			on_screen_sprites.extend(background)
+			if a_socket.is_bound then
+				buttons.extend(button_add_connexion)
+				on_screen_sprites.extend(button_add_connexion)
+				button_add_connexion.on_click_actions.extend (agent add_player(False))
+			end
+			buttons.extend (button_go)
+
 			on_screen_sprites.extend(button_add_player)
-			on_screen_sprites.extend(button_add_connexion)
 			on_screen_sprites.extend(button_go)
 			add_player (True)
+			to_connect := 0
 		end
 
 feature {GAME_ENGINE} -- Implementation
+
+	to_connect:INTEGER
+
+	socket: NETWORK_STREAM_SOCKET
+			-- permet d'obtenir des connexions de client
 
 	player_select_submenus: LIST[PLAYER_SELECT_SUBMENU]
 		-- Contient les choix des personnages des usagers
@@ -57,10 +72,30 @@ feature {GAME_ENGINE} -- Implementation
 	sprite_preview_surface_list: LIST[ANIMATED_SPRITE]
 		-- Contient les sprites affichés par les sous-menus de `player_select_submenus'
 
+	connexion: detachable CONNEXION_THREAD
+
 	button_add_player: BUTTON
 	button_add_connexion: BUTTON
 	button_go: BUTTON
 
+	waiting_for_connexion
+		local
+			l_connexion: CONNEXION_THREAD
+		do
+			if attached connexion as la_connexion then
+				if la_connexion.is_done then
+					-- Va chercher le socket avec un if attached
+					connexion := Void
+					to_connect := to_connect - 1
+				end
+			else
+				if to_connect > 0 then
+					create l_connexion.make (socket)
+					connexion := l_connexion
+					l_connexion.launch
+				end
+			end
+		end
 
 	is_go_selected: BOOLEAN
 		do
@@ -89,11 +124,21 @@ feature {GAME_ENGINE} -- Implementation
 					l_y := 318
 				end
 				player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (l_count + 1, image_factory, l_x, l_y, available_sprites, sprite_preview_surface_list, a_is_local))
+				if not a_is_local then
+					to_connect := to_connect + 1
+				end
 			end
 		ensure
 			new_player_added:  old player_select_submenus.count < 4 implies player_select_submenus.count = old player_select_submenus.count + 1
 			new_player_not_over:  old player_select_submenus.count >= 4 implies player_select_submenus.count = old player_select_submenus.count
 		end
+
+--	add
+--	
+--	create l_connexion.make (socket)
+--					my_connexions.extend (l_connexion)
+--					l_connexion.execute
+
 
 	get_players:LIST[PLAYER]
 			-- Créer et retourne la liste des {PLAYER} choisis

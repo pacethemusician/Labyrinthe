@@ -58,11 +58,15 @@ feature {NONE} -- Initialisation
 			l_window.mouse_motion_actions.extend (agent on_mouse_move(?, ?, ?, ?))
 
 			game_library.launch
-
+			if attached socket_serveur as la_socket and then not la_socket.is_closed then
+				la_socket.close
+			end
 		end
 
 
 feature {NONE} -- Implementation
+
+	socket_serveur:detachable SOCKET
 
 	music_source: AUDIO_SOURCE
 
@@ -75,13 +79,17 @@ feature {NONE} -- Implementation
 
 	on_iteration(a_timestamp:NATURAL_32; a_game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
+		local
+			l_socket:NETWORK_STREAM_SOCKET
 		do
 			if attached {MENU_TITLE_SCREEN} current_engine as la_menu_title_screen then
 				if not la_menu_title_screen.is_done then
 					la_menu_title_screen.show(a_game_window)
 				else
 					if la_menu_title_screen.is_menu_player_chosen then
-						current_engine := create {MENU_PLAYER}.make(image_factory)
+						create l_socket.make_server_by_port (40001)
+						current_engine := create {MENU_PLAYER}.make(image_factory, l_socket)
+						socket_serveur := l_socket
 					elseif la_menu_title_screen.is_menu_join_chosen then
 						current_engine := create {MENU_JOIN}.make(image_factory)
 					end
