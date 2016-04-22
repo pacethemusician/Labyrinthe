@@ -38,7 +38,7 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			create text_player.make (image_factory.text[current_player_index], 795, 35)
 			create circle_btn_ok.make (image_factory.backgrounds[3], 72, 1, 922, 222)
 			create circle_player.make (image_factory.backgrounds[3], 72, 1, players[current_player_index].x - 23, players[current_player_index].y)
-
+			
 			on_screen_sprites.extend (background)
 			on_screen_sprites.extend (btn_rotate_left)
 			on_screen_sprites.extend (btn_rotate_right)

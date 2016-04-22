@@ -27,6 +27,7 @@ feature {NONE} -- Initialization
 			text := init_text_surfaces
 			backgrounds := init_background_surfaces
 			player_choice_menu := init_player_choice_menu_surfaces
+			chars := init_chars
 
 		end
 
@@ -124,7 +125,7 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/btn_cancel.png"))
 			Result.extend (img_to_surface ("Images/btn_go.png"))
 			Result.extend (img_to_surface ("Images/btn_ok.png"))
-			Result.extend (img_to_surface ("Images/cannot_drop.png"))
+			Result.extend (img_to_surface ("Images/btn_add_net_off.png"))
 		end
 
 	init_background_surfaces:ARRAYED_LIST[GAME_SURFACE]
@@ -144,7 +145,7 @@ feature {NONE} -- Implementation
 			across 1 |..| 24 as la_index loop
 				Result.extend (img_to_surface ("Images/item" + la_index.item.out + ".png"))
 			end
-			across 1 |..| 4 as la_index loop
+			across 1 |..| 5 as la_index loop
 				Result.extend (img_to_surface ("Images/start_item_" + la_index.item.out + ".png"))
 			end
 		end
@@ -173,6 +174,24 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/txt_player4.png"))
 		end
 
+	init_chars:ARRAYED_LIST[GAME_SURFACE]
+			-- Retourne les {GAME_SURFACE} contenant les caractères 0-9 / .
+		do
+			create Result.make(15)
+			Result.extend (img_to_surface ("Images/1.png"))
+			Result.extend (img_to_surface ("Images/2.png"))
+			Result.extend (img_to_surface ("Images/3.png"))
+			Result.extend (img_to_surface ("Images/4.png"))
+			Result.extend (img_to_surface ("Images/5.png"))
+			Result.extend (img_to_surface ("Images/6.png"))
+			Result.extend (img_to_surface ("Images/7.png"))
+			Result.extend (img_to_surface ("Images/8.png"))
+			Result.extend (img_to_surface ("Images/9.png"))
+			Result.extend (img_to_surface ("Images/0.png"))
+			Result.extend (img_to_surface ("Images/dot.png"))
+			Result.extend (img_to_surface ("Images/slash.png"))
+		end
+
 feature
 
 	path_cards: ARRAYED_LIST[LIST[GAME_SURFACE]]
@@ -182,7 +201,7 @@ feature
 	text: ARRAYED_LIST[GAME_SURFACE]
 	backgrounds: ARRAYED_LIST[GAME_SURFACE]
 	player_choice_menu: ARRAYED_LIST[GAME_SURFACE]
-	-- arcade_font_36: TEXT_FONT
+	chars: ARRAYED_LIST[GAME_SURFACE]
 
 invariant
 
