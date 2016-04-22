@@ -43,7 +43,7 @@ feature {NONE} -- Initialisation
 			items := a_image_factory.items
 			index := 1
 			create {ARRAYED_LIST [GAME_SURFACE]} rotated_surfaces.make (4)
-			rotated_surfaces := image_factory.path_cards[a_type]
+			rotated_surfaces := image_factory.path_cards [a_type]
 			make_sprite (rotated_surfaces [a_rotation], a_x, a_y)
 			if a_type = 1 then
 				connections := 0b0011
@@ -119,9 +119,6 @@ feature
 			y_offset_valid: y_offset = a_value
 		end
 
-	x_offset, y_offset: INTEGER
-			-- Position relative à la souris lorsque `current' se fait déplacer.
-
 	set_item_index (a_value: INTEGER)
 			-- Assigne `a_value' à `index'.
 		do
@@ -165,13 +162,19 @@ feature -- Attributs
 			-- Index de l'item sur `current' dans la liste `items'.
 			-- Est égual à 0 si aucun item n'est sur `current'.
 
+	x_offset, y_offset: INTEGER
+			-- Position relative à la souris lorsque `current' se fait déplacer.
+
 invariant
+	connections_not_all: connections /= 0b1111
+	connections_over_one: (connections.bit_test (0).to_integer + connections.bit_test (1).to_integer +
+							connections.bit_test (2).to_integer + connections.bit_test (3).to_integer) > 1
 
 note
 	license: "WTFPL"
 	source: "[
-				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
-				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
-			]"
+		Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+		Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+	]"
 
 end

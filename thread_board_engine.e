@@ -17,6 +17,16 @@ inherit
 create
 	make
 
+feature {BOARD_ENGINE} -- Initialisation
+
+	make (a_board_engine: BOARD_ENGINE; a_game_window: GAME_WINDOW_SURFACED)
+			-- Initialisation de `Current'.
+		do
+			make_thread
+			engine := a_board_engine
+			game_window := a_game_window
+		end
+
 feature {BOARD_ENGINE, GAME_ENGINE} -- Implementation
 
 	engine: BOARD_ENGINE
@@ -34,14 +44,6 @@ feature {BOARD_ENGINE, GAME_ENGINE} -- Implementation
 			must_stop := a_must_stop
 		ensure
 			must_stop = a_must_stop
-		end
-
-	make (a_board_engine: BOARD_ENGINE; a_game_window: GAME_WINDOW_SURFACED)
-			-- Initialisation de `Current'.
-		do
-			make_thread
-			engine := a_board_engine
-			game_window := a_game_window
 		end
 
 	execute

@@ -57,6 +57,10 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 	winner_sound_fx: SOUND_FX
 			-- Le son entendu quand `Current' gagne la partie
 
+	next_x: INTEGER assign set_next_x
+	next_y: INTEGER assign set_next_y
+			-- L'endroit où le {PLAYER} devra se rendre s'il est sur une {PATH_CARD} qui bouge
+
 	get_col_index: INTEGER
 			-- Retourne le numéro de la colonne où se trouve `Current' sur le {BOARD}
 		do
@@ -68,10 +72,6 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 		do
 			Result := ((y - 56) // 84) + 1
 		end
-
-	next_x: INTEGER assign set_next_x
-	next_y: INTEGER assign set_next_y
-			-- L'endroit où le {PLAYER} devra se rendre s'il est sur une {PATH_CARD} qui bouge
 
 	set_path (a_path_list: LIST [PATH_CARD])
 			-- Assigne `a_path_list' à `path'.
@@ -124,8 +124,8 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 		require
 			has_path: not path.is_empty
 		do
-			approach_point (path [path_index].x + 23, path [path_index].y, 3)
-			if ((x = path [path_index].x + 23) and (y = path [path_index].y)) then
+			approach_point (path [path_index].x + X_offset, path [path_index].y, Walking_speed)
+			if ((x = path [path_index].x + X_offset) and (y = path [path_index].y)) then
 				pick_up_item (path [path_index])
 				path_index := path_index + 1
 				if path_index > path.count then
@@ -143,6 +143,12 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 				end
 			end
 		end
+
+feature --Constantes
+
+	Walking_speed:INTEGER = 3
+
+	X_offset:INTEGER = 23
 
 invariant
 

@@ -46,13 +46,12 @@ feature {BOARD_ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 		do
 			l_sticky_cards := init_sticky_cards
 			create l_type_amount.make (3)
-			l_type_amount.extend (16)
+			l_type_amount.extend (type_one_amount)
 				-- Le nombre de PATH_CARD de type 1.
-			l_type_amount.extend (11)
+			l_type_amount.extend (type_two_amount)
 				-- Le nombre de PATH_CARD de type 2.
-			l_type_amount.extend (6)
+			l_type_amount.extend (type_three_amount)
 				-- Le nombre de PATH_CARD de type 3.
-				-- Le total des 3 types doit valoir 33 ou plus.
 			create l_rng
 			create board_paths.make (7)
 			from
@@ -385,7 +384,15 @@ feature {NONE} -- Implementation
 			end
 		end
 
+feature {NONE} -- Constantes
+
+	type_one_amount:INTEGER = 16
+	type_two_amount:INTEGER = 11
+	type_three_amount:INTEGER = 6
+
 invariant
+
+	enough_cards:(type_one_amount + type_two_amount + type_three_amount) >= 33
 
 note
 	license: "WTFPL"

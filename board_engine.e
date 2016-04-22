@@ -38,7 +38,7 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			create text_player.make (image_factory.text[current_player_index], 795, 35)
 			create circle_btn_ok.make (image_factory.backgrounds[3], 72, 1, 922, 222)
 			create circle_player.make (image_factory.backgrounds[3], 72, 1, players[current_player_index].x - 23, players[current_player_index].y)
-			
+
 			on_screen_sprites.extend (background)
 			on_screen_sprites.extend (btn_rotate_left)
 			on_screen_sprites.extend (btn_rotate_right)
@@ -66,7 +66,6 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			buttons.extend (board)
 			buttons.extend (btn_ok)
 
-			number_of_players := players.count
 			has_to_place_spare_card := True
 			thread.launch
 		end
@@ -117,12 +116,12 @@ feature -- Implementation
 	thread: THREAD_BOARD_ENGINE
 			-- {THREAD} qui met à jour l'affichage du jeu.
 
-	number_of_players: INTEGER
-
 	item_to_find, text_player: SPRITE
 
 	close_thread
 			-- Ferme `thread'.
+		require
+			thread_running: not thread.terminated
 		do
 			thread.must_stop := true
 			thread.join
@@ -289,26 +288,23 @@ feature
 	update
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
 		do
-			board.adjust_paths(3)
+			board.adjust_paths(Path_cards_speed)
 			if not players_to_move.is_empty then
 				across players_to_move as la_players loop
-					la_players.item.approach_point (la_players.item.next_x, la_players.item.next_y, 3)
+					la_players.item.approach_point (la_players.item.next_x, la_players.item.next_y, Path_cards_speed)
 				end
 				if (players_to_move [1].next_x = players_to_move [1].x) and (players_to_move [1].next_y = players_to_move [1].y) then
 					players_to_move.wipe_out
 				end
 			end
-			if not is_dragging then
-				spare_card.approach_point (801, 144, 64)
-			end
 			if players[current_player_index].path.is_empty then
 				if has_finished then
 					has_finished := False
-					current_player_index := (current_player_index \\ number_of_players) + 1
+					current_player_index := (current_player_index \\ players.count) + 1
 					has_to_move := False
 					has_to_place_spare_card := True
 					text_player.current_surface := (image_factory.text[current_player_index])
-					circle_player.x := players[current_player_index].x - 23
+					circle_player.x := players[current_player_index].x - players[current_player_index].X_offset
 					circle_player.y := players[current_player_index].y
 					if players[current_player_index].item_found_number ~ players[current_player_index].items_to_find.count then
 						item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
@@ -320,9 +316,14 @@ feature
             end
 			item_to_find.current_surface := (image_factory.items[players[current_player_index].items_to_find [players[current_player_index].item_found_number + 1]])
 			if not is_dragging then
-				spare_card.approach_point (801, 144, 64)
+				spare_card.approach_point (801, 144, Spare_card_speed)
 			end
 		end
+
+feature {NONE} -- Constantes
+
+	Spare_card_speed:INTEGER = 64
+	Path_cards_speed:INTEGER = 3
 
 invariant
 
