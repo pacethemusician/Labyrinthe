@@ -9,14 +9,17 @@ class
 	TEST_ANIMATED_SPRITE
 
 inherit
+
 	EQA_TEST_SET
 		redefine
 			on_prepare
 		end
+
 	ANIMATED_SPRITE
 		undefine
 			default_create
 		end
+
 	GAME_LIBRARY_SHARED
 		undefine
 			default_create
@@ -25,6 +28,7 @@ inherit
 feature {NONE} -- Events
 
 	on_prepare
+			-- <Precursor>
 		do
 			if not game_library.is_video_enable then
 				game_library.enable_video
@@ -104,6 +108,11 @@ feature -- Test routines
 			assert ("draw_self_normal_1", not current_surface.has_error)
 		end
 
+note
+	license: "WTFPL"
+	source: "[
+		Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+		Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+	]"
+
 end
-
-

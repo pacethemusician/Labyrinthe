@@ -9,14 +9,17 @@ class
 	TEST_SPRITE
 
 inherit
+
 	EQA_TEST_SET
 		redefine
 			on_prepare
 		end
+
 	SPRITE
 		undefine
 			default_create
 		end
+
 	GAME_LIBRARY_SHARED
 		undefine
 			default_create
@@ -25,6 +28,7 @@ inherit
 feature -- Events
 
 	on_prepare
+			-- <Precursor>
 		do
 			if not game_library.is_video_enable then
 				game_library.enable_video
@@ -91,6 +95,12 @@ feature -- Test routines
 			set_surface (l_surface)
 			assert ("approach_point_limite_2", current_surface = l_surface)
 		end
+
+note
+	license: "WTFPL"
+	source: "[
+		Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+		Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+	]"
+
 end
-
-
