@@ -44,12 +44,62 @@ feature -- Events
 
 feature -- Test routines
 
---	new_test_routine
---			-- New test routine
---		do
---			assert ("not_cool", False)
---		end
+	draw_self_normal
+			-- Test normal de `draw_self'.
+		do
+			draw_self (create {GAME_SURFACE}.make (5, 5))
+			assert ("set_x_normal_1", not current_surface.has_error)
+		end
 
+	set_x_normal
+			-- Test normal de `set_x'.
+		do
+			set_x (321)
+			assert ("set_x_normal_1", x = 321)
+			set_x (-123)
+			assert ("set_x_normal_2", x = -123)
+		end
+
+	set_y_normal
+			-- Test normal de `set_y'.
+		do
+			set_y (123)
+			assert ("set_y_normal_1", y = 123)
+			set_y (-321)
+			assert ("set_y_normal_2", y = -321)
+		end
+
+	approach_point_normal
+			-- Test normal de `approach_point'.
+		do
+			set_x (0)
+			set_y (0)
+			approach_point (5, 5, 3)
+			assert ("approach_point_normal_1", (x = 3) and (y = 3))
+			approach_point (5, 5, 3)
+			assert ("approach_point_normal_2", (x = 5) and (y = 5))
+		end
+
+	approach_point_limite
+			-- Test limite de `approach_point'.
+		do
+			set_x (0)
+			set_y (0)
+			approach_point (0, 0, 99)
+			assert ("approach_point_limite_1", (x = 0) and (y = 0))
+			approach_point (-1, -1, 99)
+			assert ("approach_point_limite_2", (x = -1) and (y = -1))
+		end
+
+	set_surface_normal
+			-- Test normal de `set_surface'.
+		local
+			l_surface: GAME_SURFACE
+		do
+			create l_surface.make (1, 1)
+			set_surface (l_surface)
+			assert ("approach_point_limite_2", current_surface = l_surface)
+		end
 end
 
 
