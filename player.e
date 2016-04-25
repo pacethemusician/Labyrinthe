@@ -18,13 +18,14 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32; a_is_local: BOOLEAN)
+	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32; a_is_local: BOOLEAN; a_score: SCORE_SURFACE)
 			-- Initialisation de `current' à la position (`a_x', `a_y').
 			-- le offset x du player par rapport à la path_card est de 23 pixels
 		do
 			x := a_x
 			y := a_y
 			is_local := a_is_local
+			score := a_score
 			animations := a_surfaces
 			make_animated_sprite (a_surfaces [1], 22, 7, x, y)
 			create {LINKED_LIST [PATH_CARD]} path.make
@@ -38,6 +39,10 @@ feature {NONE} -- Initialisation
 feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 
 	is_local: BOOLEAN
+			-- `True' si le joueur est local `False' si en réseaux
+
+	score: SCORE_SURFACE assign set_score_surface
+			-- Pointe vers la {SCORE_SURFACE} du {BOARD_ENGINE} et se met à jour lors de item_pickup
 
 	animations: LIST [GAME_SURFACE]
 			-- Liste des animations du joueur.
@@ -46,8 +51,10 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 			-- Le chemin que `current' peut suivre avec `follow_path'.
 
 	items_to_find: LIST [INTEGER]
+			-- La liste des items que `Current' doit trouver
 
 	item_found_number: INTEGER assign set_item_found_number
+			-- Le nombre d'items trouvés
 
 	path_index: INTEGER
 			-- L'index du {PATH} dans `current_path' vers lequel `current' se déplace.
@@ -71,6 +78,12 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 			-- Retourne le numéro de la rangée où se trouve `Current' sur le {BOARD}
 		do
 			Result := ((y - 56) // 84) + 1
+		end
+
+	set_score_surface (a_new_score_surface: SCORE_SURFACE)
+			-- Met à jour `score'
+		do
+			score := a_new_score_surface
 		end
 
 	set_path (a_path_list: LIST [PATH_CARD])
@@ -106,12 +119,13 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 			if (item_found_number < items_to_find.count) then
 				if (a_path_card.item_index = items_to_find [item_found_number + 1]) then
 					a_path_card.item_index := 0
-					item_found_number := item_found_number + 1
 					if (item_found_number ~ items_to_find.count) then
 						winner_sound_fx.play
 					else
 						item_pickup_sound_fx.play
+						item_found_number := item_found_number + 1
 					end
+					score.update(item_found_number)
 				end
 			end
 		end

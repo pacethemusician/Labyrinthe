@@ -163,7 +163,11 @@ feature {GAME_ENGINE} -- Implementation
 						l_x := 583
 						l_y := 560
 					end
-				Result.extend (create {PLAYER} .make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y, la_players.item.is_local))
+				Result.extend (
+								create {PLAYER} .make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y, la_players.item.is_local,
+								create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory))
+							)
+
 				from
 					l_i := 1
 				until

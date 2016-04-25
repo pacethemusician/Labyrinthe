@@ -178,6 +178,7 @@ feature {NONE} -- Implementation
 			-- Retourne les {GAME_SURFACE} contenant les caractères 0-9 / .
 		do
 			create Result.make(15)
+			Result.extend (img_to_surface ("Images/0.png"))
 			Result.extend (img_to_surface ("Images/1.png"))
 			Result.extend (img_to_surface ("Images/2.png"))
 			Result.extend (img_to_surface ("Images/3.png"))
@@ -187,9 +188,8 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/7.png"))
 			Result.extend (img_to_surface ("Images/8.png"))
 			Result.extend (img_to_surface ("Images/9.png"))
-			Result.extend (img_to_surface ("Images/0.png"))
-			Result.extend (img_to_surface ("Images/dot.png"))
 			Result.extend (img_to_surface ("Images/slash.png"))
+			Result.extend (img_to_surface ("Images/dot.png"))
 		end
 
 feature
