@@ -24,6 +24,7 @@ feature {NONE} -- Initialisation
 			-- Initialisation de `current' avec l'animation `a_default_surface' à la position (`a_x', `a_y').
 		require
 			frame_over_zero: a_frame_count > 0
+			delay_over_zero: a_delay > 0
 		do
 			make_sprite (a_default_surface, a_x, a_y)
 			set_frame_count (a_frame_count)

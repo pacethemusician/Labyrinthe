@@ -1,10 +1,8 @@
 note
-	description: "[
-		Eiffel tests that can be executed by testing tool.
-	]"
-	author: "EiffelStudio test wizard"
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Tests unitaires de la classe {SPRITE}"
+	author: "Charles Lemay"
+	date: "2016-04-25"
+	revision: "1.0"
 	testing: "type/manual"
 
 class
@@ -13,8 +11,7 @@ class
 inherit
 	EQA_TEST_SET
 		redefine
-			on_prepare,
-			on_clean
+			on_prepare
 		end
 	SPRITE
 		undefine
@@ -36,19 +33,13 @@ feature -- Events
 			assert ("test_sprite_on_prepare", not game_library.has_error)
 		end
 
-	on_clean
-		do
-			game_library.quit_library
-			assert ("test_sprite_on_prepare", not game_library.has_error)
-		end
-
 feature -- Test routines
 
 	draw_self_normal
 			-- Test normal de `draw_self'.
 		do
 			draw_self (create {GAME_SURFACE}.make (5, 5))
-			assert ("set_x_normal_1", not current_surface.has_error)
+			assert ("draw_self_normal_1", not current_surface.has_error)
 		end
 
 	set_x_normal
