@@ -70,6 +70,7 @@ feature {BOARD_ENGINE, GAME_ENGINE} -- Implementation
 					la_players.item.draw_self (game_window.surface)
 				end
 				game_window.update
+				sleep (1000000)
 			end
 		end
 
