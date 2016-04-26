@@ -64,31 +64,57 @@ feature -- Test routines
 	is_connected_normal
 			-- Test normal de `is_connected'.
 		do
-			assert ("not_implemented", False)
+			assert ("is_connected_normal_1", not is_connected (0))
+			assert ("is_connected_normal_2", not is_connected (1))
+			assert ("is_connected_normal_3", is_connected (2))
+			assert ("is_connected_normal_4", is_connected (3))
 		end
 
 	set_x_offset_normal
 			-- Test normal de `set_x_offset'.
 		do
-			assert ("not_implemented", False)
+			set_x_offset (0)
+			assert ("set_x_offset_normal_1", x_offset = 0)
+			set_x_offset (22)
+			assert ("set_x_offset_normal_2", x_offset = 22)
+			set_x_offset (-33)
+			assert ("set_x_offset_normal_3", x_offset = -33)
 		end
 
 	set_y_offset_normal
 			-- Test normal de `set_y_offset'.
 		do
-			assert ("not_implemented", False)
+			set_y_offset (0)
+			assert ("set_y_offset_normal_1", y_offset = 0)
+			set_y_offset (22)
+			assert ("set_y_offset_normal_2", y_offset = 22)
+			set_y_offset (-33)
+			assert ("set_y_offset_normal_3", y_offset = -33)
 		end
 
 	set_item_index_normal
 			-- Test normal de `set_item_index'.
 		do
-			assert ("not_implemented", False)
+			set_item_index (10)
+			assert ("set_item_index_normal_1", item_index = 10)
+			set_item_index (7)
+			assert ("set_item_index_normal_2", item_index = 7)
+		end
+
+	set_item_index_limite
+			-- Test limite de `set_item_index'.
+		do
+			set_item_index (0)
+			assert ("set_item_index_limite_1", item_index = 0)
+			set_item_index (items.count)
+			assert ("set_item_index_limite_2", item_index = items.count)
 		end
 
 	draw_self_normal
 			-- Test normal de `draw_self'.
 		do
-			assert ("not_implemented", False)
+			draw_self (create {GAME_SURFACE}.make (5, 5))
+			assert ("draw_self_normal_1", not current_surface.has_error)
 		end
 
 note

@@ -90,17 +90,8 @@ feature
 		require
 			direction_positive: a_direction >= 0
 			direction_below_four: a_direction < 4
-		local
-			l_result: BOOLEAN
-			l_mask: INTEGER
 		do
-			l_mask := 0b1000
-			if connections.bit_and (l_mask.bit_shift_right (a_direction)) = 0 then
-				l_result := false
-			else
-				l_result := true
-			end
-			result := l_result
+			result := connections.bit_test (3 - a_direction)
 		end
 
 	set_x_offset (a_value: INTEGER)
@@ -121,6 +112,9 @@ feature
 
 	set_item_index (a_value: INTEGER)
 			-- Assigne `a_value' à `index'.
+		require
+			value_valid: a_value <= items.count
+			value_positive: a_value >= 0
 		do
 			item_index := a_value
 		ensure
@@ -130,9 +124,6 @@ feature
 	draw_self (destination_surface: GAME_SURFACE)
 			-- Dessiner `current' ainsi que ses items sur `destination_surface'
 			-- et mettre à jour `animation_timer'.
-		require else
-			item_index_positive: item_index >= 0
-			item_index_valid: item_index < 25
 		do
 			destination_surface.draw_surface (current_surface, x, y)
 			if not (item_index = 0) then
@@ -166,6 +157,8 @@ feature -- Attributs
 			-- Position relative à la souris lorsque `current' se fait déplacer.
 
 invariant
+	item_index_valid: item_index <= items.count
+	item_index_positive: item_index >= 0
 	connections_not_all: connections /= 0b1111
 	connections_over_one: (connections.bit_test (0).to_integer + connections.bit_test (1).to_integer +
 							connections.bit_test (2).to_integer + connections.bit_test (3).to_integer) > 1
