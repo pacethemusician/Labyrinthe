@@ -20,7 +20,7 @@ feature {NONE} -- Initialisation
 
 	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32; a_is_local: BOOLEAN; a_score: SCORE_SURFACE)
 			-- Initialisation de `current' à la position (`a_x', `a_y').
-			-- le offset x du player par rapport à la path_card est de 23 pixels
+			-- le offset x du player par rapport à la path_card est de 23 pixels.
 		do
 			x := a_x
 			y := a_y

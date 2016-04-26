@@ -33,15 +33,24 @@ feature {NONE} -- Events
 				game_library.enable_video
 			end
 			make (create {IMAGE_FACTORY}.make)
-			assert ("test_sprite_on_prepare", not game_library.has_error)
+			assert ("test_board_on_prepare", not game_library.has_error)
 		end
 
 feature -- Test routines
 
 	init_board_paths_normal
 			-- Test normal de `init_board_paths'.
+		local
+			l_sticky_cards: ARRAYED_LIST [PATH_CARD]
+			l_i, l_j: INTEGER
+			l_sticky_cards_index: INTEGER
 		do
-			assert ("not_implemented", False)
+			init_board_paths
+			l_sticky_cards_index := 1
+			assert ("init_board_paths_normal_1", board_paths.count = 7)
+			across board_paths as rows loop
+				assert ("init_board_paths_normal_2", rows.item.count = 7)
+			end
 		end
 
 	init_row_normal

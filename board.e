@@ -293,6 +293,8 @@ feature {NONE} -- Implementation
 
 	init_row (a_row_index: INTEGER; a_sticky_cards: ARRAYED_LIST [PATH_CARD]; a_type_amount: ARRAYED_LIST [INTEGER]; a_rng: GAME_RANDOM)
 			-- Initialise la rangée `a_row_index' de `board_paths' en la remplissant de {PATH_CARD}.
+		require
+			type_amount_valid: a_type_amount.count = 3
 		local
 			l_column_index: INTEGER
 			l_sticky_cards_index: INTEGER

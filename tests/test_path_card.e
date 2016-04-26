@@ -34,7 +34,7 @@ feature {NONE} -- Events
 				game_library.enable_video
 			end
 			make (1, create {IMAGE_FACTORY}.make, 0, 0, 1)
-			assert ("test_sprite_on_prepare", not game_library.has_error)
+			assert ("test_path_card_on_prepare", not game_library.has_error)
 		end
 
 feature -- Test routines
