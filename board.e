@@ -61,10 +61,11 @@ feature -- Implementation
 			distribute_items (image_factory.items)
 		end
 
-	get_next_spare_card_column (a_column_id: NATURAL_8; a_add_on_top: BOOLEAN): SPARE_PATH_CARD
+	get_next_spare_card_column (a_column_id: INTEGER; a_add_on_top: BOOLEAN): SPARE_PATH_CARD
 			-- Retourne la {PATH_CARD} qui sera éjectée du board si la
 			-- méthode rotate_column est lancée.
 		require
+			column_id_even: (a_column_id \\ 2) = 0
 			valid_index: a_column_id <= board_paths.last.count and a_column_id <= board_paths [1].count
 		local
 			l_result: PATH_CARD
@@ -79,10 +80,11 @@ feature -- Implementation
 			end
 		end
 
-	get_next_spare_card_row (a_row_id: NATURAL_8; a_add_on_right: BOOLEAN): SPARE_PATH_CARD
+	get_next_spare_card_row (a_row_id: INTEGER; a_add_on_right: BOOLEAN): SPARE_PATH_CARD
 			-- Retourne la {PATH_CARD} qui sera éjectée du board si la
 			-- méthode rotate_row est lancée.
 		require
+			row_id_even: (a_row_id \\ 2) = 0
 			valid_index: a_row_id <= board_paths.count
 		local
 			l_result: PATH_CARD
@@ -100,25 +102,19 @@ feature -- Implementation
 	rotate_column (a_column_id: INTEGER; a_path_card: PATH_CARD; a_add_on_top: BOOLEAN)
 			-- Insert `a_path_card' dans la colone `a_column_id'. `a_path_card' est
 			-- inséré par le haut si `a_add_on_top' est vrai, sinon par le bas.
+		require
+			column_id_even: (a_column_id \\ 2) = 0
 		local
 			l_i: INTEGER
 		do
 			if a_add_on_top then
-				from
-					l_i := 7
-				until
-					l_i < 2
-				loop
+				from l_i := 7 until l_i < 2 loop
 					(board_paths [l_i]) [a_column_id] := (board_paths [l_i - 1]) [a_column_id]
 					l_i := l_i - 1
 				end
 				(board_paths [1]) [a_column_id] := a_path_card
 			else
-				from
-					l_i := 1
-				until
-					l_i > 6
-				loop
+				from l_i := 1 until l_i > 6 loop
 					(board_paths [l_i]) [a_column_id] := (board_paths [l_i + 1]) [a_column_id]
 					l_i := l_i + 1
 				end
@@ -129,27 +125,21 @@ feature -- Implementation
 	rotate_row (a_row_id: INTEGER; a_path_card: PATH_CARD; a_add_on_right: BOOLEAN)
 			-- Insert `a_path_card' dans la rangée `a_row_id'. `a_path_card' est
 			-- inséré par la droite si `a_add_on_right' est vrai, sinon par la gauche.
+		require
+			row_id_even: (a_row_id \\ 2) = 0
 		local
 			l_i: INTEGER
 		do
 			if a_add_on_right then
 					-- Rotation de droite à gauche.
-				from
-					l_i := 1
-				until
-					l_i > 6
-				loop
+				from l_i := 1 until l_i > 6 loop
 					(board_paths [a_row_id]) [l_i] := (board_paths [a_row_id]) [l_i + 1]
 					l_i := l_i + 1
 				end
 				(board_paths [a_row_id]) [7] := a_path_card
 			else
 					-- Rotation de gauche à droite.
-				from
-					l_i := 7
-				until
-					l_i < 2
-				loop
+				from l_i := 7 until l_i < 2 loop
 					(board_paths [a_row_id]) [l_i] := (board_paths [a_row_id]) [l_i - 1]
 					l_i := l_i - 1
 				end
@@ -165,16 +155,8 @@ feature -- Implementation
 		local
 			l_i, l_j: INTEGER
 		do
-			from
-				l_i := 1
-			until
-				l_i > board_paths.count
-			loop
-				from
-					l_j := 1
-				until
-					l_j > board_paths.count
-				loop
+			from l_i := 1 until l_i > board_paths.count loop
+				from l_j := 1 until l_j > board_paths.count loop
 					(board_paths [l_j]) [l_i].approach_point (((l_i - 1) * 84) + 56, ((l_j - 1) * 84) + 56, a_speed)
 					l_j := l_j + 1
 				end

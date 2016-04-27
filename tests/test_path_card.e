@@ -12,7 +12,8 @@ inherit
 
 	EQA_TEST_SET
 		redefine
-			on_prepare
+			on_prepare,
+			on_clean
 		end
 
 	PATH_CARD
@@ -35,6 +36,11 @@ feature {NONE} -- Events
 			end
 			make (1, create {IMAGE_FACTORY}.make, 0, 0, 1)
 			assert ("test_path_card_on_prepare", not game_library.has_error)
+		end
+
+	on_clean
+		do
+			game_library.quit_library
 		end
 
 feature -- Test routines

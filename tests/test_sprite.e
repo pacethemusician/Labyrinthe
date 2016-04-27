@@ -12,7 +12,8 @@ inherit
 
 	EQA_TEST_SET
 		redefine
-			on_prepare
+			on_prepare,
+			on_clean
 		end
 
 	SPRITE
@@ -35,6 +36,11 @@ feature -- Events
 			end
 			make (create {GAME_SURFACE}.make (1, 1), 1, 1)
 			assert ("test_sprite_on_prepare", not game_library.has_error)
+		end
+
+	on_clean
+		do
+			game_library.quit_library
 		end
 
 feature -- Test routines

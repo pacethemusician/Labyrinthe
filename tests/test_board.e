@@ -11,7 +11,8 @@ class
 inherit
 	EQA_TEST_SET
 		redefine
-			on_prepare
+			on_prepare,
+			on_clean
 		end
 
 	BOARD
@@ -36,17 +37,17 @@ feature {NONE} -- Events
 			assert ("test_board_on_prepare", not game_library.has_error)
 		end
 
+	on_clean
+		do
+			game_library.quit_library
+		end
+
 feature -- Test routines
 
 	init_board_paths_normal
 			-- Test normal de `init_board_paths'.
-		local
-			l_sticky_cards: ARRAYED_LIST [PATH_CARD]
-			l_i, l_j: INTEGER
-			l_sticky_cards_index: INTEGER
 		do
 			init_board_paths
-			l_sticky_cards_index := 1
 			assert ("init_board_paths_normal_1", board_paths.count = 7)
 			across board_paths as rows loop
 				assert ("init_board_paths_normal_2", rows.item.count = 7)
@@ -67,20 +68,52 @@ feature -- Test routines
 
 	get_next_spare_card_column_normal
 			-- Test normal de `get_next_spare_card_column'.
+		local
+			l_path_card: PATH_CARD
+			l_second_path_card: PATH_CARD
 		do
-			assert ("not_implemented", False)
+			l_path_card := (board_paths[1])[2]
+			l_second_path_card := get_next_spare_card_column (2, false)
+			assert ("get_next_spare_card_column_normal_1", l_path_card = l_second_path_card)
+			l_path_card := (board_paths.last)[4]
+			l_second_path_card := get_next_spare_card_column (4, true)
+			assert ("get_next_spare_card_column_normal_2", l_path_card = l_second_path_card)
+			l_path_card := (board_paths[1])[6]
+			l_second_path_card := get_next_spare_card_column (6, false)
+			assert ("get_next_spare_card_column_normal_3", l_path_card = l_second_path_card)
 		end
 
 	get_next_spare_card_row_normal
 			-- Test normal de `get_next_spare_card_row'.
+		local
+			l_path_card: PATH_CARD
+			l_second_path_card: PATH_CARD
 		do
-			assert ("not_implemented", False)
+			l_path_card := (board_paths[2])[1]
+			l_second_path_card := get_next_spare_card_row (2, true)
+			assert ("get_next_spare_card_row_normal_1", l_path_card = l_second_path_card)
+			l_path_card := (board_paths[4]).last
+			l_second_path_card := get_next_spare_card_row (4, false)
+			assert ("get_next_spare_card_row_normal_2", l_path_card = l_second_path_card)
+			l_path_card := (board_paths[6])[1]
+			l_second_path_card := get_next_spare_card_row (6, true)
+			assert ("get_next_spare_card_row_normal_3", l_path_card = l_second_path_card)
 		end
 
 	rotate_column_normal
 			-- Test normal de `rotate_column'.
+		local
+			l_path_card: PATH_CARD
+			l_second_path_card: PATH_CARD
 		do
-			assert ("not_implemented", False)
+			l_path_card := (board_paths[1])[2]
+			l_second_path_card := (board_paths.last)[2]
+			rotate_column (2, l_path_card, false)
+			assert ("", l_path_card = (board_paths.last)[2] and l_second_path_card = (board_paths[6])[2])
+			l_path_card := (board_paths[1])[4]
+			l_second_path_card := (board_paths.last)[4]
+			rotate_column (4, l_second_path_card, true)
+			assert ("", l_path_card = (board_paths[2])[2] and l_second_path_card = (board_paths[1])[2])
 		end
 
 	rotate_row_normal
