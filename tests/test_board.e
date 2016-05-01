@@ -109,23 +109,38 @@ feature -- Test routines
 			l_path_card := (board_paths[1])[2]
 			l_second_path_card := (board_paths.last)[2]
 			rotate_column (2, l_path_card, false)
-			assert ("", l_path_card = (board_paths.last)[2] and l_second_path_card = (board_paths[6])[2])
+			assert ("rotate_column_normal_1", l_path_card = (board_paths.last)[2] and l_second_path_card = (board_paths[6])[2])
 			l_path_card := (board_paths[1])[4]
 			l_second_path_card := (board_paths.last)[4]
 			rotate_column (4, l_second_path_card, true)
-			assert ("", l_path_card = (board_paths[2])[2] and l_second_path_card = (board_paths[1])[2])
+			assert ("rotate_column_normal_2", l_path_card = (board_paths[2])[4] and l_second_path_card = (board_paths[1])[4])
 		end
 
 	rotate_row_normal
 			-- Test normal de `rotate_row'.
+		local
+			l_path_card: PATH_CARD
+			l_second_path_card: PATH_CARD
 		do
-			assert ("not_implemented", False)
+			l_path_card := (board_paths[2])[1]
+			l_second_path_card := (board_paths[2]).last
+			rotate_row (2, l_path_card, true)
+			assert ("rotate_row_normal_1", l_path_card = (board_paths[2]).last and l_second_path_card = (board_paths[2])[6])
+			l_path_card := (board_paths[4])[1]
+			l_second_path_card := (board_paths[4]).last
+			rotate_row (4, l_second_path_card, false)
+			assert ("rotate_row_normal_2", l_path_card = (board_paths[4])[2] and l_second_path_card = (board_paths[4])[1])
 		end
 
 	adjust_paths_normal
 			-- Test normal de `adjust_paths'.
 		do
-			assert ("not_implemented", False)
+			(board_paths[1])[1].x := (board_paths[1])[1].x + 5
+			(board_paths[1])[1].y := (board_paths[1])[1].y - 5
+			adjust_paths (3)
+			assert ("adjust_paths_normal_1", (board_paths[1])[1].x = 58 and (board_paths[1])[1].y = 54)
+			adjust_paths (3)
+			assert ("adjust_paths_normal_1", (board_paths[1])[1].x = 56 and (board_paths[1])[1].y = 56)
 		end
 
 	path_can_go_direction_normal
