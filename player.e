@@ -21,6 +21,8 @@ feature {NONE} -- Initialisation
 	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32; a_is_local: BOOLEAN; a_score: SCORE_SURFACE)
 			-- Initialisation de `current' à la position (`a_x', `a_y').
 			-- le offset x du player par rapport à la path_card est de 23 pixels.
+		require
+			anim_list_size: a_surfaces.count = 5
 		do
 			x := a_x
 			y := a_y
@@ -84,12 +86,16 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 			-- Met à jour `score'
 		do
 			score := a_new_score_surface
+		ensure
+			is_assign: score = a_new_score_surface
 		end
 
 	set_path (a_path_list: LIST [PATH_CARD])
 			-- Assigne `a_path_list' à `path'.
 		do
 			path := a_path_list
+		ensure
+			is_assign: path = a_path_list
 		end
 
 	set_item_found_number (a_value: INTEGER)
@@ -104,12 +110,16 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 			-- Assigne `a_value' à `next_x'
 		do
 			next_x := a_value
+		ensure
+			is_assign: next_x = a_value
 		end
 
 	set_next_y (a_value: INTEGER)
 			-- Assigne `a_value' à `next_y'
 		do
 			next_y := a_value
+		ensure
+			is_assign: next_y = a_value
 		end
 
 	pick_up_item (a_path_card: PATH_CARD)
