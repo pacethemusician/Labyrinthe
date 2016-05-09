@@ -24,11 +24,15 @@ feature {NONE} -- Initialization
 		require
 			Socket_Valid: a_socket.is_bound
 		do
+			has_error := False
 			make_thread
 			socket := a_socket
 		end
 
 feature
+
+	has_error:BOOLEAN
+			-- `True' si une erreur est arrivé à la création du `socket'
 
 	is_connected: BOOLEAN
 

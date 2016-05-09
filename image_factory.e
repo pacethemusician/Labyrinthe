@@ -126,6 +126,7 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/btn_go.png"))
 			Result.extend (img_to_surface ("Images/btn_ok.png"))
 			Result.extend (img_to_surface ("Images/btn_add_net_off.png"))
+			Result.extend (img_to_surface ("Images/btn_go_off.png"))
 		end
 
 	init_background_surfaces:ARRAYED_LIST[GAME_SURFACE]

@@ -35,18 +35,22 @@ feature {NONE} -- Initialisation
 			create {ARRAYED_LIST[ANIMATED_SPRITE]} sprite_preview_surface_list.make (5)
 			create background.make (image_factory.backgrounds[2], 0, 0)
 			create {ARRAYED_LIST[PLAYER_SELECT_SUBMENU]} player_select_submenus.make(4)
+			create {ARRAYED_LIST[SOCKET]} sockets.make (3)
 			across 1 |..| 5 as la_index loop
 				available_sprites.extend (True)
 				sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (la_index.item)[1], 22, 10, 0, 0))
 			end
 			button_add_player.on_click_actions.extend (agent add_player(True))
-			button_go.on_click_actions.extend (agent set_choice(Menu_choice_go))
+			button_go.on_click_actions.extend (agent check_ok)
 			buttons.extend(button_add_player)
 			on_screen_sprites.extend(background)
+			on_screen_sprites.extend(button_add_connexion)
 			if a_socket.is_bound then
 				buttons.extend(button_add_connexion)
-				on_screen_sprites.extend(button_add_connexion)
 				button_add_connexion.on_click_actions.extend (agent add_player(False))
+			else
+				button_add_connexion.current_surface := image_factory.buttons[12]
+
 			end
 			buttons.extend (button_go)
 
@@ -59,6 +63,7 @@ feature {NONE} -- Initialisation
 feature {GAME_ENGINE} -- Implementation
 
 	to_connect:INTEGER
+			-- Le nombre de joueur en réseau, donc le nombre de connection à créer
 
 	socket: NETWORK_STREAM_SOCKET
 			-- permet d'obtenir des connexions de client
@@ -73,10 +78,15 @@ feature {GAME_ENGINE} -- Implementation
 		-- Contient les sprites affichés par les sous-menus de `player_select_submenus'
 
 	connexion: detachable CONNEXION_THREAD
+		-- Si l'utilisateur créer un joueur réseau, on crée un thread qui attend la connection du client
 
 	button_add_player: BUTTON
 	button_add_connexion: BUTTON
 	button_go: BUTTON
+		-- Les boutons du menu
+
+	sockets: LIST[SOCKET]
+		-- Les connections des {PLAYER_NETWORK}
 
 	waiting_for_connexion
 		local
@@ -84,12 +94,16 @@ feature {GAME_ENGINE} -- Implementation
 		do
 			if attached connexion as la_connexion then
 				if la_connexion.is_done then
-					-- Va chercher le socket avec un if attached
+					if attached la_connexion.client_socket as la_socket then
+						sockets.extend (la_socket)
+					end
 					connexion := Void
+					button_go.current_surface := image_factory.buttons[10]
 					to_connect := to_connect - 1
 				end
 			else
 				if to_connect > 0 then
+					button_go.current_surface := image_factory.buttons[13]
 					create l_connexion.make (socket)
 					connexion := l_connexion
 					l_connexion.launch
@@ -133,17 +147,12 @@ feature {GAME_ENGINE} -- Implementation
 			new_player_not_over:  old player_select_submenus.count >= 4 implies player_select_submenus.count = old player_select_submenus.count
 		end
 
---	add
---	
---	create l_connexion.make (socket)
---					my_connexions.extend (l_connexion)
---					l_connexion.execute
-
 
 	get_players:LIST[PLAYER]
 			-- Créer et retourne la liste des {PLAYER} choisis
 		local
 			l_count, l_x, l_y, l_i, l_item_index: INTEGER
+			l_player:PLAYER
 		do
 			l_count := player_select_submenus.count
 			l_item_index := 1
@@ -163,11 +172,12 @@ feature {GAME_ENGINE} -- Implementation
 						l_x := 583
 						l_y := 560
 					end
-				Result.extend (
-								create {PLAYER} .make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y, la_players.item.is_local,
-								create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory))
-							)
-
+					if la_players.item.is_local then
+						create l_player.make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y, create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory))
+					else
+						create {PLAYER_NETWORK}l_player.make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y, create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory), sockets[la_players.item.index])
+					end
+				Result.extend (l_player)
 				from
 					l_i := 1
 				until
@@ -233,6 +243,7 @@ feature {GAME_ENGINE} -- Implementation
 			across player_select_submenus as la_player_select_submenus loop
 				la_player_select_submenus.item.show (a_game_window)
 			end
+
 		end
 
 	check_button (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
@@ -241,6 +252,14 @@ feature {GAME_ENGINE} -- Implementation
 			Precursor (a_mouse_state)
 			across player_select_submenus as la_list loop
 				la_list.item.check_button(a_mouse_state)
+			end
+		end
+
+	check_ok
+		-- On valide qu'il n'y a aucune connection en cours avant de débuter la partie
+		do
+			if to_connect = 0 then
+				set_choice(Menu_choice_go)
 			end
 		end
 
