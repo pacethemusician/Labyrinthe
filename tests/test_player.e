@@ -1,10 +1,8 @@
 note
-	description: "[
-		Eiffel tests that can be executed by testing tool.
-	]"
-	author: "EiffelStudio test wizard"
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Tests unitaires de la classe {PLAYER}"
+	author: "Charles Lemay"
+	date: "2016-05-02"
+	revision: "1.0"
 	testing: "type/manual"
 
 class
@@ -31,6 +29,8 @@ feature {NONE} -- Events
 
 	on_prepare
 			-- <Precursor>
+		note
+			testing: "execution/isolated"
 		local
 			l_image_list: ARRAYED_LIST [GAME_SURFACE]
 			l_i: INTEGER
@@ -56,7 +56,7 @@ feature -- Test routines
 	get_col_index_normal
 			-- Test normal de `get_col_index'.
 		do
-			assert ("not_implemented", False)
+			assert ("not_implemented", get_col_index = -1)
 		end
 
 	get_row_index_normal
