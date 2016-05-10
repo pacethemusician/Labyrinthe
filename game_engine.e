@@ -96,6 +96,7 @@ feature {NONE} -- Implementation
 				end
 			elseif attached {MENU_PLAYER} current_engine as la_menu_player then
 				if not la_menu_player.is_done then
+					la_menu_player.waiting_for_connexion
 					la_menu_player.show (a_game_window)
 				else
 					if la_menu_player.is_go_selected then

@@ -18,15 +18,16 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32; a_is_local: BOOLEAN; a_score: SCORE_SURFACE)
-			-- Initialisation de `current' à la position (`a_x', `a_y').
+	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32; a_score: SCORE_SURFACE)
+			-- Initialisation de `Current' à la position (`a_x', `a_y').
+			-- On assigne `a_surfaces' à `animations', les {SPRITE} de `Current'
+			-- Le `a_score' est la surface sur laquelle on dessine le `item_found_number' et le `items_to_find'
 			-- le offset x du player par rapport à la path_card est de 23 pixels.
 		require
 			anim_list_size: a_surfaces.count = 5
 		do
 			x := a_x
 			y := a_y
-			is_local := a_is_local
 			score := a_score
 			animations := a_surfaces
 			make_animated_sprite (a_surfaces [1], 22, 7, x, y)
@@ -39,9 +40,6 @@ feature {NONE} -- Initialisation
 		end
 
 feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
-
-	is_local: BOOLEAN
-			-- `True' si le joueur est local `False' si en réseaux
 
 	score: SCORE_SURFACE assign set_score_surface
 			-- Pointe vers la {SCORE_SURFACE} du {BOARD_ENGINE} et se met à jour lors de item_pickup
