@@ -21,10 +21,10 @@ feature {NONE} -- Initialisation
 
 feature -- Implementation
 
-	draw_self (destination_surface: GAME_SURFACE)
+	draw_self (a_destination_surface: GAME_SURFACE)
 			-- Dessiner `current' sur `destination_surface'.
 		do
-			destination_surface.draw_surface (current_surface, x, y)
+			a_destination_surface.draw_surface (current_surface, x, y)
 		end
 
 	approach_point (a_x, a_y, a_speed: INTEGER_32)
