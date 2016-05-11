@@ -58,6 +58,13 @@ feature {NONE} -- Initialisation
 			l_window.mouse_motion_actions.extend (agent on_mouse_move(?, ?, ?, ?))
 
 			game_library.launch
+
+			across players as la_player loop
+				if attached {PLAYER_NETWORK} la_player as sub_la_player then
+					sub_la_player.socket.close
+				end
+			end
+
 			if attached socket_serveur as la_socket and then not la_socket.is_closed then
 				la_socket.close
 			end
@@ -66,16 +73,20 @@ feature {NONE} -- Initialisation
 
 feature {NONE} -- Implementation
 
-	socket_serveur:detachable SOCKET
+	socket_serveur:detachable NETWORK_STREAM_SOCKET
+			-- Connection réseau
 
 	music_source: AUDIO_SOURCE
+			-- La musique du jeu
 
 	players: LIST[PLAYER]
+			-- La liste des {PLAYER}
 
 	image_factory: IMAGE_FACTORY
-		-- Contient toutes les images du projet
+			-- Contient toutes les images du projet
+
 	current_engine:ENGINE
-		-- Pointe vers l'engin en court (différents menus et jeu)
+			-- Pointe vers l'engin en court (différents menus et jeu)
 
 	on_iteration(a_timestamp:NATURAL_32; a_game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
@@ -101,6 +112,11 @@ feature {NONE} -- Implementation
 				else
 					if la_menu_player.is_go_selected then
 						players := la_menu_player.get_players
+						across players as la_players loop
+							if attached {PLAYER_NETWORK} la_players.item as la_player then
+								send_players(la_player)
+							end
+						end
 						current_engine := create {BOARD_ENGINE_SERVER}.make(image_factory, players, a_game_window)
 
 					-- elseif la_menu_player.is_cancel_selected then
@@ -125,6 +141,40 @@ feature {NONE} -- Implementation
 				a_game_window.update
 			end
             audio_library.update
+		end
+
+	send_players(a_player: PLAYER_NETWORK)
+			-- Envoie la liste `players' au joueur `a_player'
+		require
+			Socket_valid: attached socket_serveur as la_socket and then la_socket.is_connected
+		do
+			if attached socket_serveur as la_socket then
+				la_socket.independent_store (players)
+				print("La liste a ete envoyee!")
+			end
+		end
+
+	get_players:LIST[PLAYER]
+		-- Attend que le serveur envoie une liste de {PLAYER}
+		local
+			l_retry: BOOLEAN
+		do
+			create {ARRAYED_LIST[PLAYER]} Result.make(4)
+			if not l_retry then		-- Si la clause 'rescue' n'a pas été utilisé, reçoit la liste
+				if
+					attached socket_serveur as la_socket_serveur and then
+					attached {LIST[PLAYER]} la_socket_serveur.retrieved as la_list
+				then
+					io.put_string("Liste reçue: %N")
+					Result := la_list
+				end
+
+			else	-- Si la clause 'rescue' a été utilisée, affiche un message d'erreur
+				io.put_string("Le message recu n'est pas une liste valide.%N")
+			end
+			rescue	-- Permet d'attraper une exception
+				l_retry := True
+				retry
 		end
 
 	on_quit(a_timestamp: NATURAL_32)

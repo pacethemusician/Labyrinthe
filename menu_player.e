@@ -97,6 +97,7 @@ feature {GAME_ENGINE} -- Implementation
 					if attached la_connexion.client_socket as la_socket then
 						sockets.extend (la_socket)
 					end
+					connexion.yield
 					connexion := Void
 					button_go.current_surface := image_factory.buttons[10]
 					to_connect := to_connect - 1
@@ -152,10 +153,12 @@ feature {GAME_ENGINE} -- Implementation
 			-- Créer et retourne la liste des {PLAYER} choisis
 		local
 			l_count, l_x, l_y, l_i, l_item_index: INTEGER
+			l_socket_index: INTEGER
 			l_player:PLAYER
 		do
 			l_count := player_select_submenus.count
 			l_item_index := 1
+			l_socket_index := 1
 			create {ARRAYED_LIST[PLAYER]} Result.make (l_count)
 			across player_select_submenus as la_players loop
 				inspect la_players.item.index
@@ -173,9 +176,17 @@ feature {GAME_ENGINE} -- Implementation
 						l_y := 560
 					end
 					if la_players.item.is_local then
-						create l_player.make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y, create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory))
+						create l_player.make (image_factory.players[la_players.item.current_sprite_index],
+											  l_x, l_y,
+											  la_players.item.index,
+											  create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory))
 					else
-						create {PLAYER_NETWORK}l_player.make (image_factory.players[la_players.item.current_sprite_index], l_x, l_y, create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory), sockets[la_players.item.index])
+						create {PLAYER_NETWORK}l_player.make (image_factory.players[la_players.item.current_sprite_index],
+															  l_x, l_y,
+															  la_players.item.index,
+															  create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory),
+															  sockets[la_players.item.index])
+						l_socket_index := l_socket_index + 1
 					end
 				Result.extend (l_player)
 				from
@@ -226,12 +237,21 @@ feature {GAME_ENGINE} -- Implementation
 		end
 
 	check_cancellation
-			-- On vérifie si le joueur a cancellé un `PLAYER_SELECT_SUBMENU'
+			-- On vérifie si le joueur a cancellé un {PLAYER_SELECT_SUBMENU}
 		do
 			across player_select_submenus as la_player_select_submenus loop
 				if la_player_select_submenus.item.is_cancel_selected then
 					player_select_submenus := update_player_select_submenus(la_player_select_submenus.item.index)
 					available_sprites[la_player_select_submenus.item.current_sprite_index] := True
+--					if not la_player_select_submenus.item.is_local then
+--						to_connect := to_connect - 1
+--						if to_connect ~ 0 then
+--							if attached connexion as la_connexion then
+--								la_connexion.yield
+--							end
+--							connexion := Void
+--						end
+--					end
 				end
 			end
 		end

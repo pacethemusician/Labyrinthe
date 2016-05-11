@@ -18,10 +18,16 @@ create
 
 feature {NONE} -- Implementation
 
-	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32; a_score: SCORE_SURFACE; a_socket: SOCKET)
+	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y, a_index: INTEGER_32; a_score: SCORE_SURFACE; a_socket: SOCKET)
 			-- Construction de `Current'
 		do
-			make_player (a_surfaces, a_x, a_y, a_score)
+			make_player (a_surfaces, a_x, a_y, a_index, a_score)
+			socket := a_socket
 		end
+
+feature
+
+	socket: SOCKET
+
 
 end

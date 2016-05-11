@@ -71,27 +71,28 @@ feature {MENU_PLAYER} -- Implementation
 	btn_cancel: BUTTON
 
 	current_sprite_index: INTEGER assign set_current_sprite_index
+			-- Indique quel sprite utiliser dans `image_factory'
 
 	sprite_list: LIST[ANIMATED_SPRITE]
-		-- pointe vers la liste du {MENU_PLAYER} pour avoir accès aux sprites
+			-- pointe vers la liste du {MENU_PLAYER} pour avoir accès aux sprites
 
 	type_image: SPRITE
-		-- une image indiquant s'il s'agit d'un jouer local ou réseau
+			-- une image indiquant s'il s'agit d'un jouer local ou réseau
 
 	is_local: BOOLEAN
-		-- Si `True' le joueur est local sinon en réseau
+			-- Si `True' le joueur est local sinon en réseau
 
 	available_sprites: LIST[BOOLEAN]
-		-- pointe vers la liste du {MENU_PLAYER} pour savoir si les sprites sont disponibles.
+			-- pointe vers la liste du {MENU_PLAYER} pour savoir si les sprites sont disponibles.
 
 	index: INTEGER assign set_index
-	 	-- La position de `current' dans la `player_select_submenus' de la classe {MENU_PLAYER}
+	 		-- La position de `current' dans la `player_select_submenus' de la classe {MENU_PLAYER}
 
 	x, y: INTEGER
-		-- Position du sous-menu
+			-- Position du sous-menu
 
 	is_cancel_selected: BOOLEAN assign set_is_cancel_selected
-		-- Choix de l'usager
+			-- Choix de l'usager
 
 	set_is_cancel_selected (a_value: BOOLEAN)
 			-- Setter pour `is_cancel_selected'

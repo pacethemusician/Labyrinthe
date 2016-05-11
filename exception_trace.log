@@ -1517,3 +1517,128 @@ APPLICATION         root's creation        Unexpected harmful signal (Segmentati
 -------------------------------------------------------------------------------
 
 projetlabyrinthe: dumping core to generate debugging information...
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+ARRAYED_LIST        i_th @2                valid_index:                 
+<000000000451AA68>                         Precondition violated.        Fail
+-------------------------------------------------------------------------------
+BOARD_ENGINE_CLIENT make @6                                             
+<000000000454C328>  (From BOARD_ENGINE)    Routine failure.              Fail
+-------------------------------------------------------------------------------
+BOARD_ENGINE_CLIENT make @1                                             
+<000000000454C328>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         on_iteration @21                                    
+<0000000004502AD8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           fast_call                                           
+<000000000451B258>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           call @5                                             
+<000000000451B258>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ACTION_SEQUENCE     call @22                                            
+<000000000451B0C8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    inline-agent#5 of make @1
+<0000000004500628>  (From GAME_COMMON_EVENTS)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           fast_call                                           
+<0000000004501C28>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+PROCEDURE           call @5                                             
+<0000000004501C28>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ACTION_SEQUENCE     call @22                                            
+<00000000045008E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_EVENTS_CONTROLLER
+                    poll_event @4          
+<00000000045007A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    update_events @1       
+<0000000004500628>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    launch @4              
+<0000000004500628>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @23                                            
+<0000000004502AD8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         make @5                                             
+<00000000045005E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000045005E8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+ARRAYED_LIST        i_th @3                index_small_enough:          
+<000000000451AA68>                         Runtime check violated.       Exit
+-------------------------------------------------------------------------------
+ARRAYED_LIST        i_th @3                                             
+<000000000451AA68>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+BOARD_ENGINE_CLIENT make @6                                             
+<000000000454C328>  (From BOARD_ENGINE)    Routine failure.              Exit
+-------------------------------------------------------------------------------
+BOARD_ENGINE_CLIENT make @1                                             
+<000000000454C328>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+GAME_ENGINE         on_iteration @21                                    
+<0000000004502AD8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+PROCEDURE           fast_call                                           
+<000000000451B258>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+PROCEDURE           call @5                                             
+<000000000451B258>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+ACTION_SEQUENCE     call @22                                            
+<000000000451B0C8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    inline-agent#5 of make @1
+<0000000004500628>  (From GAME_COMMON_EVENTS)
+                                           Routine failure.              Exit
+-------------------------------------------------------------------------------
+PROCEDURE           fast_call                                           
+<0000000004501C28>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+PROCEDURE           call @5                                             
+<0000000004501C28>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+ACTION_SEQUENCE     call @22                                            
+<00000000045008E8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+GAME_EVENTS_CONTROLLER
+                    poll_event @4          
+<00000000045007A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    update_events @1       
+<0000000004500628>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+GAME_LIBRARY_CONTROLLER
+                    launch @4              
+<0000000004500628>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+GAME_ENGINE         make @23                                            
+<0000000004502AD8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+APPLICATION         make @5                                             
+<00000000045005E8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000045005E8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------

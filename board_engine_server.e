@@ -21,7 +21,10 @@ feature {NONE} -- Initialization
 	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER]; a_game_window:GAME_WINDOW_SURFACED)
 			-- Initialisation de `Current'
 		do
-			make_board_engine (a_image_factory, a_players, a_game_window)
+			players := a_players
+			make_board_engine (a_image_factory, players, a_game_window)
+			
+
 		end
 
 invariant

@@ -18,7 +18,7 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y: INTEGER_32; a_score: SCORE_SURFACE)
+	make (a_surfaces: LIST [GAME_SURFACE]; a_x, a_y, a_index: INTEGER_32; a_score: SCORE_SURFACE)
 			-- Initialisation de `Current' à la position (`a_x', `a_y').
 			-- On assigne `a_surfaces' à `animations', les {SPRITE} de `Current'
 			-- Le `a_score' est la surface sur laquelle on dessine le `item_found_number' et le `items_to_find'
@@ -28,6 +28,7 @@ feature {NONE} -- Initialisation
 		do
 			x := a_x
 			y := a_y
+			index := a_index
 			score := a_score
 			animations := a_surfaces
 			make_animated_sprite (a_surfaces [1], 22, 7, x, y)
@@ -43,6 +44,9 @@ feature {ENGINE, THREAD_BOARD_ENGINE} -- Implementation
 
 	score: SCORE_SURFACE assign set_score_surface
 			-- Pointe vers la {SCORE_SURFACE} du {BOARD_ENGINE} et se met à jour lors de item_pickup
+
+	index: INTEGER
+			-- La position de `Current' dans la liste `players' du {BOARD_ENGINE}
 
 	animations: LIST [GAME_SURFACE]
 			-- Liste des animations du joueur.
