@@ -22,6 +22,9 @@ create
 feature {NONE} -- Initialisation
 
 	make (a_background: GAME_SURFACE; a_digit_surfaces: LIST [GAME_SURFACE]; a_x, a_y, a_text_x_offset, a_text_y_offset: INTEGER_32)
+			-- Initialisation de `current'. `a_background' est la surface qui est affichée derière le texte. Le texte
+			-- est affiché à la coordonnée (`a_text_x_offset', `a_text_y_offset') relative à la position de l'image de fond.
+			-- `a_digit_surfaces' sont les images représentant les 10 chiffres.
 		require
 			digit_surfaces_count_valid: a_digit_surfaces.count = 10
 		do
@@ -66,17 +69,19 @@ feature {NONE} -- Implementation
 		end
 
 	draw_self (a_destination_surface: GAME_SURFACE)
+			-- Dessiner `current_surface' sur `destination_surface', ainsi que
+			-- les chiffres contenus dans `digit_list'.
 		local
 			l_text_length: INTEGER
 		do
 			l_text_length := 0
 			precursor (a_destination_surface)
 			across
-				digit_list as digit
+				digit_list as la_digit
 			loop
-				a_destination_surface.draw_surface (digit_surfaces [digit.item - 1], x + text_x_offset + l_text_length, y + text_y_offset)
-				l_text_length := l_text_length + digit_surfaces [digit.item - 1].width
-				if ((digit.cursor_index \\ 3) = 0 and not digit.is_last) then
+				a_destination_surface.draw_surface (digit_surfaces [la_digit.item - 1], x + text_x_offset + l_text_length, y + text_y_offset)
+				l_text_length := l_text_length + digit_surfaces [la_digit.item - 1].width
+				if ((la_digit.cursor_index \\ 3) = 0 and not la_digit.is_last) then
 					l_text_length := l_text_length + space_width
 				end
 			end
@@ -89,10 +94,10 @@ feature {NONE} -- Implementation
 		do
 			result := ""
 			across
-				digit_list as digit
+				digit_list as la_digit
 			loop
-				result := result + digit.item.out
-				if ((digit.cursor_index \\ 3) = 0 and not digit.is_last) then
+				result := result + la_digit.item.out
+				if ((la_digit.cursor_index \\ 3) = 0 and not la_digit.is_last) then
 					result := result + "."
 				end
 			end
