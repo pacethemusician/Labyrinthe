@@ -97,7 +97,7 @@ feature {GAME_ENGINE} -- Implementation
 					if attached la_connexion.client_socket as la_socket then
 						sockets.extend (la_socket)
 					end
-					connexion.yield
+					la_connexion.yield
 					connexion := Void
 					button_go.current_surface := image_factory.buttons[10]
 					to_connect := to_connect - 1

@@ -35,25 +35,19 @@ feature {NONE} -- Initialisation
 			create digit_list.make (digit_limit)
 		end
 
-feature {NONE} -- Implementation
+feature -- Implementation
 
 	text_x_offset: INTEGER
-		-- Distance du texte par rapport à `x'.
+			-- Distance du texte par rapport à `x'.
 
 	text_y_offset: INTEGER
-		-- Distance du texte par rapport à `y'.
+			-- Distance du texte par rapport à `y'.
 
 	digit_surfaces: LIST [GAME_SURFACE]
-		-- Liste des surfaces représentant tous les chiffres.
+			-- Liste des surfaces représentant tous les chiffres.
 
 	digit_list: ARRAYED_LIST [INTEGER]
-		-- Liste des chiffres entrés dans `current'.
-
-	digit_limit: INTEGER = 12
-		-- La limite des chiffres qui peuvent être entrés.
-
-	space_width: INTEGER = 12
-		-- Taille en pixels entre les groupes de trois chiffres lorsqu'ils sont affichés.
+			-- Liste des chiffres entrés dans `current'.
 
 	update (a_key_state: GAME_KEY_STATE)
 			-- Mets à jour l'état de `current' selon `a_key_state'. Si la touche "backspace" est
@@ -61,8 +55,10 @@ feature {NONE} -- Implementation
 			-- n'est pas plein, il est ajouté à `digit_list'.
 		do
 			if (a_key_state.is_backspace) then
-				digit_list.move (digit_list.count)
-				digit_list.remove
+				if (not digit_list.is_empty) then
+					digit_list.finish
+					digit_list.remove
+				end
 			elseif (a_key_state.virtual_code >= 48 and a_key_state.virtual_code <= 57 and not digit_list.full) then
 				digit_list.extend (a_key_state.virtual_code - 48)
 			end
@@ -79,8 +75,8 @@ feature {NONE} -- Implementation
 			across
 				digit_list as la_digit
 			loop
-				a_destination_surface.draw_surface (digit_surfaces [la_digit.item - 1], x + text_x_offset + l_text_length, y + text_y_offset)
-				l_text_length := l_text_length + digit_surfaces [la_digit.item - 1].width
+				a_destination_surface.draw_surface (digit_surfaces [la_digit.item + 1], x + text_x_offset + l_text_length, y + text_y_offset)
+				l_text_length := l_text_length + digit_surfaces [la_digit.item + 1].width
 				if ((la_digit.cursor_index \\ 3) = 0 and not la_digit.is_last) then
 					l_text_length := l_text_length + space_width
 				end
@@ -103,8 +99,23 @@ feature {NONE} -- Implementation
 			end
 		end
 
+feature -- Constantes
+
+	digit_limit: INTEGER = 12
+			-- La limite des chiffres qui peuvent être entrés.
+
+	space_width: INTEGER = 12
+			-- Taille en pixels entre les groupes de trois chiffres lorsqu'ils sont affichés.
+
 invariant
 	digit_surfaces_count_valid: digit_surfaces.count = 10
 	digit_capacity_valid: digit_list.capacity <= digit_limit
+
+note
+	license: "WTFPL"
+	source: "[
+				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+			]"
 
 end

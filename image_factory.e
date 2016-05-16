@@ -137,6 +137,7 @@ feature {NONE} -- Implementation
 			Result.extend (img_to_surface ("Images/back_titlescreen.png"))
 			Result.extend (img_to_surface ("Images/ui_animation_circle.png"))
 			Result.extend (img_to_surface ("Images/back_get_ready.png"))
+			Result.extend (img_to_surface ("Images/textbox.png"))
 		end
 
 	init_item_surfaces:ARRAYED_LIST[GAME_SURFACE]

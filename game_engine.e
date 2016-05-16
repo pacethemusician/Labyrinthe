@@ -56,6 +56,7 @@ feature {NONE} -- Initialisation
 			l_window.mouse_button_pressed_actions.extend (agent on_mouse_pressed(?,?,?))
 			l_window.mouse_button_released_actions.extend (agent on_mouse_released(?,?,?))
 			l_window.mouse_motion_actions.extend (agent on_mouse_move(?, ?, ?, ?))
+			l_window.key_pressed_actions.extend (agent on_key_pressed(?, ?))
 
 			game_library.launch
 
@@ -205,6 +206,13 @@ feature {NONE} -- Implementation
 		do
 			if attached {BOARD_ENGINE} current_engine as la_board_engine then
 				la_board_engine.on_mouse_move(a_mouse_state)
+			end
+		end
+
+	on_key_pressed(a_timestamp: NATURAL_32; a_key_state:GAME_KEY_STATE)
+		do
+			if attached {MENU_JOIN} current_engine as la_menu_join then
+				la_menu_join.text_box.update (a_key_state)
 			end
 		end
 

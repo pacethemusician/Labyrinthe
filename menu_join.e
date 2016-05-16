@@ -20,25 +20,23 @@ feature {NONE} -- Initialisation
 
 	make (a_image_factory: IMAGE_FACTORY)
 			-- <Precursor>
+		local
+			l_ok_button: BUTTON
 		do
 			Precursor(a_image_factory)
 			create background.make (image_factory.backgrounds[2], 0, 0)
-
-
-
-			-- Section hard codé à refaire si le temps le permet
-
-			ip := "127. 0. 0. 1"
-
-			port := 40001
-
-			ouvrir_socket
-
-			is_done := True
-			is_go_selected := True
+			image_factory.chars.start
+			create text_box.make (image_factory.backgrounds[5], image_factory.chars.duplicate (10), 100, 100, 22, 3)
+			on_screen_sprites.extend (text_box)
+			create l_ok_button.make (image_factory.buttons[10], 200, 200)
+			buttons.extend (l_ok_button)
+			on_screen_sprites.extend (l_ok_button)
+			ip := ""
 		end
 
 feature
+
+	text_box: IP_TEXT_BOX
 
 	has_error: BOOLEAN
 			-- `True' si une erreur est survenue dans le processus de création du socket
@@ -56,9 +54,9 @@ feature
 		end
 
 	ip: STRING
-			-- L'adresse IP en chaine de caractères. Pour l'instant, l'adresse local_host est hard-codé
+			-- L'adresse IP en chaine de caractères.
 
-	port: INTEGER
+	port: INTEGER = 40001
 			-- Le port du serveur où on doit se connecter
 
 	ouvrir_socket
