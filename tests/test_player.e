@@ -33,16 +33,18 @@ feature {NONE} -- Events
 			testing: "execution/isolated"
 		local
 			l_image_list: ARRAYED_LIST [GAME_SURFACE]
+			l_factory: IMAGE_FACTORY
 			l_i: INTEGER
 		do
 			if not game_library.is_video_enable then
 				game_library.enable_video
 			end
+			create l_factory.make
 			create l_image_list.make (5)
 			from l_i := 1 until l_i > 5 loop
 				l_image_list.extend (create {GAME_SURFACE}.make (1, 1))
 			end
-			make (l_image_list, 0, 0, l_i, create {SCORE_SURFACE}.make (create {GAME_SURFACE}.make (1, 1), 0, 0, 25, create {IMAGE_FACTORY}.make))
+			make (l_factory, 1, 0, 0, l_i, create {SCORE_SURFACE}.make (create {GAME_SURFACE}.make (1, 1), 0, 0, 25, create {IMAGE_FACTORY}.make))
 			assert ("test_player_on_prepare", not game_library.has_error)
 		end
 

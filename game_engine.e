@@ -23,28 +23,13 @@ feature {NONE} -- Initialisation
 		local
 			l_window_builder:GAME_WINDOW_SURFACED_BUILDER
 			l_window:GAME_WINDOW_SURFACED
-			l_music_file:AUDIO_SOUND_FILE
 		do
 			create l_window_builder
 			l_window_builder.set_dimension (Window_width, Window_height)
 			l_window_builder.set_title ("Shameless labyrinthe clone")
 			l_window := l_window_builder.generate_window
 
-			-- Création de la musique
-			audio_library.sources_add
-			music_source := audio_library.last_source_added
-			create l_music_file.make("Audio/Solitaire.ogg")
-			if l_music_file.is_openable then
-				l_music_file.open
-				if l_music_file.is_open then
-					music_source.queue_sound_infinite_loop (l_music_file)
-					music_source.play
-				else
-					print("Cannot open sound file.")
-				end
-			else
-				print("Sound file not valid.")
-			end
+			start_musique
 
 			create image_factory.make
 			create {ARRAYED_LIST[PLAYER]} players.make (4)
@@ -111,13 +96,10 @@ feature {NONE} -- Implementation
 					la_menu_player.show (a_game_window)
 				else
 					if la_menu_player.is_go_selected then
-						players := la_menu_player.get_players
-						across players as la_players loop
-							if attached {PLAYER_NETWORK} la_players.item as la_player then
-								send_players(la_player)
-							end
+						if attached socket_serveur as la_socket then
+							players := la_menu_player.get_players
+							current_engine := create {BOARD_ENGINE_SERVER}.make(image_factory, players, a_game_window, la_socket)
 						end
-						current_engine := create {BOARD_ENGINE_SERVER}.make(image_factory, players, a_game_window)
 
 					-- elseif la_menu_player.is_cancel_selected then
 						-- À faire...
@@ -128,7 +110,9 @@ feature {NONE} -- Implementation
 					la_menu_join.show(a_game_window)
 				else
 					if la_menu_join.is_go_selected then
-						current_engine := create {BOARD_ENGINE_CLIENT}.make(image_factory, players, a_game_window)
+						if attached la_menu_join.socket_client as la_socket then
+							current_engine := create {BOARD_ENGINE_CLIENT}.make(image_factory, a_game_window, la_socket)
+						end
 					end
 				end
 			end
@@ -141,40 +125,6 @@ feature {NONE} -- Implementation
 				a_game_window.update
 			end
             audio_library.update
-		end
-
-	send_players(a_player: PLAYER_NETWORK)
-			-- Envoie la liste `players' au joueur `a_player'
-		require
-			Socket_valid: attached socket_serveur as la_socket and then la_socket.is_connected
-		do
-			if attached socket_serveur as la_socket then
-				la_socket.independent_store (players)
-				print("La liste a ete envoyee!")
-			end
-		end
-
-	get_players:LIST[PLAYER]
-		-- Attend que le serveur envoie une liste de {PLAYER}
-		local
-			l_retry: BOOLEAN
-		do
-			create {ARRAYED_LIST[PLAYER]} Result.make(4)
-			if not l_retry then		-- Si la clause 'rescue' n'a pas été utilisé, reçoit la liste
-				if
-					attached socket_serveur as la_socket_serveur and then
-					attached {LIST[PLAYER]} la_socket_serveur.retrieved as la_list
-				then
-					io.put_string("Liste reçue: %N")
-					Result := la_list
-				end
-
-			else	-- Si la clause 'rescue' a été utilisée, affiche un message d'erreur
-				io.put_string("Le message recu n'est pas une liste valide.%N")
-			end
-			rescue	-- Permet d'attraper une exception
-				l_retry := True
-				retry
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
@@ -207,6 +157,28 @@ feature {NONE} -- Implementation
 				la_board_engine.on_mouse_move(a_mouse_state)
 			end
 		end
+
+	start_musique
+			-- Création de la musique et joue en boucle
+		local
+			l_music_file:AUDIO_SOUND_FILE
+		do
+			audio_library.sources_add
+			music_source := audio_library.last_source_added
+			create l_music_file.make("Audio/Solitaire.ogg")
+			if l_music_file.is_openable then
+				l_music_file.open
+				if l_music_file.is_open then
+					music_source.queue_sound_infinite_loop (l_music_file)
+					music_source.play
+				else
+					print("Cannot open sound file.")
+				end
+			else
+				print("Sound file not valid.")
+			end
+		end
+
 
 feature {NONE} -- Constantes
 

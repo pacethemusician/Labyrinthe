@@ -23,9 +23,7 @@ feature {NONE} -- Initialisation
 		do
 			Precursor(a_image_factory)
 			create background.make (image_factory.backgrounds[2], 0, 0)
-
-
-
+			
 			-- Section hard codé à refaire si le temps le permet
 
 			ip := "127. 0. 0. 1"

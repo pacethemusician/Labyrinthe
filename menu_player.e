@@ -97,7 +97,7 @@ feature {GAME_ENGINE} -- Implementation
 					if attached la_connexion.client_socket as la_socket then
 						sockets.extend (la_socket)
 					end
-					connexion.yield
+					la_connexion.yield
 					connexion := Void
 					button_go.current_surface := image_factory.buttons[10]
 					to_connect := to_connect - 1
@@ -148,17 +148,13 @@ feature {GAME_ENGINE} -- Implementation
 			new_player_not_over:  old player_select_submenus.count >= 4 implies player_select_submenus.count = old player_select_submenus.count
 		end
 
-
 	get_players:LIST[PLAYER]
 			-- Créer et retourne la liste des {PLAYER} choisis
 		local
 			l_count, l_x, l_y, l_i, l_item_index: INTEGER
-			l_socket_index: INTEGER
-			l_player:PLAYER
 		do
 			l_count := player_select_submenus.count
 			l_item_index := 1
-			l_socket_index := 1
 			create {ARRAYED_LIST[PLAYER]} Result.make (l_count)
 			across player_select_submenus as la_players loop
 				inspect la_players.item.index
@@ -175,20 +171,11 @@ feature {GAME_ENGINE} -- Implementation
 						l_x := 583
 						l_y := 560
 					end
-					if la_players.item.is_local then
-						create l_player.make (image_factory.players[la_players.item.current_sprite_index],
-											  l_x, l_y,
-											  la_players.item.index,
-											  create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory))
-					else
-						create {PLAYER_NETWORK}l_player.make (image_factory.players[la_players.item.current_sprite_index],
-															  l_x, l_y,
-															  la_players.item.index,
-															  create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory),
-															  sockets[la_players.item.index])
-						l_socket_index := l_socket_index + 1
-					end
-				Result.extend (l_player)
+				Result.extend (
+								create {PLAYER} .make (image_factory, la_players.item.current_sprite_index, l_x, l_y, la_players.item.index,
+								create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory))
+							)
+
 				from
 					l_i := 1
 				until

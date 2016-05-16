@@ -4,7 +4,7 @@ note
 	date: "Mars 2016"
 	revision: ""
 
-deferred class
+class
 	BOARD_ENGINE
 
 inherit
@@ -14,13 +14,24 @@ inherit
 			make as make_menu
 		end
 
+create
+	make
+
 feature {THREAD_BOARD_ENGINE} -- Initialization
 
-	make (a_image_factory: IMAGE_FACTORY; a_players: LIST [PLAYER]; a_game_window: GAME_WINDOW_SURFACED)
+
+	make (a_image_factory: IMAGE_FACTORY; a_game_window: GAME_WINDOW_SURFACED)
+		do
+			create {ARRAYED_LIST [PLAYER]}players.make(1)
+			initialize (a_image_factory, a_game_window)
+		end
+
+	initialize (a_image_factory: IMAGE_FACTORY; a_game_window: GAME_WINDOW_SURFACED)
 			-- Initialisation de `Current'
+		require
+			Player_Is_Created: attached players
 		do
 			make_menu (a_image_factory)
-			players := a_players
 			current_player_index := 1
 			create sound_fx_rotate.make ("Audio/rotate.wav")
 			create {ARRAYED_LIST [PLAYER]} players_to_move.make (0)
