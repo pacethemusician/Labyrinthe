@@ -75,16 +75,32 @@ feature -- Access
 	next_y: INTEGER assign set_next_y
 			-- L'endroit où le {PLAYER} devra se rendre s'il est sur une {PATH_CARD} qui bouge
 
-	get_col_index: INTEGER
+	col_index: INTEGER
 			-- Retourne le numéro de la colonne où se trouve `Current' sur le {BOARD}
 		do
-			Result := ((x - 56) // 84) + 1
+			if x < 56 then
+				Result := 1
+			elseif x > 560 then
+				Result := 7
+			else
+				Result := (x - 56) // 84 + 1
+			end
+		ensure
+			index_ok: 8 > Result and Result > 0
 		end
 
-	get_row_index: INTEGER
+	row_index: INTEGER
 			-- Retourne le numéro de la rangée où se trouve `Current' sur le {BOARD}
 		do
-			Result := ((y - 56) // 84) + 1
+			if y < 56 then
+				Result := 1
+			elseif y > 560 then
+				Result := 7
+			else
+				Result := (y - 56) // 84 + 1
+			end
+		ensure
+			index_ok: 8 > Result and Result > 0
 		end
 
 	set_score_surface (a_new_score_surface: SCORE_SURFACE)

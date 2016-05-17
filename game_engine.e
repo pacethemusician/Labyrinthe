@@ -96,11 +96,14 @@ feature {NONE} -- Implementation
 					la_menu_player.show (a_game_window)
 				else
 					if la_menu_player.is_go_selected then
-						if attached socket_serveur as la_socket then
-							players := la_menu_player.get_players
-							current_engine := create {BOARD_ENGINE_SERVER}.make(image_factory, players, a_game_window, la_socket)
+						players := la_menu_player.get_players
+						if is_multiplayer then
+							if attached socket_serveur as la_socket then
+								current_engine := create {BOARD_ENGINE_SERVER}.make(image_factory, players, a_game_window, la_socket)
+							end
+						else
+							current_engine := create {BOARD_ENGINE}.make(image_factory, players, a_game_window)
 						end
-
 					-- elseif la_menu_player.is_cancel_selected then
 						-- À faire...
 					end
@@ -125,6 +128,16 @@ feature {NONE} -- Implementation
 				a_game_window.update
 			end
             audio_library.update
+		end
+
+	is_multiplayer:BOOLEAN
+			-- Retourne True si un des joueurs est en réseau
+		do
+			across players as la_players loop
+				if attached {PLAYER_NETWORK} la_players.item then
+					Result := True
+				end
+			end
 		end
 
 	on_quit(a_timestamp: NATURAL_32)
@@ -159,7 +172,7 @@ feature {NONE} -- Implementation
 		end
 
 	start_musique
-			-- Création de la musique et joue en boucle
+			-- Création de la musique et la joue en boucle pour tout le reste du jeu :)
 		local
 			l_music_file:AUDIO_SOUND_FILE
 		do

@@ -20,11 +20,12 @@ create
 feature {THREAD_BOARD_ENGINE} -- Initialization
 
 
-	make (a_image_factory: IMAGE_FACTORY; a_game_window: GAME_WINDOW_SURFACED)
+	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER]; a_game_window: GAME_WINDOW_SURFACED)
 		do
-			create {ARRAYED_LIST [PLAYER]}players.make(1)
+			players := a_players
 			initialize (a_image_factory, a_game_window)
 		end
+
 
 	initialize (a_image_factory: IMAGE_FACTORY; a_game_window: GAME_WINDOW_SURFACED)
 			-- Initialisation de `Current'
@@ -196,15 +197,15 @@ feature -- Implementation
 				across
 					players as la_players
 				loop
-					if la_players.item.get_row_index ~ a_index then
+					if la_players.item.row_index ~ a_index then
 						players_to_move.extend (la_players.item)
 						if a_is_from_top_or_right then
-							if la_players.item.get_col_index ~ 1 then
+							if la_players.item.col_index ~ 1 then
 								la_players.item.x := 667
 							end
 							la_players.item.next_x := la_players.item.x - 84
 						else
-							if la_players.item.get_col_index ~ 7 then
+							if la_players.item.col_index ~ 7 then
 								la_players.item.x := -5
 							end
 							la_players.item.next_x := la_players.item.x + 84
@@ -218,15 +219,15 @@ feature -- Implementation
 				across
 					players as la_players
 				loop
-					if la_players.item.get_col_index ~ a_index then
+					if la_players.item.col_index ~ a_index then
 						players_to_move.extend (la_players.item)
 						if a_is_from_top_or_right then
-							if la_players.item.get_row_index ~ 7 then
+							if la_players.item.row_index ~ 7 then
 								la_players.item.y := -28
 							end
 							la_players.item.next_y := la_players.item.y + 84
 						else
-							if la_players.item.get_row_index ~ 1 then
+							if la_players.item.row_index ~ 1 then
 								la_players.item.y := 644
 							end
 							la_players.item.next_y := la_players.item.y - 84
@@ -236,7 +237,7 @@ feature -- Implementation
 				end
 				board.rotate_column (a_index, spare_card, a_is_from_top_or_right)
 			end
-			players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].get_row_index]) [players [current_player_index].get_col_index])
+			players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].row_index]) [players [current_player_index].col_index])
 			spare_card.on_click_actions.wipe_out
 			spare_card := l_next_spare_card
 			on_screen_sprites.start
@@ -298,8 +299,8 @@ feature -- Implementation
 			-- Ces coordonnées donnent un chiffre de 1 à 7 pour servir d'index pour accéder au vecteur de {PATH_CARD} du {BOARD}
 		do
 			if has_to_move then
-				l_player_col_index := players [current_player_index].get_col_index
-				l_player_row_index := players [current_player_index].get_row_index
+				l_player_col_index := players [current_player_index].col_index
+				l_player_row_index := players [current_player_index].row_index
 				l_mouse_col_index := ((a_mouse_state.x - 56) // 84) + 1
 				l_mouse_row_index := ((a_mouse_state.y - 56) // 84) + 1
 				if players [current_player_index].path.is_empty then
@@ -325,7 +326,7 @@ feature -- Implementation
 				end
 				sound_fx_ok.play
 				score.update (players [current_player_index].item_found_number)
-				players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].get_row_index]) [players [current_player_index].get_col_index])
+				players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].row_index]) [players [current_player_index].col_index])
 			end
 		end
 

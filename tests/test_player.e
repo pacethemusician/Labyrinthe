@@ -56,13 +56,13 @@ feature {NONE} -- Events
 feature -- Test routines
 
 	get_col_index_normal
-			-- Test normal de `get_col_index'.
+			-- Test normal de `col_index'.
 		do
-			assert ("not_implemented", get_col_index = -1)
+			assert ("not_implemented", col_index = -1)
 		end
 
 	get_row_index_normal
-			-- Test normal de `get_row_index'.
+			-- Test normal de `row_index'.
 		do
 			assert ("not_implemented", False)
 		end

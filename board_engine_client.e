@@ -27,6 +27,7 @@ feature {NONE} -- Initialization
 			players := create_players(player_data, a_image_factory)
 			initialize (a_image_factory, a_game_window)
 			-- my_index := a_my_index -- y faut savoir son index dans la shit
+			io.put_string ("Création du Board Engine Client")
 		end
 
 feature
