@@ -34,8 +34,10 @@ feature -- Initialisation
 feature -- implementation
 
 	enabledSurface: GAME_SURFACE
+			-- {GAME_SURFACE} de `current' lorsque `enabled' est vrai.
 
 	disabledSurface: detachable GAME_SURFACE
+			-- {GAME_SURFACE} de `current' lorsque `enabled' est faux.
 
 	enabled: BOOLEAN assign set_enabled
 			-- Indique si le bouton peut être activé.
@@ -44,7 +46,9 @@ feature -- implementation
 			-- Liste de procédures éxécutées par `current' quand on clique dessus.
 
 	set_enabled (a_enabled: BOOLEAN)
-			-- Assigne `a_enabled' à `enabled'.
+			-- Assigne `a_enabled' à `enabled'. Si `a_enabled' est faux, `current_surface'
+			-- est changé pour `disabledSurface'. Si `a_enabled' est vrai, `current_surface'
+			-- est changé pour `enabledSurface'
 		do
 			enabled := a_enabled
 			if enabled then
@@ -62,6 +66,8 @@ feature -- implementation
 		end
 
 	set_surface (a_surface: GAME_SURFACE)
+			-- Assigne `a_surface' à `current_surface' et `enabledSurface'. Si `enabled' est
+			-- faux, `disabledSurface' est mis à jour.
 		do
 			enabledSurface := a_surface
 			if enabled then
@@ -72,18 +78,20 @@ feature -- implementation
 					precursor (la_disabledSurface)
 				end
 			end
+		ensure then
+			is_assign: current_surface = a_surface and enabledSurface = a_surface
 		end
 
 	update_disabled_surface
+			-- Crée une {GAME_SURFACE} similaire à `enabledSurface', mais plus foncée. Elle
+			-- est ensuite assignée à `disabledSurface'.
 		local
 			l_rectangle: GAME_SURFACE
 		do
 			create disabledSurface.make_from_other (enabledSurface)
 			if attached disabledSurface as la_disabledSurface then
-				create l_rectangle.make_for_pixel_format (la_disabledSurface.pixel_format,
-					la_disabledSurface.width, la_disabledSurface.height)
-				l_rectangle.draw_rectangle (create {GAME_COLOR}.make (0, 0, 0, 200),
-					0, 0, la_disabledSurface.width, la_disabledSurface.height)
+				create l_rectangle.make_for_pixel_format (la_disabledSurface.pixel_format, la_disabledSurface.width, la_disabledSurface.height)
+				l_rectangle.draw_rectangle (create {GAME_COLOR}.make (0, 0, 0, 200), 0, 0, la_disabledSurface.width, la_disabledSurface.height)
 				la_disabledSurface.enable_alpha_blending
 				la_disabledSurface.draw_surface (enabledSurface, 0, 0)
 				la_disabledSurface.draw_surface (l_rectangle, 0, 0)
@@ -97,7 +105,7 @@ feature -- implementation
 				across
 					on_click_actions as l_actions
 				loop
-					l_actions.item.call(a_mouse_state)
+					l_actions.item.call (a_mouse_state)
 				end
 			end
 		end
@@ -107,8 +115,8 @@ invariant
 note
 	license: "WTFPL"
 	source: "[
-				Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
-				Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
-			]"
+		Ce jeu a été fait dans le cadre du cours de programmation orientée object II au Cegep de Drummondville 2016
+		Projet disponible au https://github.com/pacethemusician/Labyrinthe.git
+	]"
 
 end
