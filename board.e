@@ -34,8 +34,14 @@ feature -- Implementation
 	image_factory: IMAGE_FACTORY
 			-- Contient les images de `Current'
 
-	board_paths: ARRAYED_LIST [ARRAYED_LIST [PATH_CARD]]
+	board_paths: ARRAYED_LIST [ARRAYED_LIST [PATH_CARD]] assign set_board_paths
 			-- Liste des {PATH_CARD} contenues dans `Current'.
+
+	set_board_paths (a_paths: ARRAYED_LIST [ARRAYED_LIST [PATH_CARD]])
+			-- setter
+		do
+			board_paths := a_paths
+		end
 
 	init_board_paths
 			-- Initialise `board_paths' en le remplissant de {PATH_CARD}.
@@ -330,7 +336,7 @@ feature {NONE} -- Implementation
 			board_paths [7].i_th (1).item_index := a_items.count - 2
 			board_paths [7].i_th (7).item_index := a_items.count - 3
 			from
-				l_item_index := a_items.count - 4
+				l_item_index := a_items.count - 5
 			until
 				l_item_index <= 0
 			loop

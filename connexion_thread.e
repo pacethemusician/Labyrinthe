@@ -48,10 +48,19 @@ feature
 			-- Met le `socket' en mode d'attente de connexion.
 		do
 			socket.listen (1)
+--			from
+--				cancelled := false
+--			until
+--				not socket.ready_for_reading and not cancelled (thread safe boolean...)
+--			loop
+--				
+--			end
 			socket.accept
 			client_socket := socket.accepted
 			is_done := True
 		end
+
+
 
 invariant
 	Socket_Valid: socket.is_bound

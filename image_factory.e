@@ -77,7 +77,7 @@ feature {NONE} -- Implementation
 	init_player_surfaces:ARRAYED_LIST[LIST[GAME_SURFACE]]
 			-- Retourne les {GAME_SURFACE} des personnages.
 		do
-			create Result.make (4)
+			create Result.make (5)
 			Result.extend (create {ARRAYED_LIST[GAME_SURFACE]}.make(5))
 			Result.at (1) .extend(img_to_surface("Images/p1_still.png"))
 			Result.at (1) .extend(img_to_surface("Images/p1_walk_down.png"))

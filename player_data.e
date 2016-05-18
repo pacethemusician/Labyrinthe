@@ -12,22 +12,28 @@ create
 
 feature {NONE} --
 
-	make
+	make (a_x, a_y, a_sprite_index, a_index: INTEGER; a_items_to_find: LIST[INTEGER])
+			-- Constructeur de `Current'
+		do
+			x := a_x
+			y := a_y
+			sprite_index := a_sprite_index
+			index := a_index
+			items_to_find := a_items_to_find
+		end
 
 feature
-	current_sprite_index: INTEGER assign set_current_sprite_index
+	sprite_index: INTEGER
 			-- Indique quel sprite utiliser dans `image_factory'
 
-	is_local: BOOLEAN
-			-- Si `True' le joueur est local sinon en réseau
-
-	index: INTEGER assign set_index
+	index: INTEGER
 	 		-- La position de `current' dans la `player_select_submenus' de la classe {MENU_PLAYER}
 
 	x, y: INTEGER
 			-- Position du sous-menu
 
-
+	items_to_find: LIST[INTEGER]
+			-- La liste des index des items à trouver
 
 invariant
 

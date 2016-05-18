@@ -90,6 +90,9 @@ feature
 					end
 				end
 			end
+			-- Mettre ça dans sa propre methode plus tard LOL
+			is_done := True
+			is_go_selected := True
 		end
 
 invariant

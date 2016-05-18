@@ -4,7 +4,7 @@ note
 	date: "Mars 2016"
 	revision: ""
 
-deferred class
+class
 	BOARD_ENGINE
 
 inherit
@@ -14,20 +14,32 @@ inherit
 			make as make_menu
 		end
 
+create
+	make
+
 feature {THREAD_BOARD_ENGINE} -- Initialization
 
-	make (a_image_factory: IMAGE_FACTORY; a_players: LIST [PLAYER]; a_game_window: GAME_WINDOW_SURFACED)
+
+	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER]; a_game_window: GAME_WINDOW_SURFACED)
+		do
+			players := a_players
+			create board.make (a_image_factory)
+			initialize (a_image_factory, a_game_window)
+		end
+
+
+	initialize (a_image_factory: IMAGE_FACTORY; a_game_window: GAME_WINDOW_SURFACED)
 			-- Initialisation de `Current'
+		require
+			Player_Is_Created: attached players
 		do
 			make_menu (a_image_factory)
-			players := a_players
 			current_player_index := 1
 			create sound_fx_rotate.make ("Audio/rotate.wav")
 			create {ARRAYED_LIST [PLAYER]} players_to_move.make (0)
 			create item_to_find.make (image_factory.items [players [current_player_index].items_to_find.first], 801, 327)
 			create {LINKED_LIST [SPRITE]} on_screen_sprites.make
 			create spare_card.make (3, image_factory, 801, 144, 1)
-			create board.make (image_factory)
 			create sound_fx_error.make ("Audio/sfx_error.wav")
 			create sound_fx_ok.make ("Audio/sfx_ok.wav")
 			create sound_fx_slide.make ("Audio/sfx_slide.wav")
@@ -80,7 +92,7 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			score.update (players [current_player_index].item_found_number)
 		end
 
-feature -- Implementation
+feature --
 
 	board: BOARD
 			-- Le board principal contenant les {PATH_CARD}
@@ -185,15 +197,15 @@ feature -- Implementation
 				across
 					players as la_players
 				loop
-					if la_players.item.get_row_index ~ a_index then
+					if la_players.item.row_index ~ a_index then
 						players_to_move.extend (la_players.item)
 						if a_is_from_top_or_right then
-							if la_players.item.get_col_index ~ 1 then
+							if la_players.item.col_index ~ 1 then
 								la_players.item.x := 667
 							end
 							la_players.item.next_x := la_players.item.x - 84
 						else
-							if la_players.item.get_col_index ~ 7 then
+							if la_players.item.col_index ~ 7 then
 								la_players.item.x := -5
 							end
 							la_players.item.next_x := la_players.item.x + 84
@@ -207,15 +219,15 @@ feature -- Implementation
 				across
 					players as la_players
 				loop
-					if la_players.item.get_col_index ~ a_index then
+					if la_players.item.col_index ~ a_index then
 						players_to_move.extend (la_players.item)
 						if a_is_from_top_or_right then
-							if la_players.item.get_row_index ~ 7 then
+							if la_players.item.row_index ~ 7 then
 								la_players.item.y := -28
 							end
 							la_players.item.next_y := la_players.item.y + 84
 						else
-							if la_players.item.get_row_index ~ 1 then
+							if la_players.item.row_index ~ 1 then
 								la_players.item.y := 644
 							end
 							la_players.item.next_y := la_players.item.y - 84
@@ -225,7 +237,7 @@ feature -- Implementation
 				end
 				board.rotate_column (a_index, spare_card, a_is_from_top_or_right)
 			end
-			players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].get_row_index]) [players [current_player_index].get_col_index])
+			players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].row_index]) [players [current_player_index].col_index])
 			spare_card.on_click_actions.wipe_out
 			spare_card := l_next_spare_card
 			on_screen_sprites.start
@@ -287,8 +299,8 @@ feature -- Implementation
 			-- Ces coordonnées donnent un chiffre de 1 à 7 pour servir d'index pour accéder au vecteur de {PATH_CARD} du {BOARD}
 		do
 			if has_to_move then
-				l_player_col_index := players [current_player_index].get_col_index
-				l_player_row_index := players [current_player_index].get_row_index
+				l_player_col_index := players [current_player_index].col_index
+				l_player_row_index := players [current_player_index].row_index
 				l_mouse_col_index := ((a_mouse_state.x - 56) // 84) + 1
 				l_mouse_row_index := ((a_mouse_state.y - 56) // 84) + 1
 				if players [current_player_index].path.is_empty then
@@ -314,7 +326,7 @@ feature -- Implementation
 				end
 				sound_fx_ok.play
 				score.update (players [current_player_index].item_found_number)
-				players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].get_row_index]) [players [current_player_index].get_col_index])
+				players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].row_index]) [players [current_player_index].col_index])
 			end
 		end
 
@@ -337,6 +349,7 @@ feature
 			if not players [current_player_index].path.is_empty then
 				players [current_player_index].follow_path
 			end
+			-- Ça bogue ici quand on trouve tous les items !!!!
 			item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
 			if not is_dragging then
 				spare_card.approach_point (801, 144, Spare_card_speed)

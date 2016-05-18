@@ -41,16 +41,15 @@ feature {NONE} -- Initialisation
 				sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (la_index.item)[1], 22, 10, 0, 0))
 			end
 			button_add_player.on_click_actions.extend (agent add_player(True))
-			button_go.on_click_actions.extend (agent check_ok)
 			buttons.extend(button_add_player)
 			on_screen_sprites.extend(background)
 			on_screen_sprites.extend(button_add_connexion)
+			button_go.on_click_actions.extend (agent check_ok)
 			if a_socket.is_bound then
 				buttons.extend(button_add_connexion)
 				button_add_connexion.on_click_actions.extend (agent add_player(False))
 			else
 				button_add_connexion.current_surface := image_factory.buttons[12]
-
 			end
 			buttons.extend (button_go)
 
@@ -60,7 +59,7 @@ feature {NONE} -- Initialisation
 			to_connect := 0
 		end
 
-feature {GAME_ENGINE} -- Implementation
+feature
 
 	to_connect:INTEGER
 			-- Le nombre de joueur en réseau, donc le nombre de connection à créer
@@ -89,8 +88,11 @@ feature {GAME_ENGINE} -- Implementation
 		-- Les connections des {PLAYER_NETWORK}
 
 	waiting_for_connexion
+			--
 		local
+			i: INTEGER
 			l_connexion: CONNEXION_THREAD
+			l_finish: BOOLEAN
 		do
 			if attached connexion as la_connexion then
 				if la_connexion.is_done then
@@ -99,11 +101,23 @@ feature {GAME_ENGINE} -- Implementation
 					end
 					la_connexion.yield
 					connexion := Void
-					button_go.current_surface := image_factory.buttons[10]
 					to_connect := to_connect - 1
+					if to_connect ~ 0 then
+						button_go.on_click_actions.extend (agent check_ok)
+						button_go.current_surface := image_factory.buttons[10]
+					end
+					from i := 1	until (i > player_select_submenus.count) or l_finish loop
+						if (not player_select_submenus[i].is_local) and (not player_select_submenus[i].is_connected) then
+							player_select_submenus[i].type_image.set_surface (image_factory.player_choice_menu[8])
+							player_select_submenus[i].is_connected := true
+							l_finish := true
+						end
+						i := i + 1
+					end
 				end
 			else
 				if to_connect > 0 then
+					button_go.on_click_actions.wipe_out
 					button_go.current_surface := image_factory.buttons[13]
 					create l_connexion.make (socket)
 					connexion := l_connexion
@@ -148,17 +162,14 @@ feature {GAME_ENGINE} -- Implementation
 			new_player_not_over:  old player_select_submenus.count >= 4 implies player_select_submenus.count = old player_select_submenus.count
 		end
 
-
 	get_players:LIST[PLAYER]
 			-- Créer et retourne la liste des {PLAYER} choisis
 		local
-			l_count, l_x, l_y, l_i, l_item_index: INTEGER
-			l_socket_index: INTEGER
-			l_player:PLAYER
+			i, l_x, l_y, l_count, l_item_index, l_socket_index: INTEGER
 		do
 			l_count := player_select_submenus.count
-			l_item_index := 1
 			l_socket_index := 1
+			l_item_index := 1
 			create {ARRAYED_LIST[PLAYER]} Result.make (l_count)
 			across player_select_submenus as la_players loop
 				inspect la_players.item.index
@@ -174,32 +185,25 @@ feature {GAME_ENGINE} -- Implementation
 					else
 						l_x := 583
 						l_y := 560
-					end
-					if la_players.item.is_local then
-						create l_player.make (image_factory.players[la_players.item.current_sprite_index],
-											  l_x, l_y,
-											  la_players.item.index,
-											  create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory))
-					else
-						create {PLAYER_NETWORK}l_player.make (image_factory.players[la_players.item.current_sprite_index],
-															  l_x, l_y,
-															  la_players.item.index,
-															  create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory),
-															  sockets[la_players.item.index])
-						l_socket_index := l_socket_index + 1
-					end
-				Result.extend (l_player)
+				end
+				if la_players.item.is_local then
+					Result.extend (create {PLAYER} .make (image_factory, la_players.item.current_sprite_index, l_x, l_y, la_players.item.index,
+								  						   create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory)))
+				else
+					Result.extend (create {PLAYER_NETWORK} .make (image_factory, la_players.item.current_sprite_index, l_x, l_y, la_players.item.index,
+																  create {SCORE_SURFACE}.make (create{GAME_SURFACE}.make (1, 1), 1, 1, 0, image_factory), sockets[l_socket_index]))
+					l_socket_index := l_socket_index + 1
+				end
 				from
-					l_i := 1
+					i := 1
 				until
-					l_i > ((image_factory.items.count - 4) // l_count)
-					-- Le -4 est là parce qu'il faut ignorer les points de départ.
+					i > (24 // l_count)
 				loop
 					Result.last.items_to_find.extend (l_item_index)
 					l_item_index := l_item_index + 1
-					l_i := l_i + 1
+					i := i + 1
 				end
-				Result.last.items_to_find.extend (image_factory.items.count - la_players.item.index + 1)
+				Result.last.items_to_find.extend (la_players.item.current_sprite_index + 24)
 			end
 		end
 
