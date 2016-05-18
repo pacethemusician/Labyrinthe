@@ -25,6 +25,7 @@ feature {NONE} -- Initialisation
 		do
 			Precursor(a_image_factory)
 			create background.make (image_factory.backgrounds[2], 0, 0)
+			on_screen_sprites.extend (background)
 			image_factory.chars.start
 			create text_box.make (image_factory.backgrounds[5], image_factory.chars.duplicate (10), 385, 230, 22, 3)
 			on_screen_sprites.extend (text_box)
