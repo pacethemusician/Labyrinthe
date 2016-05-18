@@ -76,16 +76,26 @@ feature {NONE} -- Implementation
 	on_iteration(a_timestamp:NATURAL_32; a_game_window:GAME_WINDOW_SURFACED)
 			-- À faire à chaque iteration.
 		local
-			l_socket:NETWORK_STREAM_SOCKET
+			l_socket_server:NETWORK_STREAM_SOCKET
 		do
 			if attached {MENU_TITLE_SCREEN} current_engine as la_menu_title_screen then
 				if not la_menu_title_screen.is_done then
 					la_menu_title_screen.show(a_game_window)
 				else
 					if la_menu_title_screen.is_menu_player_chosen then
-						create l_socket.make_server_by_port (40001)
-						current_engine := create {MENU_PLAYER}.make(image_factory, l_socket)
-						socket_serveur := l_socket
+						create l_socket_server.make_server_by_port (40001)
+--						if attached l_socket.accepted as lla_socket then
+--							if attached lla_socket.peer_address as la_adresse then
+--								io.put_string ("Connexion client: " +
+--												la_adresse.host_address.host_address +
+--												":" + la_adresse.port.out + ".%N")
+--							end
+--							socket_serveur := l_socket
+--						else
+--							io.put_string ("Impossible de connecter le client.%N")
+--						end
+						current_engine := create {MENU_PLAYER}.make(image_factory, l_socket_server)
+						socket_serveur := l_socket_server
 					elseif la_menu_title_screen.is_menu_join_chosen then
 						current_engine := create {MENU_JOIN}.make(image_factory)
 					end
@@ -98,9 +108,7 @@ feature {NONE} -- Implementation
 					if la_menu_player.is_go_selected then
 						players := la_menu_player.get_players
 						if is_multiplayer then
-							if attached socket_serveur as la_socket then
-								current_engine := create {BOARD_ENGINE_SERVER}.make(image_factory, players, a_game_window, la_socket)
-							end
+							current_engine := create {BOARD_ENGINE_SERVER}.make(image_factory, players, a_game_window)
 						else
 							current_engine := create {BOARD_ENGINE}.make(image_factory, players, a_game_window)
 						end
@@ -115,6 +123,12 @@ feature {NONE} -- Implementation
 					if la_menu_join.is_go_selected then
 						if attached la_menu_join.socket_client as la_socket then
 							current_engine := create {BOARD_ENGINE_CLIENT}.make(image_factory, a_game_window, la_socket)
+							if
+								attached {BOARD_ENGINE_CLIENT} current_engine as la_engine and then
+								la_engine.has_error
+							then
+								print("Le board client ne s'est pas initialisé comme il faut")
+							end
 						end
 					end
 				end

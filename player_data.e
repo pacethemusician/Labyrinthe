@@ -12,13 +12,14 @@ create
 
 feature {NONE} --
 
-	make (a_x, a_y, a_sprite_index, a_index: INTEGER)
+	make (a_x, a_y, a_sprite_index, a_index: INTEGER; a_items_to_find: LIST[INTEGER])
 			-- Constructeur de `Current'
 		do
 			x := a_x
 			y := a_y
 			sprite_index := a_sprite_index
 			index := a_index
+			items_to_find := a_items_to_find
 		end
 
 feature
@@ -30,6 +31,9 @@ feature
 
 	x, y: INTEGER
 			-- Position du sous-menu
+
+	items_to_find: LIST[INTEGER]
+			-- La liste des index des items à trouver
 
 invariant
 

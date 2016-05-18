@@ -23,6 +23,7 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER]; a_game_window: GAME_WINDOW_SURFACED)
 		do
 			players := a_players
+			create board.make (a_image_factory)
 			initialize (a_image_factory, a_game_window)
 		end
 
@@ -39,7 +40,6 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			create item_to_find.make (image_factory.items [players [current_player_index].items_to_find.first], 801, 327)
 			create {LINKED_LIST [SPRITE]} on_screen_sprites.make
 			create spare_card.make (3, image_factory, 801, 144, 1)
-			create board.make (image_factory)
 			create sound_fx_error.make ("Audio/sfx_error.wav")
 			create sound_fx_ok.make ("Audio/sfx_ok.wav")
 			create sound_fx_slide.make ("Audio/sfx_slide.wav")
@@ -92,7 +92,7 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			score.update (players [current_player_index].item_found_number)
 		end
 
-feature -- Implementation
+feature --
 
 	board: BOARD
 			-- Le board principal contenant les {PATH_CARD}
@@ -349,6 +349,7 @@ feature
 			if not players [current_player_index].path.is_empty then
 				players [current_player_index].follow_path
 			end
+			-- Ça bogue ici quand on trouve tous les items !!!!
 			item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
 			if not is_dragging then
 				spare_card.approach_point (801, 144, Spare_card_speed)

@@ -57,7 +57,7 @@ feature -- Access
 	path: LIST [PATH_CARD] assign set_path
 			-- Le chemin que `current' peut suivre avec `follow_path'.
 
-	items_to_find: LIST [INTEGER]
+	items_to_find: LIST [INTEGER] assign set_items_to_find
 			-- La liste des items que `Current' doit trouver
 
 	item_found_number: INTEGER assign set_item_found_number
@@ -74,6 +74,12 @@ feature -- Access
 	next_x: INTEGER assign set_next_x
 	next_y: INTEGER assign set_next_y
 			-- L'endroit où le {PLAYER} devra se rendre s'il est sur une {PATH_CARD} qui bouge
+
+	set_items_to_find (a_list: LIST[INTEGER])
+			-- Setter pour `items_to_find'
+		do
+			items_to_find := a_list
+		end
 
 	col_index: INTEGER
 			-- Retourne le numéro de la colonne où se trouve `Current' sur le {BOARD}

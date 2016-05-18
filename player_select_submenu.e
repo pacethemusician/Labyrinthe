@@ -82,6 +82,9 @@ feature {MENU_PLAYER} -- Implementation
 	is_local: BOOLEAN
 			-- Si `True' le joueur est local sinon en réseau
 
+	is_connected: BOOLEAN assign set_is_connected
+			-- Si `True' la connection TCP est réussie
+
 	available_sprites: LIST[BOOLEAN]
 			-- pointe vers la liste du {MENU_PLAYER} pour savoir si les sprites sont disponibles.
 
@@ -112,6 +115,12 @@ feature {MENU_PLAYER} -- Implementation
 			index := a_value
 		end
 
+	set_is_connected (a_value: BOOLEAN)
+			-- setter pour `is_connected'
+		do
+			is_connected := a_value
+		end
+
 	first_available_index:INTEGER
 			-- Retourne l'index du premier {SPRITE} disponible dans `available_sprites'
 		local
@@ -125,6 +134,14 @@ feature {MENU_PLAYER} -- Implementation
 				else
 					Result := Result + 1
 				end
+			end
+		end
+
+	set_connexion_panel
+			-- Vérifie si la connection existe et mets à jour le `type_image'
+		do
+			if is_local and is_connected then
+
 			end
 		end
 

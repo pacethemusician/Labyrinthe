@@ -41,16 +41,15 @@ feature {NONE} -- Initialisation
 				sprite_preview_surface_list.extend(create {ANIMATED_SPRITE} .make (image_factory.players.at (la_index.item)[1], 22, 10, 0, 0))
 			end
 			button_add_player.on_click_actions.extend (agent add_player(True))
-			button_go.on_click_actions.extend (agent check_ok)
 			buttons.extend(button_add_player)
 			on_screen_sprites.extend(background)
 			on_screen_sprites.extend(button_add_connexion)
+			button_go.on_click_actions.extend (agent check_ok)
 			if a_socket.is_bound then
 				buttons.extend(button_add_connexion)
 				button_add_connexion.on_click_actions.extend (agent add_player(False))
 			else
 				button_add_connexion.current_surface := image_factory.buttons[12]
-
 			end
 			buttons.extend (button_go)
 
@@ -60,7 +59,7 @@ feature {NONE} -- Initialisation
 			to_connect := 0
 		end
 
-feature {GAME_ENGINE} -- Implementation
+feature
 
 	to_connect:INTEGER
 			-- Le nombre de joueur en réseau, donc le nombre de connection à créer
@@ -89,8 +88,11 @@ feature {GAME_ENGINE} -- Implementation
 		-- Les connections des {PLAYER_NETWORK}
 
 	waiting_for_connexion
+			--
 		local
+			i: INTEGER
 			l_connexion: CONNEXION_THREAD
+			l_finish: BOOLEAN
 		do
 			if attached connexion as la_connexion then
 				if la_connexion.is_done then
@@ -100,12 +102,22 @@ feature {GAME_ENGINE} -- Implementation
 					la_connexion.yield
 					connexion := Void
 					to_connect := to_connect - 1
-					if to_connect > 0 then
+					if to_connect ~ 0 then
+						button_go.on_click_actions.extend (agent check_ok)
 						button_go.current_surface := image_factory.buttons[10]
+					end
+					from i := 1	until (i > player_select_submenus.count) or l_finish loop
+						if (not player_select_submenus[i].is_local) and (not player_select_submenus[i].is_connected) then
+							player_select_submenus[i].type_image.set_surface (image_factory.player_choice_menu[8])
+							player_select_submenus[i].is_connected := true
+							l_finish := true
+						end
+						i := i + 1
 					end
 				end
 			else
 				if to_connect > 0 then
+					button_go.on_click_actions.wipe_out
 					button_go.current_surface := image_factory.buttons[13]
 					create l_connexion.make (socket)
 					connexion := l_connexion
