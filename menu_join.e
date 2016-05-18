@@ -26,12 +26,13 @@ feature {NONE} -- Initialisation
 			Precursor(a_image_factory)
 			create background.make (image_factory.backgrounds[2], 0, 0)
 			image_factory.chars.start
-			create text_box.make (image_factory.backgrounds[5], image_factory.chars.duplicate (10), 100, 100, 22, 3)
+			create text_box.make (image_factory.backgrounds[5], image_factory.chars.duplicate (10), 385, 230, 22, 3)
 			on_screen_sprites.extend (text_box)
-			create l_ok_button.make (image_factory.buttons[10], 200, 200)
+			create l_ok_button.make (image_factory.buttons[10], 443, 300)
+			l_ok_button.on_click_actions.extend (agent ouvrir_socket)
+			l_ok_button.enabled := false
 			buttons.extend (l_ok_button)
 			on_screen_sprites.extend (l_ok_button)
-			ip := ""
 		end
 
 feature
@@ -53,11 +54,14 @@ feature
 			is_go_selected := a_value
 		end
 
-	ip: STRING
-			-- L'adresse IP en chaine de caractères.
-
 	port: INTEGER = 40001
 			-- Le port du serveur où on doit se connecter
+
+	update (a_key_state: GAME_KEY_STATE)
+		do
+			text_box.update (a_key_state)
+			buttons.first.enabled := text_box.digit_list.full
+		end
 
 	ouvrir_socket
 			-- Créé et connecte le `socket_client'
@@ -69,19 +73,18 @@ feature
 			l_port:INTEGER
 		do
 			create l_adresse_factory
-			l_adresse := ip
-			l_port := port
-			io.put_string ("Ouverture du client. Adresse: "+l_adresse+", port: "+l_port.out+".%N")
+			l_adresse := text_box.get_ip
+			io.put_string ("Ouverture du client. Adresse: "+l_adresse+", port: "+port.out+".%N")
 			if attached l_adresse_factory.create_from_name (l_adresse) as la_adresse then
-				create l_socket.make_client_by_address_and_port (la_adresse, l_port)
+				create l_socket.make_client_by_address_and_port (la_adresse, port)
 				socket_client := l_socket
 				if l_socket.invalid_address then
-					io.put_string ("Ne peut pas se connecter a l'adresse " + l_adresse + ":" + l_port.out+".%N")
+					io.put_string ("Ne peut pas se connecter a l'adresse " + l_adresse + ":" + port.out+".%N")
 					has_error := True
 				else
 					l_socket.connect
 					if not l_socket.is_connected then
-						io.put_string ("Ne peut pas se connecter a l'adresse " + l_adresse + ":" + l_port.out+".%N")
+						io.put_string ("Ne peut pas se connecter a l'adresse " + l_adresse + ":" + port.out+".%N")
 						has_error := True
 					end
 				end

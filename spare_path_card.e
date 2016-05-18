@@ -11,6 +11,8 @@ inherit
 	PATH_CARD
 		rename
 			make as make_path_card
+		undefine
+			set_surface
 		end
 
 	BUTTON

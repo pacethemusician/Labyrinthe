@@ -57,7 +57,6 @@ feature {NONE} -- Initialisation
 			l_window.mouse_button_released_actions.extend (agent on_mouse_released(?,?,?))
 			l_window.mouse_motion_actions.extend (agent on_mouse_move(?, ?, ?, ?))
 			l_window.key_pressed_actions.extend (agent on_key_pressed(?, ?))
-
 			game_library.launch
 
 			across players as la_player loop
@@ -212,7 +211,7 @@ feature {NONE} -- Implementation
 	on_key_pressed(a_timestamp: NATURAL_32; a_key_state:GAME_KEY_STATE)
 		do
 			if attached {MENU_JOIN} current_engine as la_menu_join then
-				la_menu_join.text_box.update (a_key_state)
+				la_menu_join.update (a_key_state)
 			end
 		end
 
