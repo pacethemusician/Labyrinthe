@@ -24,7 +24,7 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_type: INTEGER; a_image_factory: IMAGE_FACTORY; a_x, a_y, a_rotation: INTEGER_32)
+	make (a_type: INTEGER; a_image_factory: IMAGE_FACTORY; a_x, a_y, a_rotation, a_item_index: INTEGER_32)
 			-- `a_type' peut être soit 1='╗' 2='║'  3='╣'.
 			-- `a_game_factory' contient les images du jeu
 			-- `a_rotation' est un index de 1 à 4 pour savoir quelle image utiliser.
@@ -38,7 +38,8 @@ feature {NONE} -- Initialisation
 			y := a_y
 			x_offset := 0
 			y_offset := 0
-			item_index := 0
+			type := a_type
+			item_index := a_item_index
 			image_factory := a_image_factory
 			items := a_image_factory.items
 			index := 1
@@ -132,6 +133,9 @@ feature
 		end
 
 feature -- Attributs
+
+	type: INTEGER
+			-- peut être soit 1='╗' 2='║'  3='╣'
 
 	items: LIST [GAME_SURFACE]
 			-- Les images des items que le joueur peut ramasser.

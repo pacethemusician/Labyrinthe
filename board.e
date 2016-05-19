@@ -21,12 +21,12 @@ create
 
 feature {NONE} -- Initialisation
 
-	make (a_image_factory: IMAGE_FACTORY)
+	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER])
 			-- Initialisation de `current'. Utilise `a_image_factory' comme `image_factory'.
 		do
 			make_button (create {GAME_SURFACE}.make (1, 1), 56, 56)
 			image_factory := a_image_factory
-			init_board_paths
+			init_board_paths(a_players)
 		end
 
 feature -- Implementation
@@ -38,13 +38,61 @@ feature -- Implementation
 			-- Liste des {PATH_CARD} contenues dans `Current'.
 
 	set_board_paths (a_paths: ARRAYED_LIST [ARRAYED_LIST [PATH_CARD]])
-			-- setter
+			-- Re-initialise le `board_paths' avec les données reçues par réseau
+		local
+			i, j: INTEGER
 		do
-			board_paths := a_paths
+			board_paths.wipe_out
+			from
+				i := 1
+			until
+				i > 7
+			loop
+				board_paths.extend (create {ARRAYED_LIST [PATH_CARD]}.make (7))
+				from
+					j := 1
+				until
+					j > 7
+				loop
+					board_paths.last.extend (create {SPARE_PATH_CARD}.make (a_paths[i].at (j).type,
+																		    image_factory,
+																		    a_paths[i].at (j).x,
+																		    a_paths[i].at (j).y,
+																		    a_paths[i].at (j).index,
+																		    a_paths[i].at (j).item_index ))
+					j := j + 1
+					print(board_paths.last.last.item_index.out)
+				end
+				i := i + 1
+			end
 		end
 
-	init_board_paths
+	set_starting_point(a_players: LIST[PLAYER])
+			-- Met en place les points de départ de chaque [PLAYER]
+		local
+			i: INTEGER
+			l_item_index: INTEGER
+		do
+			i := 1
+			across a_players as la_players loop
+				l_item_index := la_players.item.sprite_index + 24
+				inspect i
+					when 1 then
+						board_paths [1].i_th (1).item_index := l_item_index
+					when 2 then
+						board_paths [1].i_th (7).item_index := l_item_index
+					when 3 then
+						board_paths [7].i_th (1).item_index := l_item_index
+					else
+						board_paths [7].i_th (7).item_index := l_item_index
+				end
+				i := i + 1
+			end
+		end
+
+	init_board_paths(a_players: LIST[PLAYER])
 			-- Initialise `board_paths' en le remplissant de {PATH_CARD}.
+			-- La fonction place également les items
 		local
 			l_type_amount: ARRAYED_LIST [INTEGER]
 			l_rng: GAME_RANDOM
@@ -64,6 +112,7 @@ feature -- Implementation
 				init_row (l_row_index, l_sticky_cards, l_type_amount, l_rng)
 				l_row_index := l_row_index + 1
 			end
+			set_starting_point(a_players)
 			distribute_items (image_factory.items)
 		end
 
@@ -309,7 +358,7 @@ feature {NONE} -- Implementation
 						l_random_type := (l_random_type \\ 3) + 1
 					end
 					a_type_amount [l_random_type] := a_type_amount [l_random_type] - 1
-					board_paths [a_row_index].extend (create {SPARE_PATH_CARD}.make (l_random_type, image_factory, ((l_column_index - 1) * 84) + 56, ((a_row_index - 1) * 84) + 56, l_random_rotation))
+					board_paths [a_row_index].extend (create {SPARE_PATH_CARD}.make (l_random_type, image_factory, ((l_column_index - 1) * 84) + 56, ((a_row_index - 1) * 84) + 56, l_random_rotation, 0))
 				else
 					board_paths [a_row_index].extend (a_sticky_cards [l_sticky_cards_index])
 					a_sticky_cards [l_sticky_cards_index].x := a_sticky_cards [l_sticky_cards_index].x + 56
@@ -331,12 +380,8 @@ feature {NONE} -- Implementation
 			l_remaining_cards: INTEGER
 		do
 			create l_rng
-			board_paths [1].i_th (1).item_index := a_items.count
-			board_paths [1].i_th (7).item_index := a_items.count - 1
-			board_paths [7].i_th (1).item_index := a_items.count - 2
-			board_paths [7].i_th (7).item_index := a_items.count - 3
 			from
-				l_item_index := a_items.count - 5
+				l_item_index := 24
 			until
 				l_item_index <= 0
 			loop
@@ -348,7 +393,7 @@ feature {NONE} -- Implementation
 					l_free_position_found := (board_paths [l_index_x].i_th (l_index_y).item_index = 0)
 					l_remaining_cards := (board_paths.count * board_paths [1].count) - (l_item_index - a_items.count)
 				until
-					l_free_position_found = true
+					l_free_position_found = True
 				loop
 					l_index_x := (l_index_x \\ board_paths.count) + 1
 					if l_index_x = 1 then
@@ -369,25 +414,25 @@ feature {NONE} -- Implementation
 		do
 			create Result.make (16)
 				-- Rangée 1
-			Result.extend (create {PATH_CARD}.make (1, image_factory, 0, 0, 4))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 0, 4))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 0, 4))
-			Result.extend (create {PATH_CARD}.make (1, image_factory, 504, 0, 1))
+			Result.extend (create {PATH_CARD}.make (1, image_factory, 0, 0, 4, 0))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 0, 4, 0))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 0, 4, 0))
+			Result.extend (create {PATH_CARD}.make (1, image_factory, 504, 0, 1, 0))
 				-- Rangée 3
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 0, 168, 3))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 168, 3))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 168, 4))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 504, 168, 1))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 0, 168, 3, 0))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 168, 3, 0))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 168, 4, 0))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 504, 168, 1, 0))
 				-- Rangée 5
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 0, 336, 3))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 336, 2))
-			Result.extend (create {PATH_CARD}.make (2, image_factory, 336, 336, 2))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 504, 336, 1))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 0, 336, 3, 0))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 336, 2, 0))
+			Result.extend (create {PATH_CARD}.make (2, image_factory, 336, 336, 2, 0))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 504, 336, 1, 0))
 				-- Rangée 7
-			Result.extend (create {PATH_CARD}.make (1, image_factory, 0, 504, 3))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 504, 2))
-			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 504, 2))
-			Result.extend (create {PATH_CARD}.make (1, image_factory, 504, 504, 2))
+			Result.extend (create {PATH_CARD}.make (1, image_factory, 0, 504, 3, 0))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 168, 504, 2, 0))
+			Result.extend (create {PATH_CARD}.make (3, image_factory, 336, 504, 2, 0))
+			Result.extend (create {PATH_CARD}.make (1, image_factory, 504, 504, 2, 0))
 		end
 
 feature {NONE} -- Constantes

@@ -23,7 +23,7 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER]; a_game_window: GAME_WINDOW_SURFACED)
 		do
 			players := a_players
-			create board.make (a_image_factory)
+			create board.make (a_image_factory, players)
 			initialize (a_image_factory, a_game_window)
 		end
 
@@ -39,8 +39,7 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			create {ARRAYED_LIST [PLAYER]} players_to_move.make (0)
 			create item_to_find.make (image_factory.items [players [current_player_index].items_to_find.first], 801, 327)
 			create {LINKED_LIST [SPRITE]} on_screen_sprites.make
-			create spare_card.make (3, image_factory, 801, 144, 1)
-			create sound_fx_error.make ("Audio/sfx_error.wav")
+			create spare_card.make (3, image_factory, 801, 144, 1, 0)
 			create sound_fx_ok.make ("Audio/sfx_ok.wav")
 			create sound_fx_slide.make ("Audio/sfx_slide.wav")
 			create background.make (image_factory.backgrounds [1], 0, 0)
@@ -97,6 +96,9 @@ feature --
 	board: BOARD
 			-- Le board principal contenant les {PATH_CARD}
 
+	game_over: BOOLEAN
+			-- True lorsqu'un joueur gagne la partie
+
 	score: SCORE_SURFACE
 			-- {GAME_SURFACE} indiquant le nombre d'items trouvés et le nombre à trouver
 
@@ -111,9 +113,6 @@ feature --
 
 	sound_fx_ok: SOUND_FX
 			-- Le son joué lorsque le {PLAYER} click sur `btn_ok'
-
-	sound_fx_error: SOUND_FX
-			-- Le son joué lorsque le {PLAYER} essaie de droper la `spare_card' sur le `no_drop'
 
 	sound_fx_slide: SOUND_FX
 			-- Le son joué lorsque le {PLAYER} drop la `spare_card' avec succès
@@ -330,29 +329,33 @@ feature --
 			end
 		end
 
-feature
-
 	update
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
 		do
-			board.adjust_paths (Path_cards_speed)
-			if not players_to_move.is_empty then
-				across
-					players_to_move as la_players
-				loop
-					la_players.item.approach_point (la_players.item.next_x, la_players.item.next_y, Path_cards_speed)
+			if players[current_player_index].is_winner then
+				print("Vous avez gagnez LOL!")
+				game_over := True
+			else
+				board.adjust_paths (Path_cards_speed)
+				if not players_to_move.is_empty then
+					across
+						players_to_move as la_players
+					loop
+						la_players.item.approach_point (la_players.item.next_x, la_players.item.next_y, Path_cards_speed)
+					end
+					if (players_to_move [1].next_x = players_to_move [1].x) and (players_to_move [1].next_y = players_to_move [1].y) then
+						players_to_move.wipe_out
+					end
 				end
-				if (players_to_move [1].next_x = players_to_move [1].x) and (players_to_move [1].next_y = players_to_move [1].y) then
-					players_to_move.wipe_out
+				if not players[current_player_index].path.is_empty then
+					players[current_player_index].follow_path
 				end
-			end
-			if not players [current_player_index].path.is_empty then
-				players [current_player_index].follow_path
-			end
-			-- Ça bogue ici quand on trouve tous les items !!!!
-			item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
-			if not is_dragging then
-				spare_card.approach_point (801, 144, Spare_card_speed)
+				if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
+					item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
+				end
+				if not is_dragging then
+					spare_card.approach_point (801, 144, Spare_card_speed)
+				end
 			end
 		end
 

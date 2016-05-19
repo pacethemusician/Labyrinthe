@@ -34,7 +34,7 @@ feature {NONE} -- Events
 			if not game_library.is_video_enable then
 				game_library.enable_video
 			end
-			make (1, create {IMAGE_FACTORY}.make, 0, 0, 1)
+			make (1, create {IMAGE_FACTORY}.make, 0, 0, 1, 0)
 			assert ("test_path_card_on_prepare", not game_library.has_error)
 		end
 
@@ -56,8 +56,8 @@ feature -- Test routines
 			assert ("rotate_normal_2", (connections = 0b0011) and (index = 1))
 		end
 
-	rotate_limite
-			-- Test limite de `rotate'.
+	rotate_limiterotation
+
 		do
 			index := 1
 			connections := 0b0011

@@ -30,10 +30,11 @@ feature {NONE} -- Events
 	on_prepare
 			-- <Precursor>
 		do
+			create {ARRAYED_LIST[PLAYER]} players.make(4)
 			if not game_library.is_video_enable then
 				game_library.enable_video
 			end
-			make (create {IMAGE_FACTORY}.make)
+			make (create {IMAGE_FACTORY}.make, players)
 			assert ("test_board_on_prepare", not game_library.has_error)
 		end
 
@@ -44,10 +45,12 @@ feature {NONE} -- Events
 
 feature -- Test routines
 
+	players: LIST[PLAYER]
+
 	init_board_paths_normal
 			-- Test normal de `init_board_paths'.
 		do
-			init_board_paths
+			init_board_paths(players)
 			assert ("init_board_paths_normal_1", board_paths.count = 7)
 			across board_paths as rows loop
 				assert ("init_board_paths_normal_2", rows.item.count = 7)

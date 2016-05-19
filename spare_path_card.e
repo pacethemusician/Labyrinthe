@@ -27,16 +27,14 @@ create
 
 feature {NONE}
 
-	make (a_type: INTEGER_32; a_image_factory: IMAGE_FACTORY; a_x, a_y, a_rotation: INTEGER_32)
+	make (a_type: INTEGER_32; a_image_factory: IMAGE_FACTORY; a_x, a_y, a_rotation, a_item_index: INTEGER_32)
 			-- Initialisation de `current', de type `a_type' avec les images de `a_image_factory' aux coordonnées `a_x', `a_y'
 		do
 			make_button(create {GAME_SURFACE}.make (1, 1), a_x, a_y)
-			make_path_card(a_type, a_image_factory, a_x, a_y, a_rotation)
+			make_path_card(a_type, a_image_factory, a_x, a_y, a_rotation, a_item_index)
 		end
 
 feature
-
-
 
 	execute_actions (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
 			-- <Precursor>

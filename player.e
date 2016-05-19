@@ -46,6 +46,9 @@ feature -- Access
 	score: SCORE_SURFACE assign set_score_surface
 			-- Pointe vers la {SCORE_SURFACE} du {BOARD_ENGINE} et se met à jour lors de item_pickup
 
+	is_winner: BOOLEAN
+			-- Devient True lorsque `Current' à trouver tous les `items_to_find'
+
 	index: INTEGER
 			-- La position de `Current' dans la liste `players' du {BOARD_ENGINE}
 	sprite_index: INTEGER
@@ -161,6 +164,10 @@ feature -- Access
 					else
 						item_pickup_sound_fx.play
 						item_found_number := item_found_number + 1
+						if item_found_number = items_to_find.count then
+							is_winner := True
+							print("Winner is True")
+						end
 					end
 					score.update(item_found_number)
 				end
