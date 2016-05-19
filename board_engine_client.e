@@ -30,6 +30,7 @@ feature {NONE} -- Initialization
 			players := create_players(player_data, a_image_factory)
 			my_index := get_my_index
 			board := get_board(a_image_factory)
+			create receive_mouse_thread.make(socket)
 			initialize (a_image_factory, a_game_window)
 		end
 
@@ -37,6 +38,12 @@ feature
 
 	has_error: BOOLEAN
 			--
+
+	is_my_turn: BOOLEAN do Result := current_player_index ~ my_index end
+			-- True si c'est au tour de `Current' à jouer
+
+	receive_mouse_thread: THREAD_NETWORK_CLIENT
+			-- Le thread réseau qui attend le `mouse_state'
 
 	my_index: INTEGER
 			-- La position de `Current' dans la liste `players'
@@ -131,29 +138,29 @@ feature -- network implementation
 					print("Vous avez Guillaume Hamel Gagné!!!!! LOL!!!!!!!!")
 					game_over := True
 				else
-					if players[current_player_index] ~ my_index then
-
-					else
-						board.adjust_paths (Path_cards_speed)
-						if not players_to_move.is_empty then
-							across
-								players_to_move as la_players
-							loop
-								la_players.item.approach_point (la_players.item.next_x, la_players.item.next_y, Path_cards_speed)
-							end
-							if (players_to_move [1].next_x = players_to_move [1].x) and (players_to_move [1].next_y = players_to_move [1].y) then
-								players_to_move.wipe_out
-							end
+					if attached receive_mouse_thread.mouse_state as la_mouse_state then
+						check_network_button (la_mouse_state)
+						receive_mouse_thread.mouse_state := void
+					end
+					board.adjust_paths (Path_cards_speed)
+					if not players_to_move.is_empty then
+						across
+							players_to_move as la_players
+						loop
+							la_players.item.approach_point (la_players.item.next_x, la_players.item.next_y, Path_cards_speed)
 						end
-						if not players[current_player_index].path.is_empty then
-							players[current_player_index].follow_path
+						if (players_to_move [1].next_x = players_to_move [1].x) and (players_to_move [1].next_y = players_to_move [1].y) then
+							players_to_move.wipe_out
 						end
-						if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
-							item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
-						end
-						if not is_dragging then
-							spare_card.approach_point (801, 144, Spare_card_speed)
-						end
+					end
+					if not players[current_player_index].path.is_empty then
+						players[current_player_index].follow_path
+					end
+					if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
+						item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
+					end
+					if not is_dragging then
+						spare_card.approach_point (801, 144, Spare_card_speed)
 					end
 				end
 			end
@@ -167,6 +174,14 @@ feature -- network implementation
 				across buttons as la_buttons loop
 					la_buttons.item.execute_actions (a_mouse_state)
 				end
+			end
+		end
+
+	check_network_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- Déclanche l'action des boutons s'il y a clique depuis le réseau.
+		do
+			across buttons as la_buttons loop
+				la_buttons.item.execute_actions (a_mouse_state)
 			end
 		end
 

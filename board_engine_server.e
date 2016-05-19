@@ -10,7 +10,7 @@ class
 inherit
 	BOARD_ENGINE
 		redefine
-			make, update
+			make, update, check_button
 		end
 
 create
@@ -21,11 +21,19 @@ feature {NONE} -- Initialization
 	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER]; a_game_window:GAME_WINDOW_SURFACED)
 			-- Initialisation de `Current'
 		do
+			create {LINKED_LIST[THREAD_NETWORK_CLIENT]} network_action_threads.make
 			Precursor(a_image_factory, a_players, a_game_window)
 			send_stuff
+			across players as la_players loop
+				if attached {PLAYER_NETWORK} la_players.item as la_player then
+					network_action_threads.extend(create {THREAD_NETWORK_CLIENT} .make(la_player.socket))
+				end
+			end
 		end
 
 feature
+
+	network_action_threads: LIST[THREAD_NETWORK_CLIENT]
 
 	send_stuff
 			-- Envoie le stuff aux joueurs en réseau
@@ -103,54 +111,83 @@ feature
 					game_over := True
 				else
 					if attached {PLAYER_NETWORK} players[current_player_index] as la_player then
-						check_button(get_network_action)
-					else
-						board.adjust_paths (Path_cards_speed)
-						if not players_to_move.is_empty then
-							across
-								players_to_move as la_players
-							loop
-								la_players.item.approach_point (la_players.item.next_x, la_players.item.next_y, Path_cards_speed)
+						across network_action_threads as la_connexions loop
+							if attached la_connexions.item.mouse_state as la_mouse_state then
+								check_network_button (la_mouse_state)
+								la_connexions.item.mouse_state := void
 							end
-							if (players_to_move [1].next_x = players_to_move [1].x) and (players_to_move [1].next_y = players_to_move [1].y) then
-								players_to_move.wipe_out
-							end
+
 						end
-						if not players[current_player_index].path.is_empty then
-							players[current_player_index].follow_path
+					end
+					board.adjust_paths (Path_cards_speed)
+					if not players_to_move.is_empty then
+						across
+							players_to_move as la_players
+						loop
+							la_players.item.approach_point (la_players.item.next_x, la_players.item.next_y, Path_cards_speed)
 						end
-						if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
-							item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
+						if (players_to_move [1].next_x = players_to_move [1].x) and (players_to_move [1].next_y = players_to_move [1].y) then
+							players_to_move.wipe_out
 						end
-						if not is_dragging then
-							spare_card.approach_point (801, 144, Spare_card_speed)
-						end
+					end
+					if not players[current_player_index].path.is_empty then
+						players[current_player_index].follow_path
+					end
+					if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
+						item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
+					end
+					if not is_dragging then
+						spare_card.approach_point (801, 144, Spare_card_speed)
 					end
 				end
 			end
 		end
 
-	get_network_action:GAME_MOUSE_BUTTON_PRESSED_STATE
-		  -- Attend que le serveur envoie le `mouse_state' du client
-		local
-			l_retry: BOOLEAN
+	check_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
 		do
-			create Result.make (0, 0, 0, 0)
-			if not l_retry then		-- Si la clause 'rescue' n'a pas été utilisé, reçoit la liste
-				if
-					attached {PLAYER_NETWORK} players[current_player_index] as la_player and then
-					attached la_player.socket as la_socket and then
-					attached {GAME_MOUSE_BUTTON_PRESSED_STATE} la_socket.retrieved as la_mouse_state
-				then
-					Result := la_mouse_state
+			if not (attached {PLAYER_NETWORK} players[current_player_index]) then
+				across buttons as la_buttons loop
+						la_buttons.item.execute_actions (a_mouse_state)
 				end
-			else
-				print("Erreur lors de la réception du mouse_state")
 			end
-			rescue
-				l_retry := True
-				retry
+			across players as la_players loop
+				if attached {PLAYER_NETWORK} la_players.item as la_player then
+					if attached la_player.socket as la_socket then
+						la_socket.independent_store (a_mouse_state)
+					end
+				end
+			end
 		end
+
+	check_network_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- Déclanche l'action des boutons s'il y a clique depuis le réseau.
+		do
+			across buttons as la_buttons loop
+				la_buttons.item.execute_actions (a_mouse_state)
+			end
+		end
+
+--	get_network_action:GAME_MOUSE_BUTTON_PRESSED_STATE
+--		  -- Attend que le serveur envoie le `mouse_state' du client
+--		local
+--			l_retry: BOOLEAN
+--		do
+--			create Result.make (0, 0, 0, 0)
+--			if not l_retry then		-- Si la clause 'rescue' n'a pas été utilisé, reçoit la liste
+--				if
+--					attached {PLAYER_NETWORK} players[current_player_index] as la_player and then
+--					attached la_player.socket as la_socket and then
+--					attached {GAME_MOUSE_BUTTON_PRESSED_STATE} la_socket.retrieved as la_mouse_state
+--				then
+--					Result := la_mouse_state
+--				end
+--			else
+--				print("Erreur lors de la réception du mouse_state")
+--			end
+--			rescue
+--				l_retry := True
+--				retry
+--		end
 
 invariant
 

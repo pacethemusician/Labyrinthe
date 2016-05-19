@@ -47,7 +47,7 @@ feature
 			-- `True' si l'usager à cliqué sur le {BOUTON} go
 
 	socket_client: detachable SOCKET
-			-- blabla
+			-- Le socket
 
 	set_is_go_selected (a_value: BOOLEAN)
 			-- Assigne `a_value' à `is_go_selected'

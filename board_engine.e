@@ -75,7 +75,7 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			on_screen_sprites.extend (text_player)
 			on_screen_sprites.extend (score)
 			on_screen_sprites.extend (spare_card)
-			create thread.make (current, a_game_window)
+			create thread.make (Current, a_game_window)
 			board.on_click_actions.extend (agent board_click_action)
 			spare_card.on_click_actions.extend (agent spare_card_click_action(?))
 			btn_rotate_left.on_click_actions.extend (agent rotate_spare_card(-1))
