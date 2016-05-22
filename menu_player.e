@@ -103,8 +103,7 @@ feature
 					connexion := Void
 					to_connect := to_connect - 1
 					if to_connect ~ 0 then
-						button_go.on_click_actions.extend (agent check_ok)
-						button_go.current_surface := image_factory.buttons[10]
+						button_go.enabled := true
 					end
 					from i := 1	until (i > player_select_submenus.count) or l_finish loop
 						if (not player_select_submenus[i].is_local) and (not player_select_submenus[i].is_connected) then
@@ -117,8 +116,6 @@ feature
 				end
 			else
 				if to_connect > 0 then
-					button_go.on_click_actions.wipe_out
-					button_go.current_surface := image_factory.buttons[13]
 					create l_connexion.make (socket)
 					connexion := l_connexion
 					l_connexion.launch
@@ -155,6 +152,7 @@ feature
 				player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (l_count + 1, image_factory, l_x, l_y, available_sprites, sprite_preview_surface_list, a_is_local))
 				if not a_is_local then
 					to_connect := to_connect + 1
+					button_go.enabled := false
 				end
 			end
 		ensure

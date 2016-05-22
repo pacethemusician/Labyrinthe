@@ -99,9 +99,10 @@ feature -- implementation
 		end
 
 	execute_actions (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
-			-- Execute les routines de `on_click_actions' si la souris est au dessus de `current'.
+			-- Execute les routines de `on_click_actions' si la souris est au dessus de `current' et que `enabled' est vrai.
 		do
-			if (a_mouse_state.x >= x) and (a_mouse_state.x < (x + current_surface.width)) and (a_mouse_state.y >= y) and (a_mouse_state.y < (y + current_surface.height)) then
+			if (a_mouse_state.x >= x) and (a_mouse_state.x < (x + current_surface.width)) and
+				(a_mouse_state.y >= y) and (a_mouse_state.y < (y + current_surface.height)) and enabled then
 				across
 					on_click_actions as l_actions
 				loop
