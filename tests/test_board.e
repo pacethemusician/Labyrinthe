@@ -15,7 +15,7 @@ inherit
 			on_clean
 		end
 
-	BOARD
+	ABSTRACT_BOARD
 		undefine
 			default_create
 		end
@@ -29,6 +29,8 @@ feature {NONE} -- Events
 
 	on_prepare
 			-- <Precursor>
+		note
+			testing: "execution/isolated"
 		do
 			create {ARRAYED_LIST[PLAYER]} players.make(4)
 			if not game_library.is_video_enable then

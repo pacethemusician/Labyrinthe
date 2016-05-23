@@ -28,6 +28,8 @@ feature {NONE} -- Events
 
 	on_prepare
 			-- <Precursor>
+		note
+			testing: "execution/isolated"
 		do
 			if not game_library.is_video_enable then
 				game_library.enable_video

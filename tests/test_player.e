@@ -43,8 +43,9 @@ feature {NONE} -- Events
 			create l_image_list.make (5)
 			from l_i := 1 until l_i > 5 loop
 				l_image_list.extend (create {GAME_SURFACE}.make (1, 1))
+				l_i := l_i + 1
 			end
-			make (l_factory, 1, 0, 0, l_i, create {SCORE_SURFACE}.make (create {GAME_SURFACE}.make (1, 1), 0, 0, 25, create {IMAGE_FACTORY}.make))
+			make (l_factory, 1, 0, 0, l_i, create {SCORE_SURFACE}.make (create {GAME_SURFACE}.make (1, 1), 0, 0, 25, l_factory))
 			assert ("test_player_on_prepare", not game_library.has_error)
 		end
 

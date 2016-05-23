@@ -113,7 +113,7 @@ feature -- Implementation
 				l_row_index := l_row_index + 1
 			end
 			set_starting_point(a_players)
-			distribute_items (image_factory.items)
+			distribute_items (image_factory.items, l_rng)
 		end
 
 	get_next_spare_card_column (a_column_id: INTEGER; a_add_on_top: BOOLEAN): SPARE_PATH_CARD
@@ -292,6 +292,26 @@ feature -- Implementation
 			end
 		end
 
+--	print_board_paths (a_print_type, a_print_item, a_print_index: BOOLEAN)
+--		do
+--			across board_paths as rows loop
+--				across rows.item as paths loop
+--					print("(")
+--					if a_print_type then
+--						print("t:" + paths.item.type.out + " ")
+--					end
+--					if a_print_item then
+--						print("i:" + paths.item.item_index.out + " ")
+--					end
+--					if a_print_index then
+--						print("r:" + paths.item.index.out + " ")
+--					end
+--					print(")")
+--				end
+--				print("%N")
+--			end
+--		end
+
 feature {NONE} -- Implementation
 
 	pathfind_to_recursive (a_x1, a_y1, a_x2, a_y2: INTEGER; a_result, a_visited_paths: LINKED_LIST [PATH_CARD])
@@ -369,26 +389,24 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	distribute_items (a_items: LIST [GAME_SURFACE])
+	distribute_items (a_items: LIST [GAME_SURFACE]; a_rng: GAME_RANDOM)
 			-- Change le `item_index' des {PATH_CARD} contenues dans `board_paths'.
 		local
-			l_rng: GAME_RANDOM
 			l_index_x: INTEGER
 			l_index_y: INTEGER
 			l_item_index: INTEGER
 			l_free_position_found: BOOLEAN
 			l_remaining_cards: INTEGER
 		do
-			create l_rng
 			from
 				l_item_index := 24
 			until
 				l_item_index <= 0
 			loop
-				l_rng.generate_new_random
-				l_index_x := l_rng.last_random_integer_between (1, board_paths.count)
-				l_rng.generate_new_random
-				l_index_y := l_rng.last_random_integer_between (1, board_paths [l_index_x].count)
+				a_rng.generate_new_random
+				l_index_x := a_rng.last_random_integer_between (1, board_paths.count)
+				a_rng.generate_new_random
+				l_index_y := a_rng.last_random_integer_between (1, board_paths [l_index_x].count)
 				from
 					l_free_position_found := (board_paths [l_index_x].i_th (l_index_y).item_index = 0)
 					l_remaining_cards := (board_paths.count * board_paths [1].count) - (l_item_index - a_items.count)
