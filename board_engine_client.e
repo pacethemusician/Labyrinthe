@@ -12,7 +12,7 @@ inherit
 		rename
 			make as make_board_engine
 		redefine
-			update, check_button
+			update
 		end
 
 create
@@ -22,8 +22,6 @@ feature {NONE} -- Initialization
 
 	make (a_image_factory: IMAGE_FACTORY; a_game_window:GAME_WINDOW_SURFACED; a_socket: SOCKET)
 			-- Initialisation de `Current'
-		local
-			l_player_data: LIST[PLAYER_DATA]
 		do
 			has_error := False
 			socket := a_socket
@@ -34,16 +32,19 @@ feature {NONE} -- Initialization
 			initialize (a_image_factory, a_game_window)
 		end
 
-feature
+feature -- Access
 
 	has_error: BOOLEAN
-			--
+			-- True en cas d'erreur
 
-	is_my_turn: BOOLEAN do Result := current_player_index ~ my_index end
+	is_my_turn: BOOLEAN
 			-- True si c'est au tour de `Current' à jouer
+		 do
+		 	Result := current_player_index ~ my_index
+		 end
 
 	receive_mouse_thread: THREAD_NETWORK_CLIENT
-			-- Le thread réseau qui attend le `mouse_state'
+			-- Le thread réseau qui attend un {ACTION_NETWORK}
 
 	my_index: INTEGER
 			-- La position de `Current' dans la liste `players'
@@ -78,9 +79,12 @@ feature -- network implementation
 					attached {LIST[PLAYER_DATA]} la_socket.retrieved as la_list
 				then
 					Result := la_list
+				else
+					has_error := True
 				end
 			else	-- Si la clause 'rescue' a été utilisée, affiche un message d'erreur
 				io.put_string("Le message recu n'est pas une liste valide.%N")
+				has_error := True
 			end
 			rescue	-- Permet d'attraper une exception
 				l_retry := True
@@ -100,6 +104,8 @@ feature -- network implementation
 					attached {ARRAYED_LIST [ARRAYED_LIST [PATH_CARD]]} la_socket.retrieved as la_board
 				then
 					Result.set_board_paths(la_board)
+				else
+					has_error := True
 				end
 			else
 				has_error := True
@@ -118,10 +124,12 @@ feature -- network implementation
 				if attached socket as la_socket then
 					la_socket.read_integer
 					Result := la_socket.last_integer
+				else
+					has_error := True
 				end
-
 			else	-- Si la clause 'rescue' a été utilisée, affiche un message d'erreur
 				io.put_string("L'objet reçu n'est pas valide.%N")
+				has_error := True
 			end
 			rescue	-- Permet d'attraper une exception
 				l_retry := True
@@ -138,9 +146,20 @@ feature -- network implementation
 					print("Vous avez Guillaume Hamel Gagné!!!!! LOL!!!!!!!!")
 					game_over := True
 				else
-					if attached receive_mouse_thread.mouse_state as la_mouse_state then
-						check_network_button (la_mouse_state)
-						receive_mouse_thread.mouse_state := void
+					if attached receive_mouse_thread.action as la_action then
+						if la_action.commande ~ "REL" then
+							if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} la_action.mouse_state as la_mouse_state then
+								on_mouse_released(la_mouse_state)
+								print("Shit reçue")
+							end
+						elseif la_action.commande ~ "SPARE" then
+							spare_card_click_action(la_action.mouse_state)
+							print("Shit reçue")
+						elseif la_action.commande ~ "BOARD" then
+							board_click_action(la_action.mouse_state)
+							print("Shit reçue")
+						end
+						receive_mouse_thread.action := void
 					end
 					board.adjust_paths (Path_cards_speed)
 					if not players_to_move.is_empty then
@@ -166,24 +185,14 @@ feature -- network implementation
 			end
 		end
 
-	check_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
-			-- Déclanche l'action des boutons s'il y a clique.
-		do
-			if is_my_turn then
-				socket.independent_store(a_mouse_state)
-				across buttons as la_buttons loop
-					la_buttons.item.execute_actions (a_mouse_state)
-				end
-			end
-		end
-
-	check_network_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
-			-- Déclanche l'action des boutons s'il y a clique depuis le réseau.
-		do
-			across buttons as la_buttons loop
-				la_buttons.item.execute_actions (a_mouse_state)
-			end
-		end
+--	check_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+--			-- Déclanche l'action des boutons s'il y a clique.
+--		do
+--			if is_my_turn then
+--				socket.independent_store(a_mouse_state)
+--			end
+--			Precursor(a_mouse_state)
+--		end
 
 invariant
 

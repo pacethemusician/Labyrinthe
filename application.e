@@ -1,6 +1,6 @@
 note
 	description: "Classe principale qui lance le jeu et le ferme correctement"
-	author: "Pascal Belisle Louis Marchand"
+	author: "Pascal Belisle et Louis Marchand"
 	date: "Session Hiver 2016"
 	revision: "1.0"
 

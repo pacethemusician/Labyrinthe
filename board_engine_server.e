@@ -10,7 +10,8 @@ class
 inherit
 	BOARD_ENGINE
 		redefine
-			make, update, check_button
+			make, update, --confirm_finished,
+			on_mouse_released, spare_card_click_action, board_click_action
 		end
 
 create
@@ -34,6 +35,7 @@ feature {NONE} -- Initialization
 feature
 
 	network_action_threads: LIST[THREAD_NETWORK_CLIENT]
+			-- -- Les threads réseaux qui attendent un {ACTION_NETWORK}
 
 	send_stuff
 			-- Envoie le stuff aux joueurs en réseau
@@ -107,14 +109,22 @@ feature
 				-- do some shit
 			else
 				if players[current_player_index].is_winner then
-					print("Vous avez gagnez LOL!")
+					print("Vous avez Guillaume Hamel Gagné!!!!! LOL!!!!!!!!")
 					game_over := True
 				else
 					if attached {PLAYER_NETWORK} players[current_player_index] as la_player then
 						across network_action_threads as la_connexions loop
-							if attached la_connexions.item.mouse_state as la_mouse_state then
-								check_network_button (la_mouse_state)
-								la_connexions.item.mouse_state := void
+							if attached la_connexions.item.action as la_action then
+								if la_action.commande ~ "REL" then
+									if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} la_action.mouse_state as la_mouse_state then
+										on_mouse_released(la_mouse_state)
+									end
+								elseif la_action.commande ~ "SPARE" then
+									spare_card_click_action(la_action.mouse_state)
+								elseif la_action.commande ~ "BOARD" then
+									board_click_action(la_action.mouse_state)
+								end
+								la_connexions.item.action := void
 							end
 
 						end
@@ -143,27 +153,60 @@ feature
 			end
 		end
 
-	check_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+--	check_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+--		do
+--			if not (attached {PLAYER_NETWORK} players[current_player_index]) then
+--				across buttons as la_buttons loop
+--						la_buttons.item.execute_actions (a_mouse_state)
+--				end
+--			end
+--			across players as la_players loop
+--				if attached {PLAYER_NETWORK} la_players.item as la_player then
+--					if attached la_player.socket as la_socket then
+--						la_socket.independent_store (a_mouse_state)
+--					end
+--				end
+--			end
+--		end
+
+	on_mouse_released (a_mouse_state: GAME_MOUSE_BUTTON_RELEASED_STATE)
+			-- precursor
 		do
-			if not (attached {PLAYER_NETWORK} players[current_player_index]) then
-				across buttons as la_buttons loop
-						la_buttons.item.execute_actions (a_mouse_state)
-				end
-			end
+			send_action(create {ACTION_NETWORK} .make("REL", a_mouse_state))
+			Precursor (a_mouse_state)
+		end
+
+	spare_card_click_action (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- precursor
+		do
+			send_action(create {ACTION_NETWORK} .make("SPARE", a_mouse_state))
+			Precursor (a_mouse_state)
+		end
+
+	board_click_action (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- precursor
+		do
+			send_action(create {ACTION_NETWORK} .make("BOARD", a_mouse_state))
+			Precursor (a_mouse_state)
+		end
+
+--	confirm_finished_network (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+--			-- precursor
+--		do
+--			Precursor
+--			send_action(create {ACTION_NETWORK} .make("BOARD", a_mouse_state))
+--		end
+
+	send_action (a_action: ACTION_NETWORK)
+			-- Envoie un {ACTION_NETWORK} à tous les joueurs réseau
+		do
 			across players as la_players loop
 				if attached {PLAYER_NETWORK} la_players.item as la_player then
 					if attached la_player.socket as la_socket then
-						la_socket.independent_store (a_mouse_state)
+						la_socket.independent_store (a_action)
+						print("Action envoyée %N")
 					end
 				end
-			end
-		end
-
-	check_network_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
-			-- Déclanche l'action des boutons s'il y a clique depuis le réseau.
-		do
-			across buttons as la_buttons loop
-				la_buttons.item.execute_actions (a_mouse_state)
 			end
 		end
 

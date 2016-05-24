@@ -44,6 +44,14 @@ feature {NONE} -- Initialisation
 			l_window.key_pressed_actions.extend (agent on_key_pressed(?, ?))
 			game_library.launch
 
+			if attached {BOARD_ENGINE_CLIENT} current_engine as la_engine then
+				la_engine.receive_mouse_thread.is_done := True
+			elseif attached {BOARD_ENGINE_SERVER} current_engine as la_server_engine then
+				across la_server_engine.network_action_threads as la_list loop
+					 la_list.item.is_done := True
+				end
+			end
+
 			across players as la_player loop
 				if attached {PLAYER_NETWORK} la_player as sub_la_player then
 					sub_la_player.socket.close
