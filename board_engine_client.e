@@ -29,6 +29,7 @@ feature {NONE} -- Initialization
 			my_index := get_my_index
 			board := get_board(a_image_factory)
 			create receive_mouse_thread.make(socket)
+			receive_mouse_thread.launch
 			initialize (a_image_factory, a_game_window)
 		end
 

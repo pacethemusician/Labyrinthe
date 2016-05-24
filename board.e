@@ -61,7 +61,6 @@ feature -- Implementation
 																		    a_paths[i].at (j).index,
 																		    a_paths[i].at (j).item_index ))
 					j := j + 1
-					print(board_paths.last.last.item_index.out)
 				end
 				i := i + 1
 			end

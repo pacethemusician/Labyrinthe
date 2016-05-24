@@ -28,6 +28,7 @@ feature {NONE} -- Initialization
 			across players as la_players loop
 				if attached {PLAYER_NETWORK} la_players.item as la_player then
 					network_action_threads.extend(create {THREAD_NETWORK_CLIENT} .make(la_player.socket))
+					network_action_threads.last.launch
 				end
 			end
 		end
