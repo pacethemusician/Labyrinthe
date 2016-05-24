@@ -291,25 +291,25 @@ feature -- Implementation
 			end
 		end
 
---	print_board_paths (a_print_type, a_print_item, a_print_index: BOOLEAN)
---		do
---			across board_paths as rows loop
---				across rows.item as paths loop
---					print("(")
---					if a_print_type then
---						print("t:" + paths.item.type.out + " ")
---					end
---					if a_print_item then
---						print("i:" + paths.item.item_index.out + " ")
---					end
---					if a_print_index then
---						print("r:" + paths.item.index.out + " ")
---					end
---					print(")")
---				end
---				print("%N")
---			end
---		end
+	print_board_paths (a_print_type, a_print_item, a_print_index: BOOLEAN)
+		do
+			across board_paths as rows loop
+				across rows.item as paths loop
+					print("(")
+					if a_print_type then
+						print("t:" + paths.item.type.out + " ")
+					end
+					if a_print_item then
+						print("i:" + paths.item.item_index.out + " ")
+					end
+					if a_print_index then
+						print("r:" + paths.item.index.out + " ")
+					end
+					print(")")
+				end
+				print("%N")
+			end
+		end
 
 feature {NONE} -- Implementation
 
@@ -398,7 +398,7 @@ feature {NONE} -- Implementation
 			l_remaining_cards: INTEGER
 		do
 			from
-				l_item_index := 24
+				l_item_index := a_items.count - 5
 			until
 				l_item_index <= 0
 			loop
