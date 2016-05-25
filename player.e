@@ -166,7 +166,6 @@ feature -- Access
 						item_found_number := item_found_number + 1
 						if item_found_number = items_to_find.count then
 							is_winner := True
-							print("Winner is True")
 						end
 					end
 					score.update(item_found_number)

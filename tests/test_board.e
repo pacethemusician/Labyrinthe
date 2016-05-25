@@ -2,7 +2,7 @@ note
 	description: "Tests unitaires de la classe {BOARD}"
 	author: "Charles Lemay"
 	date: "2016-04-26"
-	revision: "1.0"
+	revision: "1.1"
 	testing: "type/manual"
 
 class
