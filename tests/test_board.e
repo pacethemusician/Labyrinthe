@@ -2,7 +2,7 @@ note
 	description: "Tests unitaires de la classe {BOARD}"
 	author: "Charles Lemay"
 	date: "2016-04-26"
-	revision: "1.0"
+	revision: "1.1"
 	testing: "type/manual"
 
 class
@@ -62,13 +62,31 @@ feature -- Test routines
 	init_row_normal
 			-- Test normal de `init_row'.
 		do
-			assert ("not_implemented", False)
+			board_paths.first.wipe_out
+			init_row (1, init_sticky_cards, create {ARRAYED_LIST [INTEGER]}
+				.make_from_array (<<3, 2, 2>>), create {GAME_RANDOM})
+			assert ("init_row_normal_1", board_paths.first.full)
 		end
 
 	distribute_items_normal
 			-- Test normal de `distribute_items'.
+		local
+			l_item_count: INTEGER
 		do
-			assert ("not_implemented", False)
+			across board_paths as rows loop
+				across rows.item as paths loop
+					paths.item.item_index := 0
+				end
+			end
+			distribute_items (image_factory.items, create {GAME_RANDOM})
+			across board_paths as rows loop
+				across rows.item as paths loop
+					if (paths.item.item_index > 0) then
+						l_item_count := l_item_count + 1
+					end
+				end
+			end
+			assert ("distribute_items_normal_1", l_item_count = image_factory.items.count - 5)
 		end
 
 	get_next_spare_card_column_normal
@@ -151,13 +169,28 @@ feature -- Test routines
 	path_can_go_direction_normal
 			-- Test normal de `path_can_go_direction'.
 		do
-			assert ("not_implemented", False)
+			assert ("path_can_go_direction_normal_1", path_can_go_direction (1, 1, 1))
+			assert ("path_can_go_direction_normal_2", not path_can_go_direction (7, 7, 3))
+			assert ("path_can_go_direction_normal_3", path_can_go_direction (4, 4, 0))
 		end
 
 	pathfind_to_normal
 			-- Test normal de `pathfind_to'.
+		local
+			l_path_list: LINKED_LIST [PATH_CARD]
 		do
-			assert ("not_implemented", False)
+			l_path_list := pathfind_to (1, 1, 3, 3)
+			assert ("pathfind_to_normal_1", (l_path_list [1] = board_paths.first.first) and
+											(l_path_list [2] = board_paths.first [2]) and
+											(l_path_list [3] = board_paths.first [3]) and
+											(l_path_list [4] = (board_paths [2]) [3]) and
+											(l_path_list [5] = (board_paths [3]) [3]))
+			l_path_list := pathfind_to (2, 7, 3, 6)
+			assert ("pathfind_to_normal_2", (l_path_list [1] = (board_paths [7]) [2]) and
+											(l_path_list [2] = (board_paths [7]) [3]) and
+											(l_path_list [3] = (board_paths [6]) [3]))
+			l_path_list := pathfind_to (1, 1, 7, 7)
+			assert ("pathfind_to_normal_3", l_path_list.count = 0)
 		end
 
 note

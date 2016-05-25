@@ -1,5 +1,5 @@
 note
-	description: "Tests unitaires de la classe {ANIMATED_SPRITE}"
+	description: "Tests unitaires de la classe {PATH_CARD}"
 	author: "Charles Lemay"
 	date: "2016-04-25"
 	revision: "1.0"

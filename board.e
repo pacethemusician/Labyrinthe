@@ -398,7 +398,7 @@ feature {NONE} -- Implementation
 			l_remaining_cards: INTEGER
 		do
 			from
-				l_item_index := 24
+				l_item_index := a_items.count - 5
 			until
 				l_item_index <= 0
 			loop
