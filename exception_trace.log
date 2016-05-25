@@ -1915,3 +1915,36 @@ THREAD_NETWORK_CLIENT
 APPLICATION         root's creation                                     
 <00000000058E2388>                         Routine failure.              Exit
 -------------------------------------------------------------------------------
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Child thread           0x4C8 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      Retrieve: unable to read properties of storable.:
+<00000000057FAC28>  (From SOCKET)          Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      
+<00000000057FAC28>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    retrieved @7           
+<00000000057FAC28>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    execute @2             
+<0000000005802608>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    thr_main @3            
+<0000000005802608>  (From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000057F2388>                         Routine failure.              Exit
+-------------------------------------------------------------------------------

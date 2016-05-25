@@ -47,7 +47,7 @@ feature
 			-- Tâches du thread
 			-- Met le `socket' en mode d'attente de connexion.
 		do
-			socket.listen (1)
+			socket.listen (3)
 --			from
 --				cancelled := false
 --			until

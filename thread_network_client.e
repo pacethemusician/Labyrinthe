@@ -33,17 +33,17 @@ feature -- Access
 	has_error:BOOLEAN
 			-- `True' si une erreur est arrivé à la création du `socket'
 
-	action: detachable GAME_MOUSE_BUTTON_PRESSED_STATE assign set_action
+	mouse_state: detachable GAME_MOUSE_BUTTON_PRESSED_STATE assign set_mouse_state
 			-- L'action du {PLAYER} contenant l'instruction et un `mouse_state'
 
-	set_action (a_value: detachable GAME_MOUSE_BUTTON_PRESSED_STATE)
-			-- Setter pour `action_state'
+	set_mouse_state (a_value: detachable GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- Setter pour `mouse_state'
 		do
-			action := a_value
+			mouse_state := a_value
 		end
 
 	socket: SOCKET
-			-- Reçoit les données
+			-- {SOCKET} du {PLAYER_NETWORK} qui lance le thread. Reçoit et envoie les données.
 
 	is_done: BOOLEAN assign set_is_done
 			-- Indique que `Current' est terminé
@@ -54,14 +54,6 @@ feature -- Access
 			is_done := a_value
 		end
 
---	mouse_state: detachable GAME_MOUSE_BUTTON_PRESSED_STATE assign set_mouse_state
-
---	set_mouse_state(a_value: detachable GAME_MOUSE_BUTTON_PRESSED_STATE)
---			-- Setter
---		do
---			mouse_state := a_value
---		end
-
 	execute
 			-- Tâches du thread
 			-- Met le `socket' en mode d'attente de connexion.
@@ -69,10 +61,10 @@ feature -- Access
 			from until is_done loop
 				if
 					attached socket as la_socket and then
-					attached {GAME_MOUSE_BUTTON_PRESSED_STATE} la_socket.retrieved as la_action
+					attached {GAME_MOUSE_BUTTON_PRESSED_STATE} la_socket.retrieved as la_mouse_state
 				then
-					action := la_action
-					from until (not attached action) or is_done loop
+					mouse_state := la_mouse_state
+					from until (not attached mouse_state) or is_done loop
 						sleep (1000000)
 						--	On attend......... -_- zzz
 					end

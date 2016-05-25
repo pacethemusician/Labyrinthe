@@ -149,13 +149,12 @@ feature -- network implementation
 				else
 					socket.independent_store (True)
 					if not is_my_turn then
-						if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} receive_mouse_thread.action as la_action then
-							on_mouse_released_from_server(la_action)
-							print("client release%N")
-						elseif attached {GAME_MOUSE_BUTTON_PRESSED_STATE} receive_mouse_thread.action as la_action then
-							check_button_from_server(la_action)
+						if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} receive_mouse_thread.mouse_state as la_mouse_state then
+							on_mouse_released_from_server(la_mouse_state)
+						elseif attached {GAME_MOUSE_BUTTON_PRESSED_STATE} receive_mouse_thread.mouse_state as la_mouse_state then
+							check_button_from_server(la_mouse_state)
 						end
-						receive_mouse_thread.action := void
+						receive_mouse_thread.mouse_state := void
 					end
 					board.adjust_paths (Path_cards_speed)
 					if not players_to_move.is_empty then
@@ -172,7 +171,7 @@ feature -- network implementation
 						players[current_player_index].follow_path
 					end
 					if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
-						item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
+						item_to_find.current_surface := (image_factory.items [players [my_index].items_to_find [players [current_player_index].item_found_number + 1]])
 					end
 					if not players[current_player_index].is_dragging then
 						spare_card.approach_point (801, 144, Spare_card_speed)

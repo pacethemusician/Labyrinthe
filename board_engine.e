@@ -307,7 +307,7 @@ feature --
 			end
 		end
 
-	confirm_finished (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+	confirm_finished
 			-- Confirme que le joueur a fini son tour
 		do
 			if has_to_move then
@@ -321,7 +321,9 @@ feature --
 					item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
 				end
 				sound_fx_ok.play
-				score.update (players [current_player_index].item_found_number)
+				if not (players [current_player_index].item_found_number ~ players [current_player_index].items_to_find.count) then
+					score.update (players [current_player_index].item_found_number)
+				end
 				players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].row_index]) [players [current_player_index].col_index])
 			end
 		end
@@ -330,7 +332,7 @@ feature --
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
 		do
 			if players[current_player_index].is_winner then
-				print("Vous avez gagnez LOL!")
+				print("Vous avez gagné LOL!")
 				game_over := True
 			else
 				board.adjust_paths (Path_cards_speed)

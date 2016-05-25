@@ -150,6 +150,7 @@ feature {NONE} -- Implementation
 			across 1 |..| 5 as la_index loop
 				Result.extend (img_to_surface ("Images/start_item_" + la_index.item.out + ".png"))
 			end
+			Result.extend (create {GAME_SURFACE} .make (1, 1))
 		end
 
 	init_player_choice_menu_surfaces:ARRAYED_LIST[GAME_SURFACE]

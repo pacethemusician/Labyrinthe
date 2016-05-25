@@ -125,15 +125,15 @@ feature
 						end
 					end
 					if attached {PLAYER_NETWORK} players[current_player_index] as la_player then
+						item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
 						is_my_turn := False
 						across network_action_threads as la_connexions loop
-							if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} la_connexions.item.action as la_action then
-								on_mouse_released_from_client(la_action)
-								print("serveur release%N")
-							elseif attached {GAME_MOUSE_BUTTON_PRESSED_STATE} la_connexions.item.action as la_action then
-								check_button_from_client(la_action)
+							if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} la_connexions.item.mouse_state as la_mouse_state then
+								on_mouse_released_from_client(la_mouse_state)
+							elseif attached {GAME_MOUSE_BUTTON_PRESSED_STATE} la_connexions.item.mouse_state as la_mouse_state then
+								check_button_from_client(la_mouse_state)
 							end
-							la_connexions.item.action := void
+							la_connexions.item.mouse_state := void
 						end
 					else
 						is_my_turn := True
@@ -151,9 +151,6 @@ feature
 					end
 					if not players[current_player_index].path.is_empty then
 						players[current_player_index].follow_path
-					end
-					if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
-						item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
 					end
 					if not players[current_player_index].is_dragging then
 						spare_card.approach_point (801, 144, Spare_card_speed)
