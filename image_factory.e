@@ -143,7 +143,7 @@ feature {NONE} -- Implementation
 	init_item_surfaces:ARRAYED_LIST[GAME_SURFACE]
 			-- Retourne les {GAME_SURFACE} des items.
 		do
-			create Result.make(24)
+			create Result.make(30)
 			across 1 |..| 24 as la_index loop
 				Result.extend (img_to_surface ("Images/item" + la_index.item.out + ".png"))
 			end

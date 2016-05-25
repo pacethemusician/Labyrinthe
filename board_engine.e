@@ -12,12 +12,14 @@ inherit
 	MENU
 		rename
 			make as make_menu
+		redefine
+			show
 		end
 
 create
 	make
 
-feature {THREAD_BOARD_ENGINE} -- Initialization
+feature {NONE} -- Initialization
 
 
 	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER]; a_game_window: GAME_WINDOW_SURFACED)
@@ -36,7 +38,7 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			make_menu (a_image_factory)
 			current_player_index := 1
 			create sound_fx_rotate.make ("Audio/rotate.wav")
-			create {ARRAYED_LIST [PLAYER]} players_to_move.make (0)
+			create {LINKED_LIST [PLAYER]} players_to_move.make
 			create item_to_find.make (image_factory.items [players [current_player_index].items_to_find.first], 801, 327)
 			create {LINKED_LIST [SPRITE]} on_screen_sprites.make
 			create spare_card.make (3, image_factory, 801, 144, 1, 0)
@@ -75,7 +77,6 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			on_screen_sprites.extend (text_player)
 			on_screen_sprites.extend (score)
 			on_screen_sprites.extend (spare_card)
-			create thread.make (Current, a_game_window)
 			board.on_click_actions.extend (agent board_click_action)
 			spare_card.on_click_actions.extend (agent spare_card_click_action(?))
 			btn_rotate_left.on_click_actions.extend (agent rotate_spare_card(-1))
@@ -87,7 +88,6 @@ feature {THREAD_BOARD_ENGINE} -- Initialization
 			buttons.extend (board)
 			buttons.extend (btn_ok)
 			has_to_place_spare_card := True
-			thread.launch
 			score.update (players [current_player_index].item_found_number)
 		end
 
@@ -141,19 +141,7 @@ feature --
 	current_player_index: INTEGER
 			-- Index vers le {PLAYER} dans `players' dont c'est le tour à jouer.
 
-	thread: THREAD_BOARD_ENGINE
-			-- {THREAD} qui met à jour l'affichage du jeu.
-
 	item_to_find, text_player: SPRITE
-
-	close_thread
-			-- Ferme `thread'.
-		require
-			thread_running: not thread.terminated
-		do
-			thread.must_stop := true
-			thread.join
-		end
 
 	rotate_spare_card (a_steps: INTEGER)
 			-- Méthode qui se déclenche lorsqu'on clique sur `btn_rotate_left' ou `btn_rotate_right'.
@@ -328,11 +316,32 @@ feature --
 			end
 		end
 
+
+	show(a_game_window:GAME_WINDOW_SURFACED)
+			-- <Precursor>
+		do
+			across
+				on_screen_sprites as l_sprites
+			loop
+				l_sprites.item.draw_self (a_game_window.surface)
+			end
+			if has_to_move then
+				btn_ok.draw_self (a_game_window.surface)
+				circle_btn_ok.draw_self (a_game_window.surface)
+			end
+			circle_player.draw_self (a_game_window.surface)
+			across
+				players as la_players
+			loop
+				la_players.item.draw_self (a_game_window.surface)
+			end
+		end
+
 	update
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
 		do
 			if players[current_player_index].is_winner then
-				print("Vous avez gagné LOL!")
+				print("Vous avez Guillaume Hamel Gagné LOL!")
 				game_over := True
 			else
 				board.adjust_paths (Path_cards_speed)

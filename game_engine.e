@@ -140,15 +140,11 @@ feature {NONE} -- Implementation
 						end
 					end
 				end
-			end
-
-			if attached {BOARD_ENGINE} current_engine as la_board_engine then
+			elseif attached {BOARD_ENGINE} current_engine as la_board_engine then
+				la_board_engine.show (a_game_window)
 				la_board_engine.update
-			else
-				-- On update `a_game_window' seulement si `current_engine' n'est pas un
-				-- {BOARD_ENGINE}, parce que dans ce cas là, c'est un {THREAD} qui s'en occupe.
-				a_game_window.update
 			end
+			a_game_window.update
             audio_library.update
 		end
 
@@ -165,9 +161,6 @@ feature {NONE} -- Implementation
 	on_quit(a_timestamp: NATURAL_32)
 			-- Méthode appelée si l'utilisateur quitte la partie (par ex. en fermant la fenêtre).
 		do
-			if attached {BOARD_ENGINE} current_engine as la_board_engine then
-				la_board_engine.close_thread
-			end
 			game_library.stop  -- Stop the controller loop (allow game_library.launch to return)
 		end
 

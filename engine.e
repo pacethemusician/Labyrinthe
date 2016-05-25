@@ -30,6 +30,7 @@ feature -- Implementation
 		end
 
 	show(a_game_window:GAME_WINDOW_SURFACED)
+			-- Rafraichit l'affichage de la fenêtre à chaque frame
 		do
 			across on_screen_sprites as la_on_screen_sprites  loop
 				la_on_screen_sprites.item.draw_self (a_game_window.surface)
