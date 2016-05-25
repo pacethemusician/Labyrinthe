@@ -162,7 +162,7 @@ feature -- Access
 		end
 
 	pick_up_item (a_path_card: PATH_CARD)
-			-- Si l' `item_index' de `a_path_card' est égual à `items_to_find[item_found_number + 1]',
+			-- Si l' `item_index' de `a_path_card' est égal à `items_to_find[item_found_number + 1]',
 			-- `item_index' est mis à 0 et `item_found_number' est incrémenté de 1.
 		do
 			if (item_found_number < items_to_find.count) then

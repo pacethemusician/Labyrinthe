@@ -54,6 +54,9 @@ feature {NONE} -- Events
 				l_i := l_i + 1
 			end
 			make (l_factory, 1, 266, 266, l_i, create {SCORE_SURFACE}.make (create {GAME_SURFACE}.make (1, 1), 0, 0, 25, l_factory))
+			items_to_find.extend (1)
+			items_to_find.extend (2)
+			items_to_find.extend (3)
 			assert ("test_player_on_prepare", not game_library.has_error)
 		end
 
@@ -115,14 +118,28 @@ feature -- Test routines
 
 	set_path_normal
 			-- Test normal de `set_path'.
+		local
+			l_path_card_list: ARRAYED_LIST [PATH_CARD]
+			l_image_factory: IMAGE_FACTORY
 		do
-			assert ("not_implemented", False)
+			create l_image_factory.make
+			create l_path_card_list.make (3)
+			l_path_card_list.extend (create {PATH_CARD}.make (1, l_image_factory, 0, 0, 3, 0))
+			l_path_card_list.extend (create {PATH_CARD}.make (2, l_image_factory, 84, 84, 2, 5))
+			l_path_card_list.extend (create {PATH_CARD}.make (3, l_image_factory, 0, 0, 1, 10))
+			set_path (l_path_card_list)
+			assert ("set_path_normal_1", l_path_card_list = path)
 		end
 
 	set_item_found_number_normal
 			-- Test normal de `set_item_found_number'.
 		do
-			assert ("not_implemented", False)
+			set_item_found_number (1)
+			assert ("set_item_found_number_normal_1", item_found_number = 1)
+			set_item_found_number (2)
+			assert ("set_item_found_number_normal_2", item_found_number = 2)
+			set_item_found_number (3)
+			assert ("set_item_found_number_normal_3", item_found_number = 3)
 		end
 
 	set_next_x_normal
@@ -140,23 +157,48 @@ feature -- Test routines
 			-- Test normal de `set_next_y'.
 		do
 			set_next_y (11)
-			assert ("set_next_y_normal_1", next_y = 10)
+			assert ("set_next_y_normal_1", next_y = 11)
 			set_next_y (-9)
-			assert ("set_next_y_normal_2", next_y = -8)
+			assert ("set_next_y_normal_2", next_y = -9)
 			set_next_y (322)
-			assert ("set_next_y_normal_2", next_y = 321)
+			assert ("set_next_y_normal_2", next_y = 322)
 		end
 
 	pick_up_item_normal
 			-- Test normal de `pick_up_item'.
+		local
+			l_image_factory: IMAGE_FACTORY
+			l_path_card: PATH_CARD
 		do
-			assert ("not_implemented", False)
+			create l_image_factory.make
+			create l_path_card.make (1, l_image_factory, 84, 84, 2, 1)
+			pick_up_item (l_path_card)
+			assert ("pick_up_item_normal_1", (item_found_number = 1) and (l_path_card.item_index = 0))
+			create l_path_card.make (1, l_image_factory, 84, 84, 2, 2)
+			pick_up_item (l_path_card)
+			assert ("pick_up_item_normal_2", (item_found_number = 2) and (l_path_card.item_index = 0))
+			pick_up_item (l_path_card)
+			assert ("pick_up_item_normal_3", item_found_number = 2)
 		end
 
 	follow_path_normal
 			-- Test normal de `follow_path'.
+		local
+			l_path_card_list: ARRAYED_LIST [PATH_CARD]
+			l_image_factory: IMAGE_FACTORY
 		do
-			assert ("not_implemented", False)
+			create l_image_factory.make
+			path.extend (create {PATH_CARD}.make (1, l_image_factory, 248, 272, 1, 1))
+			path.extend (create {PATH_CARD}.make (1, l_image_factory, 249, 273, 2, 2))
+			path.extend (create {PATH_CARD}.make (1, l_image_factory, 250, 272, 3, 1))
+			follow_path
+			assert ("follow_path_normal_1", (x = walking_speed + 266) and (y = walking_speed + 266) and (item_found_number = 0))
+			follow_path
+			assert ("follow_path_normal_2", (x = 248 + X_offset) and (y = 272) and (item_found_number = 1))
+			follow_path
+			assert ("follow_path_normal_3", (x = 249 + X_offset) and (y = 273) and (item_found_number = 2))
+			follow_path
+			assert ("follow_path_normal_4", (x = 250 + X_offset) and (y = 272) and (item_found_number = 2) and path.is_empty)
 		end
 
 end
