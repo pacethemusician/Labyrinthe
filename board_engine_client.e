@@ -12,7 +12,7 @@ inherit
 		rename
 			make as make_board_engine
 		redefine
-			update
+			update,	check_button, on_mouse_released, on_mouse_move
 		end
 
 create
@@ -141,24 +141,19 @@ feature -- network implementation
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
 		do
 			if game_over then
-				-- do some shit
+				print("Merci d'avoir joué!!!")
 			else
 				if players[current_player_index].is_winner then
 					print("Vous avez Guillaume Hamel Gagné!!!!! LOL!!!!!!!!")
 					game_over := True
 				else
-					if attached receive_mouse_thread.action as la_action then
-						if la_action.commande ~ "REL" then
-							if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} la_action.mouse_state as la_mouse_state then
-								on_mouse_released(la_mouse_state)
-								print("Shit reçue")
-							end
-						elseif la_action.commande ~ "SPARE" then
-							spare_card_click_action(la_action.mouse_state)
-							print("Shit reçue")
-						elseif la_action.commande ~ "BOARD" then
-							board_click_action(la_action.mouse_state)
-							print("Shit reçue")
+					socket.independent_store (True)
+					if not is_my_turn then
+						if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} receive_mouse_thread.action as la_action then
+							on_mouse_released_from_server(la_action)
+							print("client release%N")
+						elseif attached {GAME_MOUSE_BUTTON_PRESSED_STATE} receive_mouse_thread.action as la_action then
+							check_button_from_server(la_action)
 						end
 						receive_mouse_thread.action := void
 					end
@@ -179,21 +174,80 @@ feature -- network implementation
 					if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
 						item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
 					end
-					if not is_dragging then
+					if not players[current_player_index].is_dragging then
 						spare_card.approach_point (801, 144, Spare_card_speed)
 					end
 				end
 			end
 		end
 
---	check_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
---			-- Déclanche l'action des boutons s'il y a clique.
---		do
---			if is_my_turn then
---				socket.independent_store(a_mouse_state)
---			end
---			Precursor(a_mouse_state)
---		end
+	on_mouse_move (a_mouse_state: GAME_MOUSE_MOTION_STATE)
+			-- Routine de mise à jour du drag and drop
+		do
+			if is_my_turn then
+				Precursor(a_mouse_state)
+			end
+		end
+
+	check_button (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- <Precursor>
+		do
+			if is_my_turn then
+				Precursor(a_mouse_state)
+				socket.independent_store (a_mouse_state)
+			end
+		end
+
+	check_button_from_server(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- Déclanche l'action des boutons d'après le `a_mouse_state' reçu via network
+		do
+			across buttons as la_buttons loop
+				la_buttons.item.execute_actions (a_mouse_state)
+			end
+		end
+
+	on_mouse_released (a_mouse_state: GAME_MOUSE_BUTTON_RELEASED_STATE)
+			-- <Precursor>
+			-- On ajoute une condition pour gérer le réseau
+		do
+			if is_my_turn then
+				Precursor(a_mouse_state)
+				socket.independent_store(a_mouse_state)
+			end
+		end
+
+	on_mouse_released_from_server (a_mouse_state: GAME_MOUSE_BUTTON_RELEASED_STATE)
+			-- Méthode appelée lorsque un des autres joueurs réseau relâche un bouton de la souris.
+		do
+			if players[current_player_index].is_dragging then
+				if is_drop_zone (140, -28, a_mouse_state) then
+					rotate (2, False, True)
+				elseif is_drop_zone (308, -28, a_mouse_state) then
+					rotate (4, False, True)
+				elseif is_drop_zone (476, -28, a_mouse_state) then
+					rotate (6, False, True)
+				elseif is_drop_zone (-28, 140, a_mouse_state) then
+					rotate (2, True, False)
+				elseif is_drop_zone (-28, 308, a_mouse_state) then
+					rotate (4, True, False)
+				elseif is_drop_zone (-28, 476, a_mouse_state) then
+					rotate (6, True, False)
+				elseif is_drop_zone (644, 140, a_mouse_state) then
+					rotate (2, True, True)
+				elseif is_drop_zone (644, 308, a_mouse_state) then
+					rotate (4, True, True)
+				elseif is_drop_zone (644, 476, a_mouse_state) then
+					rotate (6, True, True)
+				elseif is_drop_zone (140, 644, a_mouse_state) then
+					rotate (2, False, False)
+				elseif is_drop_zone (308, 644, a_mouse_state) then
+					rotate (4, False, False)
+				elseif is_drop_zone (476, 644, a_mouse_state) then
+					rotate (6, False, False)
+				end
+				players[current_player_index].is_dragging := False
+			end
+		end
 
 invariant
 

@@ -1686,3 +1686,232 @@ APPLICATION         root's creation        Unexpected harmful signal (Segmentati
 -------------------------------------------------------------------------------
 
 projetlabyrinthe: dumping core to generate debugging information...
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Child thread           0x4C8 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      Retrieve: unable to read properties of storable.:
+<00000000059EAC58>  (From SOCKET)          Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      
+<00000000059EAC58>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    retrieved @7           
+<00000000059EAC58>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    execute @2             
+<00000000059F2668>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    thr_main @3            
+<00000000059F2668>  (From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000059E2388>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Child thread           0x4C8 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      Retrieve: unable to read properties of storable.:
+<00000000058BAC58>  (From SOCKET)          Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      
+<00000000058BAC58>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    retrieved @7           
+<00000000058BAC58>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    execute @2             
+<00000000058C2638>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    thr_main @3            
+<00000000058C2638>  (From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000058B2388>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+:
+
+*************************** Thread exception *****************************
+In thread           Child thread           0x530 (thread id)
+******************************** Thread exception *****************************
+In thread           Child thread           0x4C8 (thread id)
+*****************
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+NETWORK_STREAM_SOCKET
+-------------------------------------------------------------------------------
+                    eif_net_retrieved      invalid retrieve type:
+NETWORK_STREAM_SOCKET
+<00000000045FE338>                      eif_net_retrieved      invalid retrieve type:
+(From SOCKET)          Retrieval error.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+(From SOCKET)          Retrieval error.              Fail
+-------------------------------------------------------------------------------
+                    eif_net_retrieved      
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      
+(From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+(From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+rieved @7           
+<00000000045FE338>                      retrieved @7           
+<00000000057AAC38>     Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+(From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+                    execute @2             
+<0000000004622A88>                      execute @2             
+<0000000004B6DB08>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+                       Routine failure.              Fail
+-------------------------------------------------------------------------------
+                    thr_main @3            
+THREAD_NETWORK_CLIENT
+<0000000004622A88>                      thr_main @3            
+(From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+<0000000004B6DB08>  APPLICATION         root's creation                                     
+(From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+<00000000043805E8>  root's creation                                     
+                       Routine failure.              Exit
+-------------------------------------------------------------------------------
+                       Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Child thread           0x530 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      invalid retrieve type:
+<0000000004744368>  (From SOCKET)          Retrieval error.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      
+<0000000004744368>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    retrieved @7           
+<0000000004744368>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    execute @2             
+<0000000004768AB8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    thr_main @3            
+<0000000004768AB8>  (From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000045005E8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Child thread           0x530 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      invalid retrieve type:
+<000000000473C3E8>  (From SOCKET)          Retrieval error.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      
+<000000000473C3E8>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    retrieved @7           
+<000000000473C3E8>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    execute @2             
+<0000000004760B38>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    thr_main @3            
+<0000000004760B38>  (From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000044B05E8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+projetlabyrinthe: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Child thread           0x4C8 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      Retrieve: unable to read properties of storable.:
+<00000000058EAA98>  (From SOCKET)          Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    eif_net_retrieved      
+<00000000058EAA98>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+NETWORK_STREAM_SOCKET
+                    retrieved @7           
+<00000000058EAA98>  (From SOCKET)          Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    execute @2             
+<00000000058F2508>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+THREAD_NETWORK_CLIENT
+                    thr_main @3            
+<00000000058F2508>  (From THREAD)          Routine failure.              Rescue
+-------------------------------------------------------------------------------
+APPLICATION         root's creation                                     
+<00000000058E2388>                         Routine failure.              Exit
+-------------------------------------------------------------------------------

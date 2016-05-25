@@ -132,9 +132,6 @@ feature --
 	btn_rotate_left, btn_rotate_right: BUTTON
 			-- Les boutons qui tourne la `spare_card'
 
-	is_dragging: BOOLEAN
-			-- True si le joueur déplace la `spare_card'
-
 	players: LIST [PLAYER]
 			-- La liste de tous les {PLAYER} actifs
 
@@ -172,7 +169,7 @@ feature --
 	on_mouse_move (a_mouse_state: GAME_MOUSE_MOTION_STATE)
 			-- Routine de mise à jour du drag and drop
 		do
-			if is_dragging then
+			if players[current_player_index].is_dragging then
 				spare_card.x := a_mouse_state.x - spare_card.x_offset
 				spare_card.y := a_mouse_state.y - spare_card.y_offset
 			end
@@ -250,7 +247,7 @@ feature --
 	on_mouse_released (a_mouse_state: GAME_MOUSE_BUTTON_RELEASED_STATE)
 			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.
 		do
-			if is_dragging then
+			if players[current_player_index].is_dragging then
 				if is_drop_zone (140, -28, a_mouse_state) then
 					rotate (2, False, True)
 				elseif is_drop_zone (308, -28, a_mouse_state) then
@@ -276,7 +273,7 @@ feature --
 				elseif is_drop_zone (476, 644, a_mouse_state) then
 					rotate (6, False, False)
 				end
-				is_dragging := False
+				players[current_player_index].is_dragging := False
 			end
 		end
 
@@ -284,7 +281,7 @@ feature --
 			-- Initialise le drag et calcul le offset par rapport aux coordonnées de `a_mouse_state'
 		do
 			if has_to_place_spare_card then
-				is_dragging := True
+				players[current_player_index].is_dragging := True
 				spare_card.set_x_offset (a_mouse_state.x - spare_card.x)
 				spare_card.set_y_offset (a_mouse_state.y - spare_card.y)
 			end
@@ -310,7 +307,7 @@ feature --
 			end
 		end
 
-	confirm_finished
+	confirm_finished (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
 			-- Confirme que le joueur a fini son tour
 		do
 			if has_to_move then
@@ -353,7 +350,7 @@ feature --
 				if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
 					item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
 				end
-				if not is_dragging then
+				if not players[current_player_index].is_dragging then
 					spare_card.approach_point (801, 144, Spare_card_speed)
 				end
 			end

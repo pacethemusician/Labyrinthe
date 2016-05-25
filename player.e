@@ -46,6 +46,15 @@ feature -- Access
 	score: SCORE_SURFACE assign set_score_surface
 			-- Pointe vers la {SCORE_SURFACE} du {BOARD_ENGINE} et se met à jour lors de item_pickup
 
+	is_dragging: BOOLEAN assign set_is_dragging
+			-- True si le joueur déplace la `spare_card'
+
+	set_is_dragging (a_value: BOOLEAN)
+			-- Setter pour is_dragging
+		do
+			is_dragging := a_value
+		end
+
 	is_winner: BOOLEAN
 			-- Devient True lorsque `Current' à trouver tous les `items_to_find'
 

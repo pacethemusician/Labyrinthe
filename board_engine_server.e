@@ -10,8 +10,10 @@ class
 inherit
 	BOARD_ENGINE
 		redefine
-			make, update, --confirm_finished,
-			on_mouse_released, spare_card_click_action, board_click_action
+			make, update,
+			check_button,
+			on_mouse_released,
+			on_mouse_move
 		end
 
 create
@@ -31,9 +33,13 @@ feature {NONE} -- Initialization
 					network_action_threads.last.launch
 				end
 			end
+			is_my_turn := True
 		end
 
 feature
+
+	is_my_turn: BOOLEAN
+			-- 	Indique que c'est au `current_player' de jouer si c'est un joueur local
 
 	network_action_threads: LIST[THREAD_NETWORK_CLIENT]
 			-- -- Les threads réseaux qui attendent un {ACTION_NETWORK}
@@ -107,28 +113,30 @@ feature
 			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
 		do
 			if game_over then
-				-- do some shit
+				print("Merci d'avoir joué!!!")
 			else
 				if players[current_player_index].is_winner then
 					print("Vous avez Guillaume Hamel Gagné!!!!! LOL!!!!!!!!")
 					game_over := True
 				else
-					if attached {PLAYER_NETWORK} players[current_player_index] as la_player then
-						across network_action_threads as la_connexions loop
-							if attached la_connexions.item.action as la_action then
-								if la_action.commande ~ "REL" then
-									if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} la_action.mouse_state as la_mouse_state then
-										on_mouse_released(la_mouse_state)
-									end
-								elseif la_action.commande ~ "SPARE" then
-									spare_card_click_action(la_action.mouse_state)
-								elseif la_action.commande ~ "BOARD" then
-									board_click_action(la_action.mouse_state)
-								end
-								la_connexions.item.action := void
-							end
-
+					across players as la_players loop
+						if attached {PLAYER_NETWORK} la_players.item as la_player then
+							la_player.socket.independent_store (True)
 						end
+					end
+					if attached {PLAYER_NETWORK} players[current_player_index] as la_player then
+						is_my_turn := False
+						across network_action_threads as la_connexions loop
+							if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} la_connexions.item.action as la_action then
+								on_mouse_released_from_client(la_action)
+								print("serveur release%N")
+							elseif attached {GAME_MOUSE_BUTTON_PRESSED_STATE} la_connexions.item.action as la_action then
+								check_button_from_client(la_action)
+							end
+							la_connexions.item.action := void
+						end
+					else
+						is_my_turn := True
 					end
 					board.adjust_paths (Path_cards_speed)
 					if not players_to_move.is_empty then
@@ -147,91 +155,92 @@ feature
 					if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
 						item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
 					end
-					if not is_dragging then
+					if not players[current_player_index].is_dragging then
 						spare_card.approach_point (801, 144, Spare_card_speed)
 					end
 				end
 			end
 		end
 
---	check_button(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
---		do
---			if not (attached {PLAYER_NETWORK} players[current_player_index]) then
---				across buttons as la_buttons loop
---						la_buttons.item.execute_actions (a_mouse_state)
---				end
---			end
---			across players as la_players loop
---				if attached {PLAYER_NETWORK} la_players.item as la_player then
---					if attached la_player.socket as la_socket then
---						la_socket.independent_store (a_mouse_state)
---					end
---				end
---			end
---		end
-
-	on_mouse_released (a_mouse_state: GAME_MOUSE_BUTTON_RELEASED_STATE)
-			-- precursor
+	on_mouse_move (a_mouse_state: GAME_MOUSE_MOTION_STATE)
+			-- Routine de mise à jour du drag and drop
 		do
-			send_action(create {ACTION_NETWORK} .make("REL", a_mouse_state))
-			Precursor (a_mouse_state)
+			if is_my_turn then
+				Precursor(a_mouse_state)
+			end
 		end
 
-	spare_card_click_action (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
-			-- precursor
-		do
-			send_action(create {ACTION_NETWORK} .make("SPARE", a_mouse_state))
-			Precursor (a_mouse_state)
-		end
-
-	board_click_action (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
-			-- precursor
-		do
-			send_action(create {ACTION_NETWORK} .make("BOARD", a_mouse_state))
-			Precursor (a_mouse_state)
-		end
-
---	confirm_finished_network (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
---			-- precursor
---		do
---			Precursor
---			send_action(create {ACTION_NETWORK} .make("BOARD", a_mouse_state))
---		end
-
-	send_action (a_action: ACTION_NETWORK)
-			-- Envoie un {ACTION_NETWORK} à tous les joueurs réseau
+	send_mouse_state(a_mouse_state: GAME_MOUSE_STATE)
+			-- Envoie le `mouse_state' DUH!!!
 		do
 			across players as la_players loop
 				if attached {PLAYER_NETWORK} la_players.item as la_player then
 					if attached la_player.socket as la_socket then
-						la_socket.independent_store (a_action)
-						print("Action envoyée %N")
+						la_socket.independent_store (a_mouse_state)
 					end
 				end
 			end
 		end
 
---	get_network_action:GAME_MOUSE_BUTTON_PRESSED_STATE
---		  -- Attend que le serveur envoie le `mouse_state' du client
---		local
---			l_retry: BOOLEAN
---		do
---			create Result.make (0, 0, 0, 0)
---			if not l_retry then		-- Si la clause 'rescue' n'a pas été utilisé, reçoit la liste
---				if
---					attached {PLAYER_NETWORK} players[current_player_index] as la_player and then
---					attached la_player.socket as la_socket and then
---					attached {GAME_MOUSE_BUTTON_PRESSED_STATE} la_socket.retrieved as la_mouse_state
---				then
---					Result := la_mouse_state
---				end
---			else
---				print("Erreur lors de la réception du mouse_state")
---			end
---			rescue
---				l_retry := True
---				retry
---		end
+	check_button (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- <Precursor>
+		do
+			if is_my_turn then
+				Precursor(a_mouse_state)
+				send_mouse_state(a_mouse_state)
+			end
+		end
+
+	on_mouse_released (a_mouse_state: GAME_MOUSE_BUTTON_RELEASED_STATE)
+			-- <Precursor>
+			-- On ajoute une condition pour gérer le réseau
+		do
+			if is_my_turn then
+				Precursor(a_mouse_state)
+				send_mouse_state(a_mouse_state)
+			end
+		end
+
+	on_mouse_released_from_client (a_mouse_state: GAME_MOUSE_BUTTON_RELEASED_STATE)
+			-- Méthode appelée lorsque le joueur relâche un bouton de la souris.
+		do
+			if players[current_player_index].is_dragging then
+				if is_drop_zone (140, -28, a_mouse_state) then
+					rotate (2, False, True)
+				elseif is_drop_zone (308, -28, a_mouse_state) then
+					rotate (4, False, True)
+				elseif is_drop_zone (476, -28, a_mouse_state) then
+					rotate (6, False, True)
+				elseif is_drop_zone (-28, 140, a_mouse_state) then
+					rotate (2, True, False)
+				elseif is_drop_zone (-28, 308, a_mouse_state) then
+					rotate (4, True, False)
+				elseif is_drop_zone (-28, 476, a_mouse_state) then
+					rotate (6, True, False)
+				elseif is_drop_zone (644, 140, a_mouse_state) then
+					rotate (2, True, True)
+				elseif is_drop_zone (644, 308, a_mouse_state) then
+					rotate (4, True, True)
+				elseif is_drop_zone (644, 476, a_mouse_state) then
+					rotate (6, True, True)
+				elseif is_drop_zone (140, 644, a_mouse_state) then
+					rotate (2, False, False)
+				elseif is_drop_zone (308, 644, a_mouse_state) then
+					rotate (4, False, False)
+				elseif is_drop_zone (476, 644, a_mouse_state) then
+					rotate (6, False, False)
+				end
+				players[current_player_index].is_dragging := False
+			end
+		end
+
+	check_button_from_client(a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
+			-- Déclanche l'action des boutons d'après le `a_mouse_state' reçu via network
+		do
+			across buttons as la_buttons loop
+				la_buttons.item.execute_actions (a_mouse_state)
+			end
+		end
 
 invariant
 

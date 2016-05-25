@@ -33,10 +33,10 @@ feature -- Access
 	has_error:BOOLEAN
 			-- `True' si une erreur est arrivé à la création du `socket'
 
-	action: detachable ACTION_NETWORK assign set_action
+	action: detachable GAME_MOUSE_BUTTON_PRESSED_STATE assign set_action
 			-- L'action du {PLAYER} contenant l'instruction et un `mouse_state'
 
-	set_action (a_value: detachable ACTION_NETWORK)
+	set_action (a_value: detachable GAME_MOUSE_BUTTON_PRESSED_STATE)
 			-- Setter pour `action_state'
 		do
 			action := a_value
@@ -65,19 +65,17 @@ feature -- Access
 	execute
 			-- Tâches du thread
 			-- Met le `socket' en mode d'attente de connexion.
-		local
-			l_action_state: ACTION_NETWORK
 		do
-
 			from until is_done loop
 				if
 					attached socket as la_socket and then
-					attached {ACTION_NETWORK} la_socket.retrieved as la_action
+					attached {GAME_MOUSE_BUTTON_PRESSED_STATE} la_socket.retrieved as la_action
 				then
 					action := la_action
-				end
-				from until (not attached action) or is_done loop
-					--	On attend......... -_- zzz
+					from until (not attached action) or is_done loop
+						sleep (1000000)
+						--	On attend......... -_- zzz
+					end
 				end
 			end
 		end
