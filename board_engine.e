@@ -23,6 +23,8 @@ feature {NONE} -- Initialization
 
 
 	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER]; a_game_window: GAME_WINDOW_SURFACED)
+			-- Initialisation de `Current'
+			-- <Precursor>
 		do
 			players := a_players
 			create board.make (a_image_factory, players)
@@ -31,7 +33,7 @@ feature {NONE} -- Initialization
 
 
 	initialize (a_image_factory: IMAGE_FACTORY; a_game_window: GAME_WINDOW_SURFACED)
-			-- Initialisation de `Current'
+			-- Suite de l'initialisation de `Current'
 		require
 			Player_Is_Created: attached players
 		do
@@ -39,7 +41,6 @@ feature {NONE} -- Initialization
 			current_player_index := 1
 			create sound_fx_rotate.make ("Audio/rotate.wav")
 			create {LINKED_LIST [PLAYER]} players_to_move.make
-			create item_to_find.make (image_factory.items [players [current_player_index].items_to_find.first], 801, 327)
 			create {LINKED_LIST [SPRITE]} on_screen_sprites.make
 			create spare_card.make (3, image_factory, 801, 144, 1, 0)
 			create sound_fx_ok.make ("Audio/sfx_ok.wav")
@@ -53,6 +54,7 @@ feature {NONE} -- Initialization
 			create circle_btn_ok.make (image_factory.backgrounds [3], 72, 1, 922, 222)
 			create circle_player.make (image_factory.backgrounds [3], 72, 1, players [current_player_index].x - 23, players [current_player_index].y)
 			create score.make (create {GAME_SURFACE}.make (1, 1), 880, 627, (24 // players.count), a_image_factory)
+			create item_to_find.make (a_image_factory.items [players [1].items_to_find.first], 801, 327)
 			on_screen_sprites.extend (background)
 			on_screen_sprites.extend (btn_rotate_left)
 			on_screen_sprites.extend (btn_rotate_right)
@@ -121,10 +123,10 @@ feature --
 			-- la carte que le joueur doit placer
 
 	has_to_move: BOOLEAN
-			-- Le jlkkdf;lkaj
+			-- True si le joueur a placé la `spare_card'
 
 	has_to_place_spare_card: BOOLEAN
-			-- Servent à contrôler l'état du jeu
+			-- True si le joueur doit placé la `spare_card'
 
 	btn_ok: BUTTON
 			-- Le joueur confirme la fin de son tour après qu'il ait placé la `spare_card' et bougé son personnage
@@ -141,10 +143,15 @@ feature --
 	current_player_index: INTEGER
 			-- Index vers le {PLAYER} dans `players' dont c'est le tour à jouer.
 
-	item_to_find, text_player: SPRITE
+	item_to_find: SPRITE
+			-- L'image de l'item à trouver
+
+	text_player: SPRITE
+			-- L'image où il est écrit c'est à qui le tour à jouer. S'affiche en haut à droite de l'écran.
 
 	rotate_spare_card (a_steps: INTEGER)
 			-- Méthode qui se déclenche lorsqu'on clique sur `btn_rotate_left' ou `btn_rotate_right'.
+			-- `a_steps' -> Combien de fois on doit tourner.
 		require
 			a_steps.abs <= 4
 		do
@@ -155,7 +162,8 @@ feature --
 		end
 
 	on_mouse_move (a_mouse_state: GAME_MOUSE_MOTION_STATE)
-			-- Routine de mise à jour du drag and drop
+			-- Routine de mise à jour du drag and drop.
+			-- `a_mouse_state' -> L'état de la souris.
 		do
 			if players[current_player_index].is_dragging then
 				spare_card.x := a_mouse_state.x - spare_card.x_offset
@@ -184,12 +192,12 @@ feature --
 					if la_players.item.row_index ~ a_index then
 						players_to_move.extend (la_players.item)
 						if a_is_from_top_or_right then
-							if la_players.item.col_index ~ 1 then
+							if la_players.item.column_index ~ 1 then
 								la_players.item.x := 667
 							end
 							la_players.item.next_x := la_players.item.x - 84
 						else
-							if la_players.item.col_index ~ 7 then
+							if la_players.item.column_index ~ 7 then
 								la_players.item.x := -5
 							end
 							la_players.item.next_x := la_players.item.x + 84
@@ -203,7 +211,7 @@ feature --
 				across
 					players as la_players
 				loop
-					if la_players.item.col_index ~ a_index then
+					if la_players.item.column_index ~ a_index then
 						players_to_move.extend (la_players.item)
 						if a_is_from_top_or_right then
 							if la_players.item.row_index ~ 7 then
@@ -221,7 +229,7 @@ feature --
 				end
 				board.rotate_column (a_index, spare_card, a_is_from_top_or_right)
 			end
-			players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].row_index]) [players [current_player_index].col_index])
+			players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].row_index]) [players [current_player_index].column_index])
 			spare_card.on_click_actions.wipe_out
 			spare_card := l_next_spare_card
 			on_screen_sprites.start
@@ -283,7 +291,7 @@ feature --
 			-- Ces coordonnées donnent un chiffre de 1 à 7 pour servir d'index pour accéder au vecteur de {PATH_CARD} du {BOARD}
 		do
 			if has_to_move then
-				l_player_col_index := players [current_player_index].col_index
+				l_player_col_index := players [current_player_index].column_index
 				l_player_row_index := players [current_player_index].row_index
 				l_mouse_col_index := ((a_mouse_state.x - 56) // 84) + 1
 				l_mouse_row_index := ((a_mouse_state.y - 56) // 84) + 1
@@ -298,24 +306,20 @@ feature --
 	confirm_finished
 			-- Confirme que le joueur a fini son tour
 		do
-			if has_to_move then
+			if has_to_move and players[current_player_index].path.is_empty then
 				current_player_index := (current_player_index \\ players.count) + 1
 				has_to_move := False
 				has_to_place_spare_card := True
 				text_player.current_surface := (image_factory.text [current_player_index])
 				circle_player.x := players [current_player_index].x - players [current_player_index].X_offset
 				circle_player.y := players [current_player_index].y
-				if players [current_player_index].item_found_number ~ players [current_player_index].items_to_find.count then
-					item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
-				end
 				sound_fx_ok.play
 				if not (players [current_player_index].item_found_number ~ players [current_player_index].items_to_find.count) then
 					score.update (players [current_player_index].item_found_number)
 				end
-				players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].row_index]) [players [current_player_index].col_index])
+				players [current_player_index].pick_up_item ((board.board_paths [players [current_player_index].row_index]) [players [current_player_index].column_index])
 			end
 		end
-
 
 	show(a_game_window:GAME_WINDOW_SURFACED)
 			-- <Precursor>
@@ -357,9 +361,9 @@ feature --
 				end
 				if not players[current_player_index].path.is_empty then
 					players[current_player_index].follow_path
-				end
-				if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
-					item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
+					if players [current_player_index].item_found_number <= players [current_player_index].items_to_find.count then
+						item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
+					end
 				end
 				if not players[current_player_index].is_dragging then
 					spare_card.approach_point (801, 144, Spare_card_speed)

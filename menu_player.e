@@ -61,20 +61,17 @@ feature {NONE} -- Initialisation
 
 feature
 
-	to_connect:INTEGER
-			-- Le nombre de joueur en réseau, donc le nombre de connection à créer
-
 	socket: NETWORK_STREAM_SOCKET
 			-- permet d'obtenir des connexions de client
 
 	player_select_submenus: LIST[PLAYER_SELECT_SUBMENU]
-		-- Contient les choix des personnages des usagers
+			-- Contient les choix des personnages des usagers
 
 	available_sprites: LIST[BOOLEAN]
-		-- True si un sprite est disponible à l'index
+			-- True si un sprite est disponible à l'index
 
 	sprite_preview_surface_list: LIST[ANIMATED_SPRITE]
-		-- Contient les sprites affichés par les sous-menus de `player_select_submenus'
+			-- Contient les sprites affichés par les sous-menus de `player_select_submenus'
 
 	connexion: detachable CONNEXION_THREAD
 		-- Si l'utilisateur créer un joueur réseau, on crée un thread qui attend la connection du client
@@ -82,13 +79,18 @@ feature
 	button_add_player: BUTTON
 	button_add_connexion: BUTTON
 	button_go: BUTTON
-		-- Les boutons du menu
+			-- Les boutons du menu
 
 	sockets: LIST[SOCKET]
-		-- Les connections des {PLAYER_NETWORK}
+			-- Les connections des {PLAYER_NETWORK}
+
+	to_connect:INTEGER
+			-- Le nombre de joueur en réseau, donc le nombre de connection à créer
 
 	waiting_for_connexion
-			--
+			-- Créer la connexion du {PLAYER_NETWORK}
+			-- La fonction a été pensée pour permettre l'ajout de plusieurs {PLAYER_NETWORK} mais
+			-- nous n'en permettons seulement 1 pour l'instant.
 		local
 			i: INTEGER
 			l_connexion: CONNEXION_THREAD
@@ -113,6 +115,7 @@ feature
 						end
 						i := i + 1
 					end
+					la_connexion.is_done := False
 				end
 			else
 				if to_connect > 0 then
@@ -149,14 +152,17 @@ feature
 					l_x := 340
 					l_y := 318
 				end
-				player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (l_count + 1, image_factory, l_x, l_y, available_sprites, sprite_preview_surface_list, a_is_local))
-				if not a_is_local then
+				if a_is_local then
+					player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (l_count + 1, image_factory, l_x, l_y, available_sprites, sprite_preview_surface_list, a_is_local))
+				elseif sockets.is_empty and (to_connect < 1) then
+					player_select_submenus.extend (create {PLAYER_SELECT_SUBMENU} .make (l_count + 1, image_factory, l_x, l_y, available_sprites, sprite_preview_surface_list, a_is_local))
 					to_connect := to_connect + 1
+					player_select_submenus.last.btn_cancel.enabled := False
 					button_go.enabled := false
 				end
 			end
 		ensure
-			new_player_added:  old player_select_submenus.count < 4 implies player_select_submenus.count = old player_select_submenus.count + 1
+			new_player_added:  (old player_select_submenus.count < 4) and (sockets.is_empty and (to_connect < 1)) implies player_select_submenus.count = old player_select_submenus.count + 1
 			new_player_not_over:  old player_select_submenus.count >= 4 implies player_select_submenus.count = old player_select_submenus.count
 		end
 
@@ -265,7 +271,6 @@ feature
 			across player_select_submenus as la_player_select_submenus loop
 				la_player_select_submenus.item.show (a_game_window)
 			end
-
 		end
 
 	check_button (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)

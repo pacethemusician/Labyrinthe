@@ -31,6 +31,7 @@ feature {NONE} -- Initialization
 			create receive_mouse_thread.make(socket)
 			receive_mouse_thread.launch
 			initialize (a_image_factory, a_game_window)
+			item_to_find.current_surface := (image_factory.items [players [my_index].items_to_find [players [my_index].item_found_number + 1]])
 		end
 
 feature -- Access
@@ -48,10 +49,10 @@ feature -- Access
 			-- Le thread réseau qui attend un {ACTION_NETWORK}
 
 	my_index: INTEGER
-			-- La position de `Current' dans la liste `players'
+			-- La position de `Current' dans la liste `players'.
 
 	socket : SOCKET
-			-- Le socket de connexion
+			-- Le socket de connexion pour comuniquer avec le serveur.
 
 	create_players(a_player_data: LIST[PLAYER_DATA]; a_image_factory: IMAGE_FACTORY): LIST[PLAYER]
 			-- Créer et retourne la liste des {PLAYER} choisis
@@ -94,7 +95,7 @@ feature -- network implementation
 
 	get_board(a_image_factory: IMAGE_FACTORY):BOARD
 		  -- Attend que le serveur envoie une {ARRAYED_LIST [ARRAYED_LIST [PATH_CARD]]}
-		  -- `a_image_factory' pour créer le {BOARD}
+		  -- `a_image_factory' -> Contient les images au format {GAME_SURFACE} pour créer le {BOARD}
 		local
 			l_retry: BOOLEAN
 		do
@@ -138,7 +139,7 @@ feature -- network implementation
 		end
 
 	update
-			-- Fonction s'exécutant à chaque frame. On affiche chaque sprite sur `a_game_window'
+			-- Fonction s'exécutant à chaque frame.
 		do
 			if game_over then
 				print("Merci d'avoir joué!!!")
@@ -169,9 +170,9 @@ feature -- network implementation
 					end
 					if not players[current_player_index].path.is_empty then
 						players[current_player_index].follow_path
-					end
-					if players [current_player_index].item_found_number < players [current_player_index].items_to_find.count then
-						item_to_find.current_surface := (image_factory.items [players [my_index].items_to_find [players [current_player_index].item_found_number + 1]])
+						if players [current_player_index].item_found_number <= players [current_player_index].items_to_find.count then
+							item_to_find.current_surface := (image_factory.items [players [my_index].items_to_find [players [my_index].item_found_number + 1]])
+						end
 					end
 					if not players[current_player_index].is_dragging then
 						spare_card.approach_point (801, 144, Spare_card_speed)

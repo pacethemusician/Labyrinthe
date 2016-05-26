@@ -93,7 +93,7 @@ feature -- Access
 			items_to_find := a_list
 		end
 
-	col_index: INTEGER
+	column_index: INTEGER
 			-- Retourne le numéro de la colonne où se trouve `Current' sur le {BOARD}
 		do
 			if x < 56 then

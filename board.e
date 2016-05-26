@@ -22,7 +22,9 @@ create
 feature {NONE} -- Initialisation
 
 	make (a_image_factory: IMAGE_FACTORY; a_players: LIST[PLAYER])
-			-- Initialisation de `current'. Utilise `a_image_factory' comme `image_factory'.
+			-- Initialisation de `Current'
+			-- `a_image_factory' Contient toutes les images {GAME_SURFACE} du jeu. Assigné à `image_factory'
+			-- `a_players' La liste des joueurs.
 		do
 			make_button (create {GAME_SURFACE}.make (1, 1), 56, 56)
 			image_factory := a_image_factory
@@ -67,7 +69,7 @@ feature -- Implementation
 		end
 
 	set_starting_point(a_players: LIST[PLAYER])
-			-- Met en place les points de départ de chaque [PLAYER]
+			-- Met en place les points de départ de chaque [PLAYER] contenu dans `a_players'
 		local
 			i: INTEGER
 			l_item_index: INTEGER
@@ -92,6 +94,7 @@ feature -- Implementation
 	init_board_paths(a_players: LIST[PLAYER])
 			-- Initialise `board_paths' en le remplissant de {PATH_CARD}.
 			-- La fonction place également les items
+			-- `a_players' La liste des joueurs.
 		local
 			l_type_amount: ARRAYED_LIST [INTEGER]
 			l_rng: GAME_RANDOM
@@ -116,8 +119,9 @@ feature -- Implementation
 		end
 
 	get_next_spare_card_column (a_column_id: INTEGER; a_add_on_top: BOOLEAN): SPARE_PATH_CARD
-			-- Retourne la {PATH_CARD} qui sera éjectée du board si la
-			-- méthode rotate_column est lancée.
+			-- Retourne la {PATH_CARD} qui sera éjectée du board si la méthode `rotate_column' est lancée.
+			-- `a_column_id' -> L'index de la colonne contenant la {SPARE_PATH_CARD} qui sera éjectée.
+			-- `a_add_on_top' -> True si le joueur a inséré la {SPARE_PATH_CARD} par en haut, donc on sort celle du dessous.
 		require
 			column_id_even: (a_column_id \\ 2) = 0
 			valid_index: a_column_id <= board_paths.last.count and a_column_id <= board_paths [1].count
@@ -135,8 +139,9 @@ feature -- Implementation
 		end
 
 	get_next_spare_card_row (a_row_id: INTEGER; a_add_on_right: BOOLEAN): SPARE_PATH_CARD
-			-- Retourne la {PATH_CARD} qui sera éjectée du board si la
-			-- méthode rotate_row est lancée.
+			-- Retourne la {PATH_CARD} qui sera éjectée du board si la méthode `rotate_row' est lancée.
+			-- `a_row_id' -> L'index de la rangée contenant la {SPARE_PATH_CARD} qui sera éjectée.
+			-- `a_add_on_right' -> True si le joueur a inséré la {SPARE_PATH_CARD} par la droite, donc on sort celle de gauche.
 		require
 			row_id_even: (a_row_id \\ 2) = 0
 			valid_index: a_row_id <= board_paths.count
@@ -154,8 +159,8 @@ feature -- Implementation
 		end
 
 	rotate_column (a_column_id: INTEGER; a_path_card: PATH_CARD; a_add_on_top: BOOLEAN)
-			-- Insert `a_path_card' dans la colone `a_column_id'. `a_path_card' est
-			-- inséré par le haut si `a_add_on_top' est vrai, sinon par le bas.
+			-- Insert `a_path_card' dans la colonne `a_column_id'.
+			-- `a_add_on_top' -> True si le joueur a inséré la {SPARE_PATH_CARD} par en haut.
 		require
 			column_id_even: (a_column_id \\ 2) = 0
 		local
@@ -177,8 +182,8 @@ feature -- Implementation
 		end
 
 	rotate_row (a_row_id: INTEGER; a_path_card: PATH_CARD; a_add_on_right: BOOLEAN)
-			-- Insert `a_path_card' dans la rangée `a_row_id'. `a_path_card' est
-			-- inséré par la droite si `a_add_on_right' est vrai, sinon par la gauche.
+			-- Insert `a_path_card' dans la rangée `a_row_id'.
+			-- `a_add_on_right' -> True si le joueur a inséré la {SPARE_PATH_CARD} par la droite.
 		require
 			row_id_even: (a_row_id \\ 2) = 0
 		local
@@ -202,8 +207,8 @@ feature -- Implementation
 		end
 
 	adjust_paths (a_speed: INTEGER)
-			-- Approche les {PATHS_CARD} de `current' vers leur
-			-- position respective de `a_speed' pixels.
+			-- Déplace les {PATHS_CARD} de `Current' vers leur position respective.
+			-- `a_speed' -> La vitesse. Doit être positive.
 		require
 			speed_over_zero: a_speed > 0
 		local
@@ -219,8 +224,7 @@ feature -- Implementation
 		end
 
 	path_can_go_direction (a_x, a_y, a_direction: INTEGER): BOOLEAN
-			-- Retrourne 'true' si la {PATH_CARD} à l'index `a_x', `a_y' a
-			-- un chemin complet vers la direction `a_direction'.
+			-- Retourne True si la {PATH_CARD} à l'index `a_x', `a_y' a un chemin complet vers la direction `a_direction'.
 		require
 			x_over_zero: a_x > 0
 			y_over_zero: a_y > 0
@@ -276,11 +280,12 @@ feature -- Implementation
 		do
 			create l_visited_paths.make
 			create result.make
-			pathfind_to_recursive (a_x2, a_y2, a_x1, a_y1, result, l_visited_paths)
+			pathfind_to_recursive (a_x2, a_y2, a_x1, a_y1, Result, l_visited_paths)
 		end
 
 	execute_actions (a_mouse_state: GAME_MOUSE_BUTTON_PRESSED_STATE)
 			-- Execute les routines de `on_click_actions' si la souris est au dessus de `current'.
+			-- `a_mouse_state' -> L'état de la souris.
 		do
 			if (a_mouse_state.x >= x) and (a_mouse_state.x < (x + 588)) and (a_mouse_state.y >= y) and (a_mouse_state.y < (y + 588)) then
 				across
@@ -295,7 +300,10 @@ feature {NONE} -- Implementation
 
 	pathfind_to_recursive (a_x1, a_y1, a_x2, a_y2: INTEGER; a_result, a_visited_paths: LINKED_LIST [PATH_CARD])
 			-- Partie récursive de pathfind_to.
-			-- Ne devrait être utilisée que par pathfind_to.
+			-- `a_x1', `a_y1', `a_x2' et `a_y2' sont des index de `board_paths'.
+			-- `a_result' -> Pointe vers le `Result' de `pathfind_to'.
+			-- `a_visited_paths' -> Les chemins déjà visités
+			-- Ne devrait être utilisée que par `pathfind_to'.
 		do
 			a_visited_paths.extend ((board_paths [a_y1]) [a_x1])
 			if (a_x1 = a_x2) and (a_y1 = a_y2) then
@@ -329,6 +337,9 @@ feature {NONE} -- Implementation
 
 	init_row (a_row_index: INTEGER; a_sticky_cards: ARRAYED_LIST [PATH_CARD]; a_type_amount: ARRAYED_LIST [INTEGER]; a_rng: GAME_RANDOM)
 			-- Initialise la rangée `a_row_index' de `board_paths' en la remplissant de {PATH_CARD}.
+			-- `a_sticky_cards' -> La liste des {PATH_CARD} fixes.
+			-- `a_type_amount' ->
+			-- `a_rng' -> Générateur de nombre aléatoire.
 		require
 			type_amount_valid: a_type_amount.count = 3
 		local
@@ -370,6 +381,8 @@ feature {NONE} -- Implementation
 
 	distribute_items (a_items: LIST [GAME_SURFACE]; a_rng: GAME_RANDOM)
 			-- Change le `item_index' des {PATH_CARD} contenues dans `board_paths'.
+			-- `a_items' -> La liste des {GAME_SURFACE} des items à trouver.
+			-- `a_rng' -> Générateur de nombre aléatoire.
 		local
 			l_index_x: INTEGER
 			l_index_y: INTEGER

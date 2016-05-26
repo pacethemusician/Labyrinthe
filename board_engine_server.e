@@ -13,7 +13,8 @@ inherit
 			make, update,
 			check_button,
 			on_mouse_released,
-			on_mouse_move
+			on_mouse_move,
+			confirm_finished
 		end
 
 create
@@ -66,7 +67,7 @@ feature
 		end
 
 	send_board
-			-- Envoie le {BOARD} aux joueurs en réseau
+			-- Envoie le `board_paths' du `board' aux joueurs en réseau
 		do
 			across players as la_players loop
 				if attached {PLAYER_NETWORK} la_players.item as la_player then
@@ -125,7 +126,6 @@ feature
 						end
 					end
 					if attached {PLAYER_NETWORK} players[current_player_index] as la_player then
-						item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
 						is_my_turn := False
 						across network_action_threads as la_connexions loop
 							if attached {GAME_MOUSE_BUTTON_RELEASED_STATE} la_connexions.item.mouse_state as la_mouse_state then
@@ -137,6 +137,7 @@ feature
 						end
 					else
 						is_my_turn := True
+
 					end
 					board.adjust_paths (Path_cards_speed)
 					if not players_to_move.is_empty then
@@ -151,6 +152,11 @@ feature
 					end
 					if not players[current_player_index].path.is_empty then
 						players[current_player_index].follow_path
+						if players [current_player_index].item_found_number <= players [current_player_index].items_to_find.count then
+							if not attached {PLAYER_NETWORK} players [current_player_index] then
+								item_to_find.current_surface := (image_factory.items [players [current_player_index].items_to_find [players [current_player_index].item_found_number + 1]])
+							end
+						end
 					end
 					if not players[current_player_index].is_dragging then
 						spare_card.approach_point (801, 144, Spare_card_speed)
@@ -236,6 +242,15 @@ feature
 		do
 			across buttons as la_buttons loop
 				la_buttons.item.execute_actions (a_mouse_state)
+			end
+		end
+
+	confirm_finished
+			-- <Precursor>
+		do
+			if has_to_move and players[current_player_index].path.is_empty then
+				Precursor
+
 			end
 		end
 

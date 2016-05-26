@@ -69,22 +69,22 @@ feature {NONE} -- Events
 feature -- Test routines
 
 	get_col_index_normal
-			-- Test normal de `col_index'.
+			-- Test normal de `column_index'.
 		do
-			assert ("get_col_index_normal_1", col_index = 3)
+			assert ("get_col_index_normal_1", column_index = 3)
 			x := x + 84
-			assert ("get_col_index_normal_2", col_index = 4)
+			assert ("get_col_index_normal_2", column_index = 4)
 			x := x + 84
-			assert ("get_col_index_normal_3", col_index = 5)
+			assert ("get_col_index_normal_3", column_index = 5)
 		end
 
 	get_col_index_limite
-			-- Test limite de `col_index'.
+			-- Test limite de `column_index'.
 		do
 			x := -100
-			assert ("get_col_index_limite_1", col_index = 1)
+			assert ("get_col_index_limite_1", column_index = 1)
 			x := 5000
-			assert ("get_col_index_limite_2", col_index = 7)
+			assert ("get_col_index_limite_2", column_index = 7)
 		end
 
 	get_row_index_normal

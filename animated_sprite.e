@@ -2,6 +2,7 @@ note
 	description: "Objet ayant une animation et des coordonnées pouvant être affichées."
 	author: "Charles Lemay"
 	date: "Février 2016"
+	revision: "1.0"
 
 class
 	ANIMATED_SPRITE
@@ -18,10 +19,12 @@ inherit
 create
 	make
 
-feature {NONE} -- Initialisation
+feature {NONE} -- Initialization
 
 	make (a_default_surface: GAME_SURFACE; a_frame_count, a_delay, a_x, a_y: INTEGER_32)
-			-- Initialisation de `current' avec l'animation `a_default_surface' à la position (`a_x', `a_y').
+			-- Initialisation de `Current' avec l'animation `a_default_surface' à la position (`a_x', `a_y').
+			-- `a_frame_count' -> Assigné à `frame_count'.
+			-- `a_delay' -> Assigné à `delay'.
 		require
 			frame_over_zero: a_frame_count > 0
 			delay_over_zero: a_delay > 0
@@ -35,7 +38,7 @@ feature {NONE} -- Initialisation
 feature -- Implementation
 
 	draw_self (destination_surface: GAME_SURFACE)
-			-- Dessiner `current' sur `destination_surface' et mettre à jour `animation_timer'.
+			-- Dessine `Current' sur `destination_surface' et met à jour `animation_timer'.
 		local
 			l_frame_width: INTEGER_32
 			l_frame_offset: INTEGER_32
@@ -47,7 +50,9 @@ feature -- Implementation
 		end
 
 	change_animation (a_surface: detachable GAME_SURFACE; a_frame_count, a_delay: INTEGER_32)
-			-- Change l'animation de `current' et remet `animation_timer' à 0.
+			-- Change l'animation de `Current' pour `a_surface' et remet `animation_timer' à 0.
+			-- `a_frame_count' -> Sera assigné à `frame_count' dans le `make'.
+			-- `a_delay' -> Sera assigné à `delay' dans le `make'.
 		require
 			frame_over_zero: a_frame_count > 0
 			delay_over_zero: a_delay > 0

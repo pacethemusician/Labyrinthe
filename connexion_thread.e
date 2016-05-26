@@ -40,14 +40,20 @@ feature
 
 	client_socket: detachable NETWORK_STREAM_SOCKET
 
-	is_done: BOOLEAN
+	is_done: BOOLEAN assign set_is_done
 			-- Indique que `Current' est terminé
+
+	set_is_done (a_value: BOOLEAN)
+			-- Setter pour `is_done'
+		do
+			is_done := a_value
+		end
 
 	execute
 			-- Tâches du thread
 			-- Met le `socket' en mode d'attente de connexion.
 		do
-			socket.listen (3)
+			socket.listen (1)
 --			from
 --				cancelled := false
 --			until
