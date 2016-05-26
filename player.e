@@ -60,6 +60,7 @@ feature -- Access
 
 	index: INTEGER
 			-- La position de `Current' dans la liste `players' du {BOARD_ENGINE}
+			
 	sprite_index: INTEGER
 			-- les {SPRITE} de `Current' dans l`image_factory'
 
