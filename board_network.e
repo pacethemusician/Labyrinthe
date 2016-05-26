@@ -10,7 +10,7 @@ deferred class
 inherit
 	BOARD_ENGINE
 		redefine
-			on_mouse_move
+			on_mouse_move, confirm_finished
 		end
 
 feature -- Access
@@ -29,6 +29,16 @@ feature -- Access
 		do
 			if is_my_turn then
 				Precursor(a_mouse_state)
+			end
+		end
+
+	confirm_finished
+			-- <Precursor>
+		do
+			if has_to_move and players[current_player_index].path.is_empty then
+				Precursor
+			else
+				network_has_finished := True
 			end
 		end
 

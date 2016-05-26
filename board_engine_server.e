@@ -12,8 +12,7 @@ inherit
 		redefine
 			make, update,
 			check_button,
-			on_mouse_released,
-			confirm_finished
+			on_mouse_released
 		end
 
 create
@@ -188,16 +187,6 @@ feature
 			if is_my_turn then
 				Precursor(a_mouse_state)
 				send_mouse_state(a_mouse_state)
-			end
-		end
-
-	confirm_finished
-			-- <Precursor>
-		do
-			if has_to_move and players[current_player_index].path.is_empty then
-				Precursor
-			else
-				network_has_finished := True
 			end
 		end
 

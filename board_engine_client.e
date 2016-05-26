@@ -168,7 +168,12 @@ feature -- network implementation
 							players_to_move.wipe_out
 						end
 					end
-					if not players[current_player_index].path.is_empty then
+					if players[current_player_index].path.is_empty then
+						if network_has_finished then
+							confirm_finished
+							network_has_finished := False
+						end
+					else
 						players[current_player_index].follow_path
 						if players [current_player_index].item_found_number <= players [current_player_index].items_to_find.count then
 							item_to_find.current_surface := (image_factory.items [players [my_index].items_to_find [players [my_index].item_found_number + 1]])
